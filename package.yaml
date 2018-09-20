@@ -23,6 +23,7 @@ dependencies:
 - aeson
 - base >= 4.9 && < 5
 - containers
+- esqueleto
 - fast-logger
 - http-types
 - mtl
@@ -30,6 +31,7 @@ dependencies:
 - persistent
 - persistent-sqlite
 - persistent-template
+- resource-pool
 - servant
 - servant-client
 - servant-server

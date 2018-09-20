@@ -1,17 +1,20 @@
-{-# LANGUAGE OverloadedStrings          #-}
-
 module Main where
 
-import Model (migrateAll)
+import           Database.Persist.Sqlite (runMigration)
 
-import           Control.Monad.Logger     (runStdoutLoggingT)
-import           Database.Persist.Sqlite  (runMigration, runSqlite)
+import qualified Database
+import           Model                   (migrateAll)
+import           Server.Environment      (Environment (..))
 
 main :: IO ()
 main = do
+
   -- Running the DB Migration
-  runStdoutLoggingT
-    $ runSqlite "dev.sqlite"
-    $ runMigration migrateAll
+  Database.withHandle (Database.config env) $ \dbHandle ->
+    Database.runDatabase dbHandle $ runMigration migrateAll
 
   return ()
+
+  where
+    env :: Environment
+    env = Dev

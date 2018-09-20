@@ -24,7 +24,7 @@ Item
     url         T.Text
     itemType    ModelItem.Type
     createdAt   UTCTime default=CURRENT_TIME
-    deriving Show
+    deriving Show Eq
 
 Author
     firstName T.Text
@@ -45,3 +45,6 @@ ItemTag
     tagId  TagId
     UniqueItemTag itemId tagId
 |]
+
+instance Ord Item where
+  compare (Item t1 _ _ _ _) (Item t2 _ _ _ _) = compare t1 t2
