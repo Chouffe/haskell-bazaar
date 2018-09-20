@@ -1,0 +1,79 @@
+name:                haskell-bazaar
+version:             0.1.0.0
+github:              "chouffe/haskell-bazaar"
+license:             BSD3
+author:              "Arthur Caillau"
+maintainer:          "chouffe.caillau@gmail.com"
+copyright:           "2018 Arthur Caillau"
+
+extra-source-files:
+- README.md
+- ChangeLog.md
+
+# Metadata used when publishing your package
+# synopsis:            Short description of your package
+# category:            Web
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description:         Please see the README on GitHub at <https://github.com/githubuser/haskell-bazaar#readme>
+
+dependencies:
+- aeson
+- base >= 4.9 && < 5
+- containers
+- fast-logger
+- http-types
+- mtl
+- monad-logger
+- persistent
+- persistent-sqlite
+- persistent-template
+- servant
+- servant-client
+- servant-server
+- text
+- time
+- transformers
+- uuid
+- warp
+
+library:
+  source-dirs: src
+  ghc-options:
+  - -Wall
+  - -Wincomplete-uni-patterns
+
+
+executables:
+  haskell-bazaar-exe:
+    main:                Main.hs
+    source-dirs:         app
+    ghc-options:
+    - -Wall
+    - -Wincomplete-uni-patterns
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - haskell-bazaar
+
+tests:
+  haskell-bazaar-test:
+    main:                Spec.hs
+    source-dirs:         test
+    ghc-options:
+    - -Wall
+    - -Wincomplete-uni-patterns
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - haskell-bazaar
+    - http-client
+    - http-client
+    - http-client-tls
+    - http-client-tls
+    - QuickCheck
+    - tasty

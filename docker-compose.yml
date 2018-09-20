@@ -1,0 +1,6 @@
+version: '2'
+
+services:
+  sqlite3:
+    image: nouchka/sqlite3
+    container_name: haskell-bazaar-sqlite3
