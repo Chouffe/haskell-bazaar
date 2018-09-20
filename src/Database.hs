@@ -13,33 +13,28 @@ module Database
 
   -- DB queries
   , allItems
-  , insertItems
   , fillDatabaseTestValues
   , allItemsWithTags
   )
   where
 
-import Control.Arrow ((***))
+import           Control.Arrow           ((***))
 import           Control.Exception       (bracket)
-import           Control.Monad           (forM, forM_)
+import           Control.Monad           (forM)
 import           Control.Monad.IO.Class  (MonadIO, liftIO)
-import           Control.Monad.Logger    (LoggingT, MonadLogger,
-                                          runStdoutLoggingT)
+import           Control.Monad.Logger    (LoggingT, runStdoutLoggingT)
 import qualified Data.Map                as M
 import           Data.Maybe              (maybe)
 import           Data.Pool               (Pool, destroyAllResources,
                                           withResource)
 import qualified Data.Text               as T
-import           Data.Time               (UTCTime, getCurrentTime)
-import           Database.Esqueleto      (InnerJoin (..), LeftOuterJoin (..),
-                                          desc, from, limit, on, orderBy,
-                                          select, val, where_, (==.), (^.))
+import           Data.Time               (getCurrentTime)
+import           Database.Esqueleto      (InnerJoin (..), from, limit, on,
+                                          select, (==.), (^.))
 
 import           Database.Persist        (Entity (..), insert)
-import           Database.Persist.Sql    (SqlBackend, SqlPersistT, fromSqlKey,
-                                          runSqlConn, toSqlKey)
-import           Database.Persist.Sqlite (createSqlitePool, runSqlite,
-                                          withSqliteConn, withSqlitePool)
+import           Database.Persist.Sql    (SqlBackend, SqlPersistT, runSqlConn)
+import           Database.Persist.Sqlite (createSqlitePool, withSqliteConn)
 
 import           Model
 import qualified Model.Item              as ModelItem
@@ -86,27 +81,20 @@ runDatabase Handle {..} query =
       Nothing   -> withSqliteConn (cConnectionString hConfig) (runSqlConn query)
       Just pool -> withResource pool (runSqlConn query)
 
-allItems :: (MonadIO m, MonadLogger m) => (SqlPersistT m) [Item]
+allItems :: (MonadIO m) => (SqlPersistT m) [Item]
 allItems = do
     entities <- select . from $ \users -> do
       limit 100
       return users
     return (entityVal <$> entities)
 
-insertItems :: (MonadIO m, MonadLogger m) => (SqlPersistT m) ()
-insertItems = do
-  t <- liftIO getCurrentTime
-  k <- insert (mkItem1 t)
-  liftIO $ print k
-  return ()
-
--- TODO: how to get items without tags?
-allItemsWithTags :: (MonadIO m, MonadLogger m) => (SqlPersistT m) (M.Map Item [Tag])
+-- TODO: how to get items without tags? Using a LeftOuterJoin but I am getting type errors
+allItemsWithTags :: (MonadIO m) => (SqlPersistT m) (M.Map Item [Tag])
 allItemsWithTags = do
 
     tuples <- select . from $ \(items `InnerJoin` itemTags `InnerJoin` tags) -> do
-      on (items ^. ItemId ==. itemTags ^. ItemTagItemId)
       on (itemTags ^. ItemTagTagId ==. tags ^. TagId)
+      on (items ^. ItemId ==. itemTags ^. ItemTagItemId)
       limit 100
       return (items, tags)
     return $ toMap $ (entityVal *** entityVal) <$> tuples
@@ -115,11 +103,7 @@ allItemsWithTags = do
       toMap :: [(Item, Tag)] -> M.Map Item [Tag]
       toMap xs = M.fromListWith (++) (fmap (\(i, t) -> (i, [t])) xs)
 
-
-mkItem1 :: UTCTime -> Item
-mkItem1 = Item "title" (Just "description") "url" ModelItem.Article
-
-fillDatabaseTestValues :: (MonadIO m, MonadLogger m) => SqlPersistT m ()
+fillDatabaseTestValues :: (MonadIO m) => SqlPersistT m ()
 fillDatabaseTestValues = do
 
   -- Getting the current time
@@ -129,8 +113,8 @@ fillDatabaseTestValues = do
   tagKeys <- forM ["haskell", "monad", "categories", "functor"] (insert . Tag)
 
   -- Authors
-  authorKeys <- forM [("Simon", "Marlow"), ("Rich", "Hickey")] $ \(first, last) ->
-    insert (Author first last)
+  authorKeys <- forM [("Simon", "Marlow"), ("Rich", "Hickey")] $ \(firstName, lastName) ->
+    insert (Author firstName lastName)
 
   -- Items
   itemKeys <- forM
@@ -141,16 +125,16 @@ fillDatabaseTestValues = do
       insert $ Item title (Just description) url itemType t
 
   -- Relations: Tag <-> Item
-  insert $ ItemTag (itemKeys !! 0) (tagKeys !! 0)
-  insert $ ItemTag (itemKeys !! 0) (tagKeys !! 1)
-  insert $ ItemTag (itemKeys !! 0) (tagKeys !! 2)
-  insert $ ItemTag (itemKeys !! 1) (tagKeys !! 0)
-  insert $ ItemTag (itemKeys !! 2) (tagKeys !! 2)
+  _ <- insert $ ItemTag (itemKeys !! 0) (tagKeys !! 0)
+  _ <- insert $ ItemTag (itemKeys !! 0) (tagKeys !! 1)
+  _ <- insert $ ItemTag (itemKeys !! 0) (tagKeys !! 2)
+  _ <- insert $ ItemTag (itemKeys !! 1) (tagKeys !! 0)
+  _ <- insert $ ItemTag (itemKeys !! 2) (tagKeys !! 2)
 
   -- Relations: Author <-> Item
-  insert $ ItemAuthor (itemKeys !! 0) (authorKeys !! 0)
-  insert $ ItemAuthor (itemKeys !! 0) (authorKeys !! 1)
-  insert $ ItemAuthor (itemKeys !! 1) (authorKeys !! 0)
-  insert $ ItemAuthor (itemKeys !! 2) (authorKeys !! 1)
+  _ <- insert $ ItemAuthor (itemKeys !! 0) (authorKeys !! 0)
+  _ <- insert $ ItemAuthor (itemKeys !! 0) (authorKeys !! 1)
+  _ <- insert $ ItemAuthor (itemKeys !! 1) (authorKeys !! 0)
+  _ <- insert $ ItemAuthor (itemKeys !! 2) (authorKeys !! 1)
 
   return ()
