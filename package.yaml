@@ -22,9 +22,11 @@ description:         Please see the README on GitHub at <https://github.com/gith
 dependencies:
 - aeson
 - base >= 4.9 && < 5
+- bytestring
 - containers
 - esqueleto
 - fast-logger
+- http-media
 - http-types
 - mtl
 - monad-logger

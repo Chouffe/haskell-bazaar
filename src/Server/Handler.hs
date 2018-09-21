@@ -16,7 +16,6 @@ import           Control.Monad.Reader   (ask)
 import qualified Logger
 import qualified Server.Monad           as ServerMonad
 
-
 health :: ServerMonad.AppM T.Text
 health = pure "OK"
 

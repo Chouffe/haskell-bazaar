@@ -1,8 +1,9 @@
-{-# LANGUAGE DataKinds           #-}
-{-# LANGUAGE OverloadedStrings   #-}
-{-# LANGUAGE RecordWildCards     #-}
-{-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE TypeOperators       #-}
+{-# LANGUAGE DataKinds             #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE OverloadedStrings     #-}
+{-# LANGUAGE RecordWildCards       #-}
+{-# LANGUAGE ScopedTypeVariables   #-}
+{-# LANGUAGE TypeOperators         #-}
 
 module Server.API
   ( Config
@@ -30,6 +31,7 @@ import           Control.Monad.IO.Class   (liftIO)
 import           Control.Monad.Reader     (ask)
 import           Control.Monad.State      (get)
 import           Control.Monad.Writer     (tell)
+import qualified Data.ByteString.Lazy     as BS
 import qualified Data.List                as L
 import           Data.Proxy               (Proxy (..))
 import           Data.Semigroup           ((<>))
@@ -38,6 +40,7 @@ import           GHC.Conc                 (TVar, atomically, newTVarIO,
                                            readTVar, writeTVar)
 
 import           Data.Aeson               (encode)
+import           Network.HTTP.Media       ((//), (/:))
 import           Network.Wai.Handler.Warp (run)
 import           Servant                  (serveDirectoryWebApp)
 import           Servant.API
@@ -50,14 +53,26 @@ import qualified Server.Handler           as ServerHandler
 import qualified Server.Monad             as ServerMonad
 
 type Port = Int
+data HTML
+newtype RawHtml = RawHtml { unRaw :: BS.ByteString }
+
+instance Accept HTML where
+  contentType _ = "text" // "html" /: ("charset", "utf-8")
+
+instance MimeRender HTML RawHtml where
+  mimeRender _ =  unRaw
 
 type BazaarAPI
   = "health" :> Get '[JSON] T.Text
   :<|> "api" :> "v0" :> "search" :> QueryParam "q" T.Text :> Get '[JSON] T.Text
 
-type BazaarStaticAPI = Raw
+type BazaarStaticAPI
+  = Get '[HTML] RawHtml
+  :<|> Raw
 
-type BazaarFullAPI = BazaarAPI :<|> BazaarStaticAPI
+type BazaarFullAPI
+  = BazaarAPI
+  :<|> BazaarStaticAPI
 
 bazaarAPI :: Proxy BazaarAPI
 bazaarAPI = Proxy
@@ -73,8 +88,14 @@ serverAPI
   -> ServerT BazaarAPI Handler
 serverAPI nt = enter nt $ ServerHandler.health :<|> ServerHandler.search
 
+-- TODO: move to Handlers
+root :: Handler RawHtml
+root = do
+  content <- liftIO $ BS.readFile "static/index.html"
+  return $ RawHtml content
+
 serverStatic :: ServerT BazaarStaticAPI Handler
-serverStatic = serveDirectoryWebApp "static"
+serverStatic = root :<|> serveDirectoryWebApp "static"
 
 serverFull
   :: (ServerMonad.AppM :~> Handler)
