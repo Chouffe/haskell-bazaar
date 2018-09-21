@@ -23,7 +23,7 @@ Item
     description T.Text Maybe
     url         T.Text
     itemType    ModelItem.Type
-    createdAt   UTCTime default=CURRENT_TIME
+    createdAt   UTCTime default=CURRENT_TIMESTAMP
     deriving Show Eq
 
 Author

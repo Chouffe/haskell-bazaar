@@ -63,9 +63,9 @@ config Dev  = Config "dev.sqlite3" 0
 config Prod = Config "prod.sqlite3" 5
 
 withHandle :: Config -> (Handle -> IO a) -> IO a
-withHandle cfg =
-  bracket (mkHandle cfg)
-          (\Handle {..} -> maybe (return ()) destroyAllResources hMaybePool)
+withHandle cfg = bracket
+  (mkHandle cfg)
+  (\Handle {..} -> maybe (return ()) destroyAllResources hMaybePool)
 
 mkHandle :: Config -> IO Handle
 mkHandle cfg@Config {..}
