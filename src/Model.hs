@@ -18,6 +18,7 @@ import           Database.Persist.TH
 import qualified Model.Item          as ModelItem
 
 share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
+-- TODO: add date, or year, month, day
 Item
     title       T.Text
     description T.Text Maybe

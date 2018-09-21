@@ -1,4 +1,4 @@
-module Server.Environment
+module Environment
   (Environment (Prod, Dev, Test))
   where
 

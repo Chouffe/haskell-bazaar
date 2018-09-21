@@ -36,9 +36,9 @@ import           Database.Persist        (Entity (..), insert)
 import           Database.Persist.Sql    (SqlBackend, SqlPersistT, runSqlConn)
 import           Database.Persist.Sqlite (createSqlitePool, withSqliteConn)
 
+import           Environment             (Environment (..))
 import           Model
 import qualified Model.Item              as ModelItem
-import           Server.Environment      (Environment (..))
 
 
 type ConnectionString = T.Text
@@ -48,6 +48,7 @@ data Config
   = Config
     { cConnectionString :: ConnectionString
     , cPoolConnections  :: Int
+    , cEnvironnment     :: Environment
     }
   deriving (Eq, Show)
 
@@ -58,9 +59,9 @@ data Handle
     }
 
 config :: Environment -> Config
-config Test = Config ":memory:" 0
-config Dev  = Config "dev.sqlite3" 0
-config Prod = Config "prod.sqlite3" 5
+config Test = Config ":memory:" 0 Test
+config Dev  = Config "dev.sqlite3" 0 Dev
+config Prod = Config "prod.sqlite3" 5 Prod
 
 withHandle :: Config -> (Handle -> IO a) -> IO a
 withHandle cfg = bracket
