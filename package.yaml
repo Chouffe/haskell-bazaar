@@ -50,7 +50,6 @@ library:
   - -Wincomplete-uni-patterns
   - -Wredundant-constraints
 
-
 executables:
   haskell-bazaar-exe:
     main:                Main.hs
@@ -83,8 +82,8 @@ tests:
     dependencies:
     - haskell-bazaar
     - http-client
-    - http-client
-    - http-client-tls
     - http-client-tls
     - QuickCheck
     - tasty
+    - tasty-quickcheck
+    - tasty-hspec

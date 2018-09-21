@@ -12,10 +12,12 @@ module Server.API
   , Port
 
   , Handle
+  , hConfig
   , withServer    -- ^ Running action with server in another thread
   , startServer   -- ^ Async server
   , startServer'  -- ^ Blocking server
   , killServer    -- ^ Kill the thread Id of the server
+  , bazaarAPI
   )
   where
 
@@ -93,8 +95,10 @@ config Environment.Prod = Config Environment.Dev 8001
 
 data Handle
   = Handle
-    { hServerThread :: ThreadId        -- ^ Server threadId
-    , hConfig       :: Config          -- ^ Server Config
+    { hServerThread :: ThreadId         -- ^ Server threadId
+    , hDB           :: Database.Handle  -- ^ Database Handle
+    , hLogger       :: Logger.Handle    -- ^ Logger Handle
+    , hConfig       :: Config           -- ^ Server Config
     }
 
 withServer
@@ -118,7 +122,7 @@ startServer config@Config {..} loggerHandle databaseHandle = do
   -- Hack :( wait till the server is properly started
   threadDelay 10000
 
-  return $ Handle threadId config
+  return $ Handle threadId databaseHandle loggerHandle config
 
 startServer'
   :: Config
