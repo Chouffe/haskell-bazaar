@@ -38,7 +38,7 @@ main =
       Logger.info loggerHandle ("Starting Server on port " <> show (Server.cPort serverConfig))
       Logger.info loggerHandle (show serverConfig)
 
-      void $ Server.startServer serverConfig loggerHandle databaseHandle
+      Server.startServer' serverConfig loggerHandle databaseHandle
 
   where
     env :: Environment.Environment
