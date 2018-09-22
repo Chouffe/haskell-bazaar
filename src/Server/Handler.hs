@@ -14,12 +14,12 @@ import           Control.Monad.IO.Class (liftIO)
 import           Control.Monad.Reader   (ask)
 
 import qualified Logger
-import qualified Server.Monad           as ServerMonad
+import qualified Server.Monad
 
-health :: ServerMonad.AppM T.Text
+health :: Server.Monad.AppM T.Text
 health = pure "OK"
 
-search :: Maybe T.Text -> ServerMonad.AppM T.Text
+search :: Maybe T.Text -> Server.Monad.AppM T.Text
 search mQuery = do
   (loggerHandle, _) <- ask
 

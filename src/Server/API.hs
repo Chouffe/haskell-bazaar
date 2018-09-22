@@ -14,10 +14,12 @@ module Server.API
 
   , Handle
   , hConfig
+
   , withServer    -- ^ Running action with server in another thread
   , startServer   -- ^ Async server
   , startServer'  -- ^ Blocking server
   , killServer    -- ^ Kill the thread Id of the server
+
   , bazaarAPI
   )
   where
@@ -52,6 +54,8 @@ import qualified Logger
 import qualified Server.Handler           as ServerHandler
 import qualified Server.Monad             as ServerMonad
 
+
+-- TODO: move to somewhere handy
 type Port = Int
 data HTML
 newtype RawHtml = RawHtml { unRaw :: BS.ByteString }

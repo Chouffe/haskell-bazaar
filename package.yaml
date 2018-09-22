@@ -28,6 +28,7 @@ dependencies:
 - fast-logger
 - http-media
 - http-types
+- lens
 - mtl
 - monad-logger
 - persistent
@@ -42,6 +43,7 @@ dependencies:
 - transformers
 - uuid
 - warp
+- wreq
 
 library:
   source-dirs: src

@@ -1,22 +1,22 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-import qualified Data.Text as T
 import           Data.Semigroup          ((<>))
+import qualified Data.Text               as T
 
 import           Database.Persist.Sqlite (runMigration)
 -- import           Test.Tasty              (defaultMain, testGroup)
 -- import           Test.Tasty.Hspec        (testSpec, hspec)
-import           Test.Tasty.Hspec        (hspec)
-import           Servant.Client          (ClientEnv (..), parseBaseUrl)
 import           Network.HTTP.Client     (newManager)
 import           Network.HTTP.Client.TLS (tlsManagerSettings)
+import           Servant.Client          (ClientEnv (..), parseBaseUrl)
+import           Test.Tasty.Hspec        (hspec)
 
-import qualified Server.APISpec
-import qualified Server.API
 import qualified Database
-import qualified Logger
 import qualified Environment
+import qualified Logger
 import           Model                   (migrateAll)
+import qualified Server.API
+import qualified Server.APISpec
 
 
 main :: IO ()
