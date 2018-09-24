@@ -15,6 +15,7 @@ module Database
   , allItems
   , fillDatabaseTestValues
   , allItemsWithTags
+  , keywords
   )
   where
 
@@ -27,6 +28,7 @@ import qualified Data.Map                as M
 import           Data.Maybe              (maybe)
 import           Data.Pool               (Pool, destroyAllResources,
                                           withResource)
+import           Data.Semigroup          ((<>))
 import qualified Data.Text               as T
 import           Data.Time               (getCurrentTime)
 import           Database.Esqueleto      (InnerJoin (..), from, limit, on,
@@ -39,6 +41,7 @@ import           Database.Persist.Sqlite (createSqlitePool, withSqliteConn)
 import           Environment             (Environment (..))
 import           Model
 import qualified Model.Item              as ModelItem
+import           Server.API.Types
 
 
 type ConnectionString = T.Text
@@ -103,6 +106,22 @@ allItemsWithTags = do
     where
       toMap :: [(Item, Tag)] -> M.Map Item [Tag]
       toMap xs = M.fromListWith (++) (fmap (\(i, t) -> (i, [t])) xs)
+
+allTags :: MonadIO m => (SqlPersistT m) [Tag]
+allTags = do
+  results <- select . from $ return
+  return (entityVal <$> results)
+
+allAuthors :: MonadIO m => (SqlPersistT m) [Author]
+allAuthors = do
+  results <- select . from $ return
+  return (entityVal <$> results)
+
+keywords :: MonadIO m => (SqlPersistT m) [PublicKeyword]
+keywords = do
+  tags    <- allTags
+  authors <- allAuthors
+  return $ (PublicTag <$> tags) <> (PublicAuthor <$> authors)
 
 fillDatabaseTestValues :: (MonadIO m) => SqlPersistT m ()
 fillDatabaseTestValues = do
