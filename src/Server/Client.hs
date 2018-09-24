@@ -6,8 +6,6 @@ module Server.Client
 
 import qualified Data.Text      as T
 
-import qualified Data.ByteString.Lazy     as BS
-import qualified Data.List                as L
 import           Servant.API
 import           Servant.Client (ClientM, client)
 

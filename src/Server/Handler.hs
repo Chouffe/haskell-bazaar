@@ -1,27 +1,36 @@
-{-# LANGUAGE OverloadedStrings   #-}
+{-# LANGUAGE FlexibleContexts      #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE OverloadedStrings     #-}
 
 module Server.Handler
   ( health
   , search
+  , root
   )
   where
 
-import           Data.Semigroup         ((<>))
-import qualified Data.Text              as T
+import           Control.Monad.IO.Class           (MonadIO, liftIO)
+import           Control.Monad.Reader             (asks)
+import           Control.Monad.Reader.Class       (MonadReader)
+import qualified Data.ByteString.Lazy             as BS
+import           Data.Semigroup                   ((<>))
+import qualified Data.Text                        as T
 
-
-import           Control.Monad.IO.Class (liftIO)
-import           Control.Monad.Reader   (ask)
+import           Servant.API.ContentTypesExtended (RawHtml (..))
 
 import qualified Logger
-import qualified Server.Monad
+import qualified Server.Config
 
-health :: Server.Monad.AppM T.Text
+
+health :: Monad m => m T.Text
 health = pure "OK"
 
-search :: Maybe T.Text -> Server.Monad.AppM T.Text
+search
+  :: (MonadReader Server.Config.Handle m, MonadIO m)
+  => Maybe T.Text  -- ^ Optional Search query
+  -> m T.Text
 search mQuery = do
-  (loggerHandle, _) <- ask
+  loggerHandle <- asks Server.Config.hLogger
 
   case mQuery of
     Nothing    -> do
@@ -30,3 +39,8 @@ search mQuery = do
     Just query -> do
       liftIO $ Logger.info loggerHandle $ "Search query provided " <> query
       pure $ "Search Results: " <> query
+
+root :: MonadIO m => m RawHtml
+root = do
+  content <- liftIO $ BS.readFile "static/index.html"
+  return $ RawHtml content

@@ -4,8 +4,6 @@ import           Data.Semigroup          ((<>))
 import qualified Data.Text               as T
 
 import           Database.Persist.Sqlite (runMigration)
--- import           Test.Tasty              (defaultMain, testGroup)
--- import           Test.Tasty.Hspec        (testSpec, hspec)
 import           Network.HTTP.Client     (newManager)
 import           Network.HTTP.Client.TLS (tlsManagerSettings)
 import           Servant.Client          (ClientEnv (..), parseBaseUrl)
@@ -15,31 +13,30 @@ import qualified Database
 import qualified Environment
 import qualified Logger
 import           Model                   (migrateAll)
+import qualified Server
 import qualified Server.API
 import qualified Server.APISpec
+import qualified Server.Config
 
 
 main :: IO ()
 main =
-
   -- Integration Tests
-  withApp $ \handle -> do
-    clientEnv <- mkClientEnv $ Server.API.hConfig handle
+  withApp $ \cfg -> do
+    clientEnv <- mkClientEnv cfg
     hspec $ Server.APISpec.spec clientEnv
-
   -- TODO: Add Unit tests
 
 mkClientEnv
-  :: Server.API.Config
+  :: Server.Config.Config
   -> IO ClientEnv
 mkClientEnv config = do
   mgr        <- newManager tlsManagerSettings
-  baseUrl    <- parseBaseUrl $ "http://localhost:" <> show (Server.API.cPort config)
+  baseUrl    <- parseBaseUrl
+    $ "http://localhost:" <> show (Server.Config.cPort config)
   return $ ClientEnv mgr baseUrl
 
-withApp
-  :: (Server.API.Handle -> IO a)
-  -> IO a
+withApp :: (Server.Config.Config -> IO a) -> IO a
 withApp f =
   Logger.withHandle loggerConfig $ \loggerHandle -> do
 
@@ -51,11 +48,11 @@ withApp f =
       Logger.info loggerHandle ("Running Database Migration" :: T.Text)
       Database.runDatabase databaseHandle (runMigration migrateAll)
 
-      Logger.info loggerHandle ("Starting Server on port " <> show (Server.API.cPort serverConfig))
+      Logger.info loggerHandle
+        ("Starting Server on port " <> show (Server.Config.cPort serverConfig))
       Logger.info loggerHandle (show serverConfig)
 
-      Server.API.withServer serverConfig loggerHandle databaseHandle $ \serverHandle ->
-        f serverHandle
+      Server.withServer serverConfig loggerHandle databaseHandle (f serverConfig)
 
   where
     env :: Environment.Environment
@@ -67,5 +64,5 @@ withApp f =
     databaseConfig :: Database.Config
     databaseConfig = Database.config env
 
-    serverConfig :: Server.API.Config
-    serverConfig = Server.API.config env
+    serverConfig :: Server.Config.Config
+    serverConfig = Server.Config.config env

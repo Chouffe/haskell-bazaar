@@ -2,7 +2,6 @@
 
 module Main where
 
-import           Control.Monad           (void)
 import           Data.Semigroup          ((<>))
 import qualified Data.Text               as T
 
@@ -12,16 +11,8 @@ import qualified Database
 import qualified Environment
 import qualified Logger
 import           Model                   (migrateAll)
-import qualified Server.API              as Server
-
-data Config
-  = Config
-    { cLogger       :: Logger.Config
-    , cDatabase     :: Database.Config
-    , cServer       :: Server.Config
-    , cEnvironnment :: Environment.Environment
-    }
-  deriving (Eq, Show)
+import qualified Server
+import qualified Server.Config
 
 main :: IO ()
 main =
@@ -35,12 +26,14 @@ main =
       Logger.info loggerHandle ("Running Database Migration" :: T.Text)
       Database.runDatabase databaseHandle (runMigration migrateAll)
 
-      Logger.info loggerHandle ("Starting Server on port " <> show (Server.cPort serverConfig))
+      Logger.info loggerHandle
+        ("Starting Server on port " <> show (Server.Config.cPort serverConfig))
       Logger.info loggerHandle (show serverConfig)
 
-      Server.startServer' serverConfig loggerHandle databaseHandle
+      Server.run serverConfig loggerHandle databaseHandle
 
   where
+    -- TODO: read CL arguments
     env :: Environment.Environment
     env = Environment.Dev
 
@@ -50,8 +43,5 @@ main =
     databaseConfig :: Database.Config
     databaseConfig = Database.config env
 
-    serverConfig :: Server.Config
-    serverConfig = Server.config env
-
-    appConfig :: Config
-    appConfig = Config loggerConfig databaseConfig serverConfig env
+    serverConfig :: Server.Config.Config
+    serverConfig = Server.Config.config env
