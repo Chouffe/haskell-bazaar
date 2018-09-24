@@ -29,6 +29,8 @@ WORKDIR /home/user/app
 
 RUN \
   stack setup && \
-  stack build && \
   stack build hindent hlint && \
+
+RUN \
+  stack build && \
   stack build haskell-bazaar:haskell-bazaar-test

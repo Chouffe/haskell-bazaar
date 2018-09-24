@@ -2,6 +2,7 @@ version: '3'
 
 services:
   web:
+    container_name: haskell-bazaar-web
     build: .
     command: stack exec haskell-bazaar-exe
     ports:
@@ -10,8 +11,6 @@ services:
     - "8003:8003"
     depends_on:
       - sqlite3
-    volumes:
-      - .:/home/user/app
 
   sqlite3:
     image: nouchka/sqlite3
