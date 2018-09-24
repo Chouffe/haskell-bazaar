@@ -19,6 +19,8 @@ import qualified Model.Item          as ModelItem
 
 share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
 -- TODO: add date, or year, month, day
+-- TODO: add UUIDs for public API
+-- TODO: add unique constraint on item
 Item
     title       T.Text
     description T.Text Maybe
@@ -30,6 +32,7 @@ Item
 Author
     firstName T.Text
     lastName  T.Text
+    UniqueAuthor firstName lastName
     deriving Show
 
 ItemAuthor
@@ -39,6 +42,7 @@ ItemAuthor
 
 Tag
     name T.Text
+    UniqueTagName name
     deriving Show
 
 ItemTag
