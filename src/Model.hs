@@ -12,6 +12,7 @@ module Model where
 
 import qualified Data.Text           as T
 
+import           Data.Aeson
 import           Data.Time           (UTCTime)
 import           Database.Persist.TH
 
@@ -53,3 +54,12 @@ ItemTag
 
 instance Ord Item where
   compare (Item t1 _ _ _ _) (Item t2 _ _ _ _) = compare t1 t2
+
+instance ToJSON Author where
+  toJSON (Author firstName lastName) = object
+    [ "firstName" .= firstName
+    , "lastName" .= lastName
+    ]
+
+instance ToJSON Tag where
+  toJSON (Tag name) = object [ "name" .= name ]

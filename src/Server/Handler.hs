@@ -4,6 +4,7 @@
 
 module Server.Handler
   ( health
+  , keywords
   , search
   , root
   )
@@ -19,6 +20,8 @@ import qualified Data.Text                        as T
 import           Servant.API.ContentTypesExtended (RawHtml (..))
 
 import qualified Logger
+import qualified Database
+import           Server.API.Types
 import qualified Server.Config
 
 
@@ -44,3 +47,10 @@ root :: MonadIO m => m RawHtml
 root = do
   content <- liftIO $ BS.readFile "static/index.html"
   return $ RawHtml content
+
+keywords
+  :: (MonadReader Server.Config.Handle m, MonadIO m)
+  => m [PublicKeyword]
+keywords = do
+  databaseHandle <- asks Server.Config.hDB
+  liftIO $ Database.runDatabase databaseHandle Database.keywords

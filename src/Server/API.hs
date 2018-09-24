@@ -22,14 +22,16 @@ import           Servant.API
 import           Servant.Server
 
 import           Servant.API.ContentTypesExtended (HTML, RawHtml)
+import           Server.API.Types
 import qualified Server.Config
 import qualified Server.Handler
 import qualified Server.Monad
 
-
 type BazaarAPI
   = "health" :> Get '[JSON] T.Text
+  -- TODO: return PublicItem in /api/v0/search
   :<|> "api" :> "v0" :> "search" :> QueryParam "q" T.Text :> Get '[JSON] T.Text
+  :<|> "api" :> "v0" :> "keywords" :> Get '[JSON] [PublicKeyword]
 
 type BazaarStaticAPI
   = Get '[HTML] RawHtml
@@ -51,7 +53,10 @@ bazaarFullAPI = Proxy
 serverAPI
   :: (Server.Monad.App :~> Handler)
   -> ServerT BazaarAPI Handler
-serverAPI nt = enter nt $ Server.Handler.health :<|> Server.Handler.search
+serverAPI nt = enter nt
+  $ Server.Handler.health
+  :<|> Server.Handler.search
+  :<|> Server.Handler.keywords
 
 files :: ServerT BazaarStaticAPI Handler
 files = Server.Handler.root :<|> serveDirectoryWebApp "static"
@@ -61,7 +66,9 @@ serverFull
   -> ServerT BazaarFullAPI Handler
 serverFull nt = serverAPI nt :<|> files
 
-app :: Server.Config.Handle -> Application
+app
+  :: Server.Config.Handle
+  -> Application
 app handle = serve bazaarFullAPI
   $ serverFull
   $ Server.Monad.transformAppToHandler handle

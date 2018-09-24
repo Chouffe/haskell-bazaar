@@ -1,14 +1,13 @@
 # TODO
 
-* Github/Gitlab repo
+* CD/CI
 * Setup Build process
   * Docker
-* CD/CI
 * Implement simple frontend
   * Purescript
-* Simple CSS for responsive design
-* Enable Sqlite in read only mode for prod
-* Use S3 bucket for storing and backing up the db
+  * Simple CSS for responsive design
+* Use Postgres instead of sqlite
+  * UUIDs for items, author and tags
 * Write more Specs
 * Observability
   * EKG
