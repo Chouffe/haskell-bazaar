@@ -30,7 +30,7 @@ import qualified Server.Monad
 type BazaarAPI
   = "health" :> Get '[JSON] T.Text
   -- TODO: return PublicItem in /api/v0/search
-  :<|> "api" :> "v0" :> "search" :> QueryParam "q" T.Text :> Get '[JSON] T.Text
+  :<|> "api" :> "v0" :> "search" :> QueryParam "q" T.Text :> Get '[JSON] [PublicItem]
   :<|> "api" :> "v0" :> "keywords" :> Get '[JSON] [PublicKeyword]
 
 type BazaarStaticAPI

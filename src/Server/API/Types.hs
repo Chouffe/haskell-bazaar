@@ -1,14 +1,13 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module Server.API.Types
-  ( PublicItem(..)
-  , PublicKeyword(..)
+  ( PublicItem (..)
+  , PublicKeyword (..)
   )
   where
 
 import           Data.Aeson
 import qualified Data.Text      as T
--- import qualified Data.Char  as C
 
 import           Model
 
@@ -30,6 +29,10 @@ instance ToJSON PublicItem where
     , "tags"        .= toJSON tags
     ]
 
+-- TODO
+instance FromJSON PublicItem where
+  parseJSON = undefined
+
 data PublicKeyword
   = PublicTag Tag
   | PublicAuthor Author
@@ -41,10 +44,11 @@ instance ToJSON PublicKeyword where
     , "name" .= tagName tag
     ]
   toJSON (PublicAuthor author) = object
-    [ "kind" .= ("author" :: T.Text)
+    [ "kind"      .= ("author" :: T.Text)
     , "firstName" .= authorFirstName author
-    , "lastName" .= authorLastName author
+    , "lastName"  .= authorLastName author
     ]
 
+-- TODO
 instance FromJSON PublicKeyword where
   parseJSON = undefined

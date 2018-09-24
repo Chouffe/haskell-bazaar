@@ -1,5 +1,6 @@
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE RecordWildCards   #-}
+{-# LANGUAGE OverloadedStrings   #-}
+{-# LANGUAGE RecordWildCards     #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 module Database
   ( Config
@@ -16,6 +17,8 @@ module Database
   , fillDatabaseTestValues
   , allItemsWithTags
   , keywords
+  , searchByTagName
+  , searchByAuthor
   )
   where
 
@@ -25,14 +28,16 @@ import           Control.Monad           (forM)
 import           Control.Monad.IO.Class  (MonadIO, liftIO)
 import           Control.Monad.Logger    (LoggingT, runStdoutLoggingT)
 import qualified Data.Map                as M
+import           Data.Maybe              (fromMaybe)
 import           Data.Maybe              (maybe)
 import           Data.Pool               (Pool, destroyAllResources,
                                           withResource)
 import           Data.Semigroup          ((<>))
 import qualified Data.Text               as T
 import           Data.Time               (getCurrentTime)
-import           Database.Esqueleto      (InnerJoin (..), from, limit, on,
-                                          select, (==.), (^.))
+import           Database.Esqueleto      (InnerJoin (..), from, in_, limit, on,
+                                          select, val, valList, where_, (==.),
+                                          (^.), (||.), ilike)
 
 import           Database.Persist        (Entity (..), insert)
 import           Database.Persist.Sql    (SqlBackend, SqlPersistT, runSqlConn)
@@ -91,6 +96,91 @@ allItems = do
       limit 100
       return users
     return (entityVal <$> entities)
+
+searchByTagName
+  :: (MonadIO m)
+  => T.Text
+  -> (SqlPersistT m) [PublicItem]
+searchByTagName query = do
+  itemEntities <- itemsByTagName query
+  hydrateItems itemEntities
+
+searchByAuthor
+  :: (MonadIO m)
+  => T.Text
+  -> (SqlPersistT m) [PublicItem]
+searchByAuthor query = do
+  itemEntities <- itemsByAuthorName query
+  hydrateItems itemEntities
+
+itemsByAuthorName
+  :: (MonadIO m)
+  => T.Text    -- ^ Tag Name
+  -> (SqlPersistT m) [Entity Item]
+itemsByAuthorName query = do
+  items <- select . from $ \(items' `InnerJoin` itemAuthors' `InnerJoin` authors') -> do
+    on (itemAuthors' ^. ItemAuthorAuthorId ==. authors' ^. AuthorId)
+    on (items' ^. ItemId ==. itemAuthors' ^. ItemAuthorItemId)
+    where_
+      ( authors' ^. AuthorFirstName ==. val query
+        ||. authors' ^. AuthorLastName ==. val query
+      )
+      -- TODO: use ilike instead
+      -- And concatenate firstname and lastname to perform the search
+    limit 100
+    return items'
+  return items
+
+itemsByTagName
+  :: (MonadIO m)
+  => T.Text    -- ^ Tag Name
+  -> (SqlPersistT m) [Entity Item]
+itemsByTagName query = do
+  items <- select . from $ \(items' `InnerJoin` itemTags' `InnerJoin` tags') -> do
+    on (itemTags' ^. ItemTagTagId ==. tags' ^. TagId)
+    on (items' ^. ItemId ==. itemTags' ^. ItemTagItemId)
+    where_ (tags' ^. TagName ==. val query)
+    limit 100
+    return items'
+  return items
+
+hydrateItems
+  :: (MonadIO m)
+  => [Entity Item]
+  -> (SqlPersistT m) [PublicItem]
+hydrateItems itemEntities = do
+
+  tags :: [(Entity Item, Entity Tag)] <-
+    select . from $ \(items' `InnerJoin` itemTags' `InnerJoin` tags') -> do
+      on (itemTags' ^. ItemTagTagId ==. tags' ^. TagId)
+      on (items' ^. ItemId ==. itemTags' ^. ItemTagItemId)
+      where_ $ items' ^. ItemId `in_` valList itemIds
+      return (items', tags')
+
+  authors :: [(Entity Item, Entity Author)] <-
+    select . from $ \(items' `InnerJoin` itemAuthors' `InnerJoin` authors') -> do
+      on (itemAuthors' ^. ItemAuthorAuthorId ==. authors' ^. AuthorId)
+      on (items' ^. ItemId ==. itemAuthors' ^. ItemAuthorItemId)
+      where_ $ items' ^. ItemId `in_` valList itemIds
+      return (items', authors')
+
+  let itemTags    = toMap tags
+  let itemAuthors = toMap authors
+
+  return $ do
+    itemEntity <- itemEntities
+    return PublicItem
+      { piItem    = entityVal itemEntity
+      , piTags    = entityVal <$> fromMaybe [] (M.lookup itemEntity itemTags)
+      , piAuthors = entityVal <$> fromMaybe [] (M.lookup itemEntity itemAuthors)
+      }
+
+    where
+      itemIds :: [ItemId]
+      itemIds = entityKey <$> itemEntities
+
+      toMap :: [(Entity Item, a)] -> M.Map (Entity Item) [a]
+      toMap xs = M.fromListWith (++) (fmap (\(i, t) -> (i, [t])) xs)
 
 -- TODO: how to get items without tags? Using a LeftOuterJoin but I am getting type errors
 allItemsWithTags :: (MonadIO m) => (SqlPersistT m) (M.Map Item [Tag])

@@ -31,17 +31,21 @@ health = pure "OK"
 search
   :: (MonadReader Server.Config.Handle m, MonadIO m)
   => Maybe T.Text  -- ^ Optional Search query
-  -> m T.Text
+  -> m [PublicItem]
 search mQuery = do
-  loggerHandle <- asks Server.Config.hLogger
+  loggerHandle   <- asks Server.Config.hLogger
+  databaseHandle <- asks Server.Config.hDB
 
   case mQuery of
     Nothing    -> do
       liftIO $ Logger.info loggerHandle ("No search query provided" :: T.Text)
-      pure "No search was performed, return all recent ones"
+      pure []
+
     Just query -> do
       liftIO $ Logger.info loggerHandle $ "Search query provided " <> query
-      pure $ "Search Results: " <> query
+      itemsByTags <- liftIO $ Database.runDatabase databaseHandle (Database.searchByTagName query)
+      itemsByAuthors <- liftIO $ Database.runDatabase databaseHandle (Database.searchByAuthor query)
+      pure $ itemsByTags <> itemsByAuthors
 
 root :: MonadIO m => m RawHtml
 root = do

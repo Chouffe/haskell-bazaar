@@ -15,7 +15,7 @@ import           Server.API.Types
 
 
 health :: ClientM T.Text
-search :: Maybe T.Text -> ClientM T.Text
+search :: Maybe T.Text -> ClientM [PublicItem]
 keywords :: ClientM [PublicKeyword]
 ( health :<|>
   search :<|>
