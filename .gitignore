@@ -2,3 +2,4 @@
 haskell-bazaar.cabal
 *~
 *.sqlite*
+data/
