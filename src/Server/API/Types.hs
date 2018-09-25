@@ -24,6 +24,7 @@ instance ToJSON PublicItem where
     [ "title"       .= itemTitle item
     , "description" .= itemDescription item
     , "url"         .= itemUrl item
+    , "uuid"        .= itemUuid item
     , "type"        .= T.pack (show (itemItemType item))
     , "authors"     .= toJSON authors
     , "tags"        .= toJSON tags
@@ -47,6 +48,7 @@ instance ToJSON PublicKeyword where
     [ "kind"      .= ("author" :: T.Text)
     , "firstName" .= authorFirstName author
     , "lastName"  .= authorLastName author
+    , "uuid"      .= authorUuid author
     ]
 
 -- TODO

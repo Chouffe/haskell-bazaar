@@ -5,7 +5,6 @@
 module Database
   ( Config
   , config
-  , ConnectionString
 
   , Handle
   , withHandle
@@ -14,43 +13,38 @@ module Database
 
   -- DB queries
   , allItems
-  , fillDatabaseTestValues
   , allItemsWithTags
   , keywords
-  , searchByTagName
   , searchByAuthor
+  , searchByTagName
   )
   where
 
-import           Control.Arrow           ((***))
-import           Control.Exception       (bracket)
-import           Control.Monad           (forM)
-import           Control.Monad.IO.Class  (MonadIO, liftIO)
-import           Control.Monad.Logger    (LoggingT, runStdoutLoggingT)
-import qualified Data.Map                as M
-import           Data.Maybe              (maybe)
-import           Data.Pool               (Pool, destroyAllResources,
-                                          withResource)
-import           Data.Semigroup          ((<>))
-import qualified Data.Text               as T
-import           Data.Time               (getCurrentTime)
-import           Database.Esqueleto      (InnerJoin (..), from, in_, limit, on,
-                                          select, distinct, val, valList, where_, (==.),
-                                          (^.), like, (%), (++.))
+import           Control.Arrow               ((***))
+import           Control.Exception           (bracket)
+import           Control.Monad.IO.Class      (MonadIO)
+import           Control.Monad.Logger        (LoggingT, runStdoutLoggingT)
+import qualified Data.Map                    as M
+import           Data.Maybe                  (maybe)
+import           Data.Pool                   (Pool, destroyAllResources,
+                                              withResource)
+import           Data.Semigroup              ((<>))
+import qualified Data.Text                   as T
+import           Database.Esqueleto          (InnerJoin (..), distinct, from,
+                                              in_, ilike, limit, on, select, val,
+                                              valList, where_, (%), (++.),
+                                              (==.), (^.))
 
-import           Database.Persist        (Entity (..), insert)
-import           Database.Persist.Sql    (SqlBackend, SqlPersistT, runSqlConn)
-import           Database.Persist.Sqlite (createSqlitePool, withSqliteConn)
+import           Database.Persist            (Entity (..))
+import           Database.Persist.Postgresql (ConnectionString,
+                                              createPostgresqlPool)
+import           Database.Persist.Sql        (SqlBackend, SqlPersistT,
+                                              runSqlConn)
 
-import           Environment             (Environment (..))
+import           Environment                 (Environment (..))
 import           Model
-import qualified Model.Item              as ModelItem
 import           Server.API.Types
 
-
-type ConnectionString = T.Text
-
--- TODO: add logging type to handle or config
 data Config
   = Config
     { cConnectionString :: ConnectionString
@@ -61,33 +55,29 @@ data Config
 
 data Handle
   = Handle
-    { hMaybePool :: Maybe (Pool SqlBackend)
-    , hConfig    :: Config
+    { hPool   :: Pool SqlBackend
+    , hConfig :: Config
     }
 
 config :: Environment -> Config
-config Test = Config ":memory:" 0 Test
-config Dev  = Config "dev.sqlite3" 0 Dev
-config Prod = Config "prod.sqlite3" 5 Prod
+config Test = Config "host=localhost port=5432 user=haskellbazaar dbname=haskellbazaar password=password" 1 Test
+config Dev  = Config "host=localhost port=5432 user=haskellbazaar dbname=haskellbazaar password=password" 1 Dev
+-- TODO: get from ENV variable
+config Prod = Config "host=localhost port=5432 user=haskellbazaar dbname=haskellbazaar password=password" 10 Prod
 
 withHandle :: Config -> (Handle -> IO a) -> IO a
 withHandle cfg = bracket
   (mkHandle cfg)
-  (\Handle {..} -> maybe (return ()) destroyAllResources hMaybePool)
+  (\Handle {..} -> destroyAllResources hPool)
 
 mkHandle :: Config -> IO Handle
-mkHandle cfg@Config {..}
-  | cPoolConnections > 0 = do
-      pool <- runStdoutLoggingT $ createSqlitePool cConnectionString cPoolConnections
-      return $ Handle (Just pool) cfg
-  | otherwise = return $ Handle Nothing cfg
+mkHandle cfg@Config {..} = do
+  pool <- runStdoutLoggingT $ createPostgresqlPool cConnectionString cPoolConnections
+  return $ Handle pool cfg
 
 runDatabase :: Handle -> SqlPersistT (LoggingT IO) a -> IO a
 runDatabase Handle {..} query =
-  runStdoutLoggingT $
-    case hMaybePool of
-      Nothing   -> withSqliteConn (cConnectionString hConfig) (runSqlConn query)
-      Just pool -> withResource pool (runSqlConn query)
+  runStdoutLoggingT $ withResource hPool (runSqlConn query)
 
 allItems :: (MonadIO m) => (SqlPersistT m) [Item]
 allItems = do
@@ -127,7 +117,7 @@ itemsByAuthorName query =
       on (items' ^. ItemId ==. itemAuthors' ^. ItemAuthorItemId)
       where_
         ( authors' ^. AuthorFirstName ++. val " " ++. authors' ^. AuthorLastName
-        `like` (%) ++. val query ++. (%)
+        `ilike` (%) ++. val query ++. (%)
         )
       limit 100
       return items'
@@ -219,39 +209,3 @@ keywords = do
   tags    <- allTags
   authors <- allAuthors
   return $ (PublicTag <$> tags) <> (PublicAuthor <$> authors)
-
-fillDatabaseTestValues :: (MonadIO m) => SqlPersistT m ()
-fillDatabaseTestValues = do
-
-  -- Getting the current time
-  t <- liftIO getCurrentTime
-
-  -- Tags
-  tagKeys <- forM ["haskell", "monad", "categories", "functor"] (insert . Tag)
-
-  -- Authors
-  authorKeys <- forM [("Simon", "Marlow"), ("Rich", "Hickey")] $ \(firstName, lastName) ->
-    insert (Author firstName lastName)
-
-  -- Items
-  itemKeys <- forM
-    [ ("title1", "description1", "url1", ModelItem.Article)
-    , ("title2", "description2", "url2", ModelItem.Video)
-    , ("title3", "description3", "url3", ModelItem.Article)
-    ] $ \(title, description, url, itemType) ->
-      insert $ Item title (Just description) url itemType t
-
-  -- Relations: Tag <-> Item
-  _ <- insert $ ItemTag (itemKeys !! 0) (tagKeys !! 0)
-  _ <- insert $ ItemTag (itemKeys !! 0) (tagKeys !! 1)
-  _ <- insert $ ItemTag (itemKeys !! 0) (tagKeys !! 2)
-  _ <- insert $ ItemTag (itemKeys !! 1) (tagKeys !! 0)
-  _ <- insert $ ItemTag (itemKeys !! 2) (tagKeys !! 2)
-
-  -- Relations: Author <-> Item
-  _ <- insert $ ItemAuthor (itemKeys !! 0) (authorKeys !! 0)
-  _ <- insert $ ItemAuthor (itemKeys !! 0) (authorKeys !! 1)
-  _ <- insert $ ItemAuthor (itemKeys !! 1) (authorKeys !! 0)
-  _ <- insert $ ItemAuthor (itemKeys !! 2) (authorKeys !! 1)
-
-  return ()

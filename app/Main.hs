@@ -2,15 +2,15 @@
 
 module Main where
 
-import           Data.Semigroup          ((<>))
-import qualified Data.Text               as T
+import           Data.Semigroup       ((<>))
+import qualified Data.Text            as T
 
-import           Database.Persist.Sqlite (runMigration)
+import           Database.Persist.Sql (runMigration)
 
 import qualified Database
 import qualified Environment
 import qualified Logger
-import           Model                   (migrateAll)
+import           Model                (migrateAll)
 import qualified Server
 import qualified Server.Config
 

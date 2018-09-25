@@ -1,17 +1,26 @@
 version: '3'
 
 services:
-  web:
-    container_name: haskell-bazaar-web
-    build: .
-    command: stack exec haskell-bazaar-exe
-    ports:
-    - "8001:8001"
-    - "8002:8002"
-    - "8003:8003"
-    depends_on:
-      - sqlite3
+  # web:
+  #   container_name: haskell-bazaar-web
+  #   build: .
+  #   command: stack exec haskell-bazaar-exe
+  #   ports:
+  #   - "8001:8001"
+  #   - "8002:8002"
+  #   - "8003:8003"
+  #   depends_on:
+  #     - sqlite3
 
-  sqlite3:
-    image: nouchka/sqlite3
-    container_name: haskell-bazaar-sqlite3
+  postgres:
+    image: postgres:10.5
+    container_name: haskell-bazaar-postgres
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=haskellbazaar
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=haskellbazaar
+      - POSTGRES_PORT=5432

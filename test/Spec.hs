@@ -3,7 +3,7 @@
 import           Data.Semigroup          ((<>))
 import qualified Data.Text               as T
 
-import           Database.Persist.Sqlite (runMigration)
+import           Database.Persist.Sql    (runMigration)
 import           Network.HTTP.Client     (newManager)
 import           Network.HTTP.Client.TLS (tlsManagerSettings)
 import           Servant.Client          (ClientEnv (..), parseBaseUrl)
