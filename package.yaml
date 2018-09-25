@@ -32,7 +32,7 @@ dependencies:
 - mtl
 - monad-logger
 - persistent
-- persistent-sqlite
+- persistent-postgresql
 - persistent-template
 - resource-pool
 - servant
