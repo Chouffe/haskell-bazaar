@@ -42,6 +42,8 @@ dependencies:
 - time
 - transformers
 - uuid
+- wai
+- wai-extra
 - warp
 - wreq
 

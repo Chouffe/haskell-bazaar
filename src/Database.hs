@@ -28,7 +28,6 @@ import           Control.Monad           (forM)
 import           Control.Monad.IO.Class  (MonadIO, liftIO)
 import           Control.Monad.Logger    (LoggingT, runStdoutLoggingT)
 import qualified Data.Map                as M
-import           Data.Maybe              (fromMaybe)
 import           Data.Maybe              (maybe)
 import           Data.Pool               (Pool, destroyAllResources,
                                           withResource)
@@ -36,8 +35,8 @@ import           Data.Semigroup          ((<>))
 import qualified Data.Text               as T
 import           Data.Time               (getCurrentTime)
 import           Database.Esqueleto      (InnerJoin (..), from, in_, limit, on,
-                                          select, val, valList, where_, (==.),
-                                          (^.), (||.), ilike)
+                                          select, distinct, val, valList, where_, (==.),
+                                          (^.), like, (%), (++.))
 
 import           Database.Persist        (Entity (..), insert)
 import           Database.Persist.Sql    (SqlBackend, SqlPersistT, runSqlConn)
@@ -103,7 +102,9 @@ searchByTagName
   -> (SqlPersistT m) [PublicItem]
 searchByTagName query = do
   itemEntities <- itemsByTagName query
-  hydrateItems itemEntities
+  if null itemEntities
+  then pure []
+  else hydrateItems itemEntities
 
 searchByAuthor
   :: (MonadIO m)
@@ -111,38 +112,38 @@ searchByAuthor
   -> (SqlPersistT m) [PublicItem]
 searchByAuthor query = do
   itemEntities <- itemsByAuthorName query
-  hydrateItems itemEntities
+  if null itemEntities
+  then pure []
+  else hydrateItems itemEntities
 
 itemsByAuthorName
   :: (MonadIO m)
   => T.Text    -- ^ Tag Name
   -> (SqlPersistT m) [Entity Item]
-itemsByAuthorName query = do
-  items <- select . from $ \(items' `InnerJoin` itemAuthors' `InnerJoin` authors') -> do
-    on (itemAuthors' ^. ItemAuthorAuthorId ==. authors' ^. AuthorId)
-    on (items' ^. ItemId ==. itemAuthors' ^. ItemAuthorItemId)
-    where_
-      ( authors' ^. AuthorFirstName ==. val query
-        ||. authors' ^. AuthorLastName ==. val query
-      )
-      -- TODO: use ilike instead
-      -- And concatenate firstname and lastname to perform the search
-    limit 100
-    return items'
-  return items
+itemsByAuthorName query =
+  select $ distinct $
+    from $ \(items' `InnerJoin` itemAuthors' `InnerJoin` authors') -> do
+      on (itemAuthors' ^. ItemAuthorAuthorId ==. authors' ^. AuthorId)
+      on (items' ^. ItemId ==. itemAuthors' ^. ItemAuthorItemId)
+      where_
+        ( authors' ^. AuthorFirstName ++. val " " ++. authors' ^. AuthorLastName
+        `like` (%) ++. val query ++. (%)
+        )
+      limit 100
+      return items'
 
 itemsByTagName
   :: (MonadIO m)
   => T.Text    -- ^ Tag Name
   -> (SqlPersistT m) [Entity Item]
-itemsByTagName query = do
-  items <- select . from $ \(items' `InnerJoin` itemTags' `InnerJoin` tags') -> do
-    on (itemTags' ^. ItemTagTagId ==. tags' ^. TagId)
-    on (items' ^. ItemId ==. itemTags' ^. ItemTagItemId)
-    where_ (tags' ^. TagName ==. val query)
-    limit 100
-    return items'
-  return items
+itemsByTagName query =
+  select $ distinct $
+    from $ \(items' `InnerJoin` itemTags' `InnerJoin` tags') -> do
+      on (itemTags' ^. ItemTagTagId ==. tags' ^. TagId)
+      on (items' ^. ItemId ==. itemTags' ^. ItemTagItemId)
+      where_ (tags' ^. TagName ==. val query)
+      limit 100
+      return items'
 
 hydrateItems
   :: (MonadIO m)
@@ -150,47 +151,53 @@ hydrateItems
   -> (SqlPersistT m) [PublicItem]
 hydrateItems itemEntities = do
 
-  tags :: [(Entity Item, Entity Tag)] <-
-    select . from $ \(items' `InnerJoin` itemTags' `InnerJoin` tags') -> do
-      on (itemTags' ^. ItemTagTagId ==. tags' ^. TagId)
-      on (items' ^. ItemId ==. itemTags' ^. ItemTagItemId)
-      where_ $ items' ^. ItemId `in_` valList itemIds
-      return (items', tags')
+  authorsAndTags :: [(Entity Item, Entity Author, Entity Tag)] <-
+    select $ distinct $
+      from $ \ ( items'
+               `InnerJoin` itemAuthors'
+               `InnerJoin` authors'
+               `InnerJoin` itemTags'
+               `InnerJoin` tags') -> do
+        on (itemTags' ^. ItemTagTagId ==. tags' ^. TagId)
+        on (items' ^. ItemId ==. itemTags' ^. ItemTagItemId)
+        on (itemAuthors' ^. ItemAuthorAuthorId ==. authors' ^. AuthorId)
+        on (items' ^. ItemId ==. itemAuthors' ^. ItemAuthorItemId)
+        where_ $ items' ^. ItemId `in_` valList itemIds
+        return (items', authors', tags')
 
-  authors :: [(Entity Item, Entity Author)] <-
-    select . from $ \(items' `InnerJoin` itemAuthors' `InnerJoin` authors') -> do
-      on (itemAuthors' ^. ItemAuthorAuthorId ==. authors' ^. AuthorId)
-      on (items' ^. ItemId ==. itemAuthors' ^. ItemAuthorItemId)
-      where_ $ items' ^. ItemId `in_` valList itemIds
-      return (items', authors')
-
-  let itemTags    = toMap tags
-  let itemAuthors = toMap authors
+  let itemTagsAuthors = toMap authorsAndTags
 
   return $ do
     itemEntity <- itemEntities
+    let mAuthorAndTag = M.lookup itemEntity itemTagsAuthors
     return PublicItem
       { piItem    = entityVal itemEntity
-      , piTags    = entityVal <$> fromMaybe [] (M.lookup itemEntity itemTags)
-      , piAuthors = entityVal <$> fromMaybe [] (M.lookup itemEntity itemAuthors)
+      , piTags    = entityVal <$> maybe [] snd mAuthorAndTag
+      , piAuthors = entityVal <$> maybe [] fst mAuthorAndTag
       }
 
     where
       itemIds :: [ItemId]
       itemIds = entityKey <$> itemEntities
 
-      toMap :: [(Entity Item, a)] -> M.Map (Entity Item) [a]
-      toMap xs = M.fromListWith (++) (fmap (\(i, t) -> (i, [t])) xs)
+      toMap :: [(Entity Item, a, b)] -> M.Map (Entity Item) ([a], [b])
+      toMap xs =
+        M.fromListWith
+          (\(as, ts) (as', ts') -> (as <> as', ts <> ts'))
+          ((\(i, a, t) -> (i, ([a], [t]))) <$> xs)
 
 -- TODO: how to get items without tags? Using a LeftOuterJoin but I am getting type errors
-allItemsWithTags :: (MonadIO m) => (SqlPersistT m) (M.Map Item [Tag])
+allItemsWithTags
+  :: (MonadIO m)
+  => (SqlPersistT m) (M.Map Item [Tag])
 allItemsWithTags = do
 
-    tuples <- select . from $ \(items `InnerJoin` itemTags `InnerJoin` tags) -> do
-      on (itemTags ^. ItemTagTagId ==. tags ^. TagId)
-      on (items ^. ItemId ==. itemTags ^. ItemTagItemId)
-      limit 100
-      return (items, tags)
+    tuples <- select $ distinct $
+      from $ \(items `InnerJoin` itemTags `InnerJoin` tags) -> do
+        on (itemTags ^. ItemTagTagId ==. tags ^. TagId)
+        on (items ^. ItemId ==. itemTags ^. ItemTagItemId)
+        limit 100
+        return (items, tags)
     return $ toMap $ (entityVal *** entityVal) <$> tuples
 
     where

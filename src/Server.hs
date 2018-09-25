@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings   #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
 module Server
@@ -6,16 +7,32 @@ module Server
   )
   where
 
-import           Control.Concurrent       (ThreadId, forkIO, killThread,
-                                           threadDelay)
-import           Control.Exception        (bracket)
+import           Control.Concurrent                   (ThreadId, forkIO,
+                                                       killThread, threadDelay)
+import           Control.Exception                    (bracket)
+import           Data.Function                        ((&))
+import           Data.Semigroup                       ((<>))
+import qualified Data.Text                            as T
 
-import qualified Network.Wai.Handler.Warp as Warp
+import           Network.Wai                          (Application)
+import qualified Network.Wai.Handler.Warp             as Warp
+import           Network.Wai.Middleware.RequestLogger (logStdout, logStdoutDev)
 
 import qualified Database
 import qualified Logger
-import           Server.API               (app)
+import           Server.API                           (app)
 import qualified Server.Config
+import qualified Environment
+
+middleware
+  :: Environment.Environment
+  -> Application
+  -> Application
+middleware env =
+  case env of
+    Environment.Test -> id
+    Environment.Dev  -> logStdoutDev
+    Environment.Prod -> logStdout
 
 run
   :: Server.Config.Config
@@ -23,10 +40,24 @@ run
   -> Database.Handle
   -> IO ()
 run cfg loggerHandle databaseHandle =
-  Warp.run (Server.Config.cPort cfg) (app handle)
+  app handle &
+  middleware (Server.Config.cEnvironment cfg) &
+  Warp.runSettings appSettings
+
   where
+    appSettings :: Warp.Settings
+    appSettings =
+      Warp.defaultSettings &
+      Warp.setPort (Server.Config.cPort cfg) &
+      Warp.setLogger (\r st mfs -> Logger.info loggerHandle $ display r st mfs)
+
     handle :: Server.Config.Handle
     handle = Server.Config.new cfg loggerHandle databaseHandle
+
+    display r st mfs =
+      "[Status: " <> T.pack (show st) <> "] " <>
+      "[FileSize: " <> T.pack (show mfs) <> "] " <>
+      T.pack (show r)
 
 withServer
   :: Server.Config.Config
