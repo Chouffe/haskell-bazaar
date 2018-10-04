@@ -43,6 +43,7 @@ dependencies:
 - transformers
 - uuid
 - wai
+- wai-cors
 - wai-extra
 - warp
 - wreq

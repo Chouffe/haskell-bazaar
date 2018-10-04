@@ -16,13 +16,14 @@ import qualified Data.Text                            as T
 
 import           Network.Wai                          (Application)
 import qualified Network.Wai.Handler.Warp             as Warp
+import           Network.Wai.Middleware.Cors          (simpleCors)
 import           Network.Wai.Middleware.RequestLogger (logStdout, logStdoutDev)
 
 import qualified Database
+import qualified Environment
 import qualified Logger
 import           Server.API                           (app)
 import qualified Server.Config
-import qualified Environment
 
 middleware
   :: Environment.Environment
@@ -30,8 +31,8 @@ middleware
   -> Application
 middleware env =
   case env of
-    Environment.Test -> id
-    Environment.Dev  -> logStdoutDev
+    Environment.Test -> simpleCors
+    Environment.Dev  -> simpleCors . logStdoutDev
     Environment.Prod -> logStdout
 
 run

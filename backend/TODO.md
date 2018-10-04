@@ -1,6 +1,5 @@
 # TODO
 
-* Try to setup Amazon RDBS?
 * CD/CI
 * Setup Build process
   * Docker
