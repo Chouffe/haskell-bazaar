@@ -45,12 +45,14 @@
                ;; production. You can build this with:
                ;; lein cljsbuild once min
 
-               {:id "min-dev"
-                :source-paths ["src"]
-                :compiler {:output-to "resources/public/js/compiled/haskell_bazaar_frontend.js"
-                           :main haskell-bazaar-frontend.core
-                           :optimizations :advanced
-                           :pretty-print false}}
+               ; {:id "min-dev"
+               ;  :source-paths ["src"]
+               ;  :compiler {:output-to "resources/public/js/compiled/haskell_bazaar_frontend.js"
+               ;             :main haskell-bazaar-frontend.core
+               ;             :output-dir "resources/public/js/compiled/out"
+               ;             :source-map-timestamp true
+               ;             :optimizations :advanced
+               ;             :pretty-print false}}
 
                {:id "prod"
                 :source-paths ["src"]

@@ -1,7 +1,155 @@
 /* some style */
 
-.search-box {
-  border: 1px solid black;
-  color: green;
+* {
+  margin: 0;
+  padding: 0;
 }
 
+/* Find a good font-family */
+html {
+  font-family: "DDG_ProximaNova","DDG_ProximaNova_UI_0","DDG_ProximaNova_UI_1","DDG_ProximaNova_UI_2","DDG_ProximaNova_UI_3","DDG_ProximaNova_UI_4","DDG_ProximaNova_UI_5","DDG_ProximaNova_UI_6","Proxima Nova","Helvetica Neue","Helvetica","Segoe UI","Nimbus Sans L","Liberation Sans","Open Sans",FreeSans,Arial,sans-serif;
+}
+
+.topnav {
+  width: 100%;
+  background-color: #F7F7F7;
+  border-bottom: 1px solid #C8C8C8;
+  padding-top: 2.5em;
+}
+
+.search-box {
+  width: 100%;
+  max-width: 590px;
+  position:relative;
+  margin: auto;
+}
+
+.search-box-input {
+  width: 100%;
+  padding-left: .75em;
+  font-size: 1.1em;
+  border: 1px solid #C8C8C8;
+  border-radius: 3px;
+  box-shadow: 0px 2px #E8E8E8;
+  color: #333;
+  display: block;
+  position:relative;
+  height: 44px;
+}
+
+.search-box-button {
+  background-color:rgba(255, 255, 255, 0);
+  height: 44px;
+  display: block;
+  top: 1px;
+  bottom: 0;
+  right: -0.75em;
+  left: auto;
+  position: absolute;
+  font-size: 1em;
+  border: none;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  cursor:pointer;
+  color: #C8C8C8;
+}
+
+.search-box-button:hover {
+  color:#1AA824;
+}
+
+.search-filters {
+  color: #666;
+  display: block;
+  text-transform: capitalize;
+  display: inline-block;
+  float: none;
+  overflow: hidden;
+  white-space: nowrap;
+  list-style: none;
+}
+
+.search-filters li {
+  list-style: none;
+  overflow: hidden;
+  vertical-align: top;
+  display: inline-block;
+  margin: 0 0.8em;
+  font-size: 1.15em;
+  height: 33px;
+  cursor:pointer;
+}
+
+.search-filters .active {
+  color: #de5833;
+  border-bottom: solid 1px #de5833;
+  font-weight: 600;
+}
+
+.bar {
+  width: 100%;
+  text-align:center;
+  margin-top:1.5em;
+  height: 33px;
+}
+
+.results {
+  padding: 2em;
+}
+
+.results ul {
+  list-style: none;
+  overflow: hidden;
+}
+
+.results ul li {
+  cursor:pointer;
+  display: block;
+  width: 100%;
+  max-width: 590px;
+  border: 1px solid #C8C8C8;
+  margin: auto;
+  padding:0.5em;
+  color: #333;
+  margin-bottom:2em;
+}
+
+.results ul li:hover {
+  background-color: #F8F8F8;
+}
+
+.item {
+  border:none;
+}
+
+ul.item li {
+  border:none;
+  margin-bottom:0;
+}
+
+.item-section {
+  text-transform: capitalize;
+  font-weight: 600;
+}
+
+.item .title {
+  font-size: 1.25em;
+  font-weight: 600;
+}
+
+.loader-wrapper {
+  position:relative;
+  background-color: #F8F8F8;
+  min-height: 100%;
+  height: 100vh;
+  width: 100%;
+}
+
+.loader-text {
+  margin: auto;
+  width: 50%;
+  text-align:center;
+  line-height: 100vh;
+  color: #333;
+  font-size: 3em;
+}

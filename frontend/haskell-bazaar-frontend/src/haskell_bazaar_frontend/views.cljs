@@ -7,17 +7,19 @@
 
 (defn search-box-button [on-click]
   (let [search-loading (re-frame/subscribe [:search-loading])]
-    [:button {:type "button"
-              :on-click on-click
-              :disabled @search-loading}
+    [:button.search-box-button
+     {:type "button"
+      :on-click on-click
+      :disabled @search-loading}
      (if @search-loading "Loading" "Search")]))
 
 (defn search-box
   [{:keys [on-click-factory on-change on-key-down]}]
   (let [search-query (re-frame/subscribe [:search-query])]
-    [:div
-     [:input.search-box
+    [:div.search-box
+     [:input.search-box-input
       {:type "text"
+       :autocomplete "off"
        :on-change on-change
        :on-key-down on-key-down}]
      [search-box-button (on-click-factory @search-query)]]))
@@ -46,7 +48,7 @@
     }})
 
 (defn item-tag [{:keys [name]}]
-  [:strong name])
+  [:span name])
 
 (defn item-tags [tags]
   (->> tags
@@ -54,28 +56,37 @@
        (sort <)
        (mapv (fn [tag] [item-tag tag]))
        (interpose ", ")
-       (into [:span "tags: "])))
+       (into [:span [:span.item-section "tags: "]])))
 
 (defn item-author [{:keys [firstName lastName uuid]}]
   [:span (str firstName " " lastName)])
 
 (defn item-authors [authors]
+  (let [title (if (> (count (distinct authors)) 1) "authors" "author")]
   (->> authors
        distinct
        (sort <)
        (mapv (fn [author] [item-author author]))
        (interpose ", ")
-       (into [:span])))
+       (into [:span [:span.item-section (str title ": ")]]))))
 
 ;; TODO: use icons instead?
 (defn item-type [t]
-  (case t
-    "Video" "video"
-    ""))
+  [:span
+   [:span.item-section "Type: "]
+   (case t
+     "Video" "video"
+     "")])
 
 (defn search-result-item
   [{:keys [uuid url authors title type description tags]}]
-  [:span
+  [:ul.item
+   [:li.title title]
+   [:li.description description]
+   [:li.authors [item-authors authors]]
+   [:li.tags [item-tags tags]]
+   [:li.type [item-type type]]]
+  #_[:span
    title
    [:br]
    [item-authors authors]
@@ -89,15 +100,15 @@
 (defn search-results-list
   []
   (let [items (re-frame/subscribe [:items])]
-    [:ul
-     (->> (vals @items)
-          (mapv (fn [item] [:li ^{:key (:uuid item)}
-                            [search-result-item item]]))
-          (into [:ul]))]))
+    (->> @items
+         vals
+         (mapv (fn [item] [:li ^{:key (:uuid item)}
+                           [search-result-item item]]))
+         (into [:ul]))))
 
 (defn search-filters []
-  [:ul
-   [:li "All"]
+  [:ul.search-filters
+   [:li.active "All"]
    [:li "Videos"]
    [:li "Papers"]
    [:li "Blog Post"]
@@ -105,6 +116,9 @@
 
 (defn ui [dispatchers]
   [:div
-   [search-box (:search-box dispatchers)]
-   [search-filters]
-   [search-results-list]])
+   [:div.topnav
+    [search-box (:search-box dispatchers)]
+    [:div.bar
+     [search-filters]]]
+   [:div.results
+    [search-results-list]]])
