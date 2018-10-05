@@ -16,9 +16,10 @@
   [{:keys [on-click-factory on-change on-key-down]}]
   (let [search-query (re-frame/subscribe [:search-query])]
     [:div
-     [:input {:type "text"
-              :on-change on-change
-              :on-key-down on-key-down}]
+     [:input.search-box
+      {:type "text"
+       :on-change on-change
+       :on-key-down on-key-down}]
      [search-box-button (on-click-factory @search-query)]]))
 
 ;; Move to utils
