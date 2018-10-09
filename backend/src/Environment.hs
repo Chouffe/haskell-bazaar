@@ -6,4 +6,4 @@ data Environment
   = Prod
   | Dev
   | Test
-  deriving (Eq, Show)
+  deriving (Eq, Show, Read)

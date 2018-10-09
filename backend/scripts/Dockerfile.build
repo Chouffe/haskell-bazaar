@@ -1,0 +1,5 @@
+FROM fpco/stack-build:lts-9.21 as build
+RUN mkdir -p /opt/build
+COPY . /opt/build
+WORKDIR /opt/build
+RUN stack build --system-ghc

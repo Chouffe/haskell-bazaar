@@ -1,9 +1,13 @@
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings   #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 module Main where
 
+import           Data.Maybe           (fromMaybe)
 import           Data.Semigroup       ((<>))
 import qualified Data.Text            as T
+import           System.Environment   (lookupEnv)
+
 
 import           Database.Persist.Sql (runMigration)
 
@@ -15,9 +19,23 @@ import qualified Server
 import qualified Server.Config
 
 main :: IO ()
-main =
-  Logger.withHandle loggerConfig $ \loggerHandle -> do
+main = do
+  maybeEnvString <- lookupEnv "ENVIRONMENT"
+  let env :: Environment.Environment
+      env = read $ fromMaybe "Dev" maybeEnvString
 
+  let loggerConfig :: Logger.Config
+      loggerConfig = Logger.config env
+
+  let databaseConfig :: Database.Config
+      databaseConfig = Database.config env
+
+  let serverConfig :: Server.Config.Config
+      serverConfig = Server.Config.config env
+
+  -- print env
+
+  Logger.withHandle loggerConfig $ \loggerHandle -> do
     Logger.info loggerHandle ("Starting Database" :: T.Text)
     Logger.info loggerHandle (show databaseConfig)
 
@@ -31,17 +49,3 @@ main =
       Logger.info loggerHandle (show serverConfig)
 
       Server.run serverConfig loggerHandle databaseHandle
-
-  where
-    -- TODO: read CL arguments
-    env :: Environment.Environment
-    env = Environment.Dev
-
-    loggerConfig :: Logger.Config
-    loggerConfig = Logger.config env
-
-    databaseConfig :: Database.Config
-    databaseConfig = Database.config env
-
-    serverConfig :: Server.Config.Config
-    serverConfig = Server.Config.config env

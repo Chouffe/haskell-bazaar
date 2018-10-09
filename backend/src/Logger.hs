@@ -41,7 +41,7 @@ data Config
     deriving (Show, Eq)
 
 config :: Environment -> Config
-config Prod = Config { cVerbosity = Just Error, cPath = Nothing }
+config Prod = Config { cVerbosity = Just Info, cPath = Nothing }
 config Dev = Config { cVerbosity = Just Debug, cPath = Nothing }
 config Test = Config { cVerbosity = Just Error, cPath = Nothing }
 

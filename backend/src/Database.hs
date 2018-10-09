@@ -63,7 +63,7 @@ config :: Environment -> Config
 config Test = Config "host=localhost port=5432 user=haskellbazaar dbname=haskellbazaar password=password" 1 Test
 config Dev  = Config "host=localhost port=5432 user=haskellbazaar dbname=haskellbazaar password=password" 1 Dev
 -- TODO: get from ENV variable
-config Prod = Config "host=localhost port=5432 user=haskellbazaar dbname=haskellbazaar password=password" 10 Prod
+config Prod = Config "host=postgres port=5432 user=haskellbazaar dbname=haskellbazaar password=password" 10 Prod
 
 withHandle :: Config -> (Handle -> IO a) -> IO a
 withHandle cfg = bracket
