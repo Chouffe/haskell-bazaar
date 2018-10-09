@@ -4,9 +4,10 @@
             [re-frame.core :as re-frame]
 
             [haskell-bazaar-frontend.events]  ;; Register events
+            [haskell-bazaar-frontend.fx :as fx]
             [haskell-bazaar-frontend.subs]    ;; Register subscriptions
             [haskell-bazaar-frontend.views :as views]
-            ))
+            [haskell-bazaar-frontend.routes :as routes]))
 
 ;; Should only be activated in dev mode
 
@@ -14,6 +15,14 @@
   (do
     (when goog.DEBUG
       (enable-console-print!)) ;; println is now console.log
+
+    ;; Setting up routes
+    (routes/set-config!)
+
+    ;; Setting up browser history
+    (let [history (routes/make-history!)]
+      ;; Registering the navigate effect
+      (fx/init! history))
 
     ;; Setting initial db
     (re-frame/dispatch-sync [:initialize-db])

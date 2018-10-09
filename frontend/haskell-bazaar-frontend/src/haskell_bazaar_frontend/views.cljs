@@ -1,9 +1,9 @@
 (ns haskell-bazaar-frontend.views
-  (:require [re-frame.core :as re-frame]))
-
-;; TODO: move to utils or js interop
-(defn target-value [e]
-  (-> e .-target .-value))
+  (:require
+    [re-frame.core :as re-frame]
+    [clojure.string :as string]
+    [haskell-bazaar-frontend.utils :as utils]
+    [haskell-bazaar-frontend.routes :as routes]))
 
 (defn search-box-button [on-click]
   (let [search-loading (re-frame/subscribe [:search-loading])]
@@ -19,7 +19,8 @@
     [:div.search-box
      [:input.search-box-input
       {:type "text"
-       :autocomplete "off"
+       :autoComplete "off"
+       :value @search-query
        :on-change on-change
        :on-key-down on-key-down}]
      [search-box-button (on-click-factory @search-query)]]))
@@ -30,20 +31,27 @@
    :esc   27})
 
 ;; TODO: have different dispatchers for test environment for instance
-;; Super easy to mock
+;; Very easy to mock
 (def dispatchers
-  {:search-box
+  {:filters
+   {:on-click-factory
+    (fn [showing-kw]
+      (fn [e]
+        (re-frame/dispatch [:set-showing showing-kw])))}
+
+   :search-box
    {:on-change
-    (fn [e] (re-frame/dispatch [:set-search-query (target-value e)]))
+    (fn [e]
+      (re-frame/dispatch [:set-search-query (utils/target-value e)]))
 
     :on-key-down
     (fn [e]
       (when (= (:enter keystrokes) (.-which e))
-        (re-frame/dispatch [:api-search (target-value e)])))
+        (re-frame/dispatch [:navigate-search (utils/target-value e)])))
 
     :on-click-factory
     (fn [search-query]
-      (fn [e] (re-frame/dispatch [:api-search search-query])))
+      (fn [e] (re-frame/dispatch [:navigate-search search-query])))
 
     }})
 
@@ -85,40 +93,48 @@
    [:li.description description]
    [:li.authors [item-authors authors]]
    [:li.tags [item-tags tags]]
-   [:li.type [item-type type]]]
-  #_[:span
-   title
-   [:br]
-   [item-authors authors]
-   [:br]
-   [:span description]
-   [:br]
-   [item-tags tags]
-   [:br]
-   [item-type type]])
+   [:li.type [item-type type]]])
+
+(defn- filter-items [showing-kw]
+  (if (= showing-kw :all)
+    identity
+    (partial filter
+             (fn [{:keys [type]}] (= (string/lower-case type)
+                                     (name showing-kw))))))
 
 (defn search-results-list
   []
-  (let [items (re-frame/subscribe [:items])]
+  (let [items (re-frame/subscribe [:items])
+        showing (re-frame/subscribe [:showing])]
     (->> @items
          vals
+         ((filter-items @showing))
          (mapv (fn [item] [:li ^{:key (:uuid item)}
                            [search-result-item item]]))
          (into [:ul]))))
 
-(defn search-filters []
-  [:ul.search-filters
-   [:li.active "All"]
-   [:li "Videos"]
-   [:li "Papers"]
-   [:li "Blog Post"]
-   [:li "Tutorials"]])
+(defn search-filters-item
+  [on-click title showing-kw showing]
+  (if (= showing-kw showing)
+    [:li.active title]
+    [:li {:on-click on-click} title]))
+
+(defn search-filters [{:keys [on-click-factory]}]
+  (let [showing (re-frame/subscribe [:showing])]
+    (->> routes/filters
+         (mapv (fn [[title showing-kw]]
+                 [search-filters-item
+                  (on-click-factory showing-kw)
+                  title
+                  showing-kw
+                  @showing]))
+         (into [:ul.search-filters]))))
 
 (defn ui [dispatchers]
   [:div
    [:div.topnav
     [search-box (:search-box dispatchers)]
     [:div.bar
-     [search-filters]]]
+     [search-filters (:filters dispatchers)]]]
    [:div.results
     [search-results-list]]])

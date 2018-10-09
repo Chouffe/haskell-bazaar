@@ -1,11 +1,12 @@
 (ns haskell-bazaar-frontend.events
   (:require
-    [re-frame.core :as re-frame]
-    [day8.re-frame.http-fx]   ;; Register the http-xhrio effect handler
     [ajax.core :as ajax]
+    [day8.re-frame.http-fx]   ;; Register the http-xhrio effect handler
+    [re-frame.core :as re-frame]
 
     [haskell-bazaar-frontend.api :as api]
     [haskell-bazaar-frontend.db :as db]
+    [haskell-bazaar-frontend.routes :as routes]
     [haskell-bazaar-frontend.utils :as utils]))
 
 (def interceptors
@@ -21,8 +22,7 @@
   :api-keywords
   interceptors
   (fn [{:keys [db]} _]
-    {:db db
-     :http-xhrio
+    {:http-xhrio
      {:method :get
       :uri (api/keywords (api/base-url (:environment db)))
       :response-format api/response-format
@@ -74,3 +74,25 @@
   interceptors
   (fn [db [_ new-search-query]]
     (assoc db :search-query new-search-query)))
+
+(re-frame/reg-event-fx
+  :navigate-search
+  interceptors
+  (fn [{:keys [db]} [_ search-query]]
+    ;; TODO: url encode the search query?
+    {:navigate (str "/search"
+                    "?q=" search-query
+                    "&tab=" (name (:showing db)))}))
+
+(re-frame/reg-event-fx
+  :navigate
+  interceptors
+  (fn [_ [_ url]]
+    {:navigate url}))
+
+(re-frame/reg-event-fx
+  :set-showing
+  interceptors
+  (fn [{:keys [db]} [_ showing-kw]]
+    {:db (assoc db :showing showing-kw)
+     :dispatch [:navigate-search (:search-query db)]}))

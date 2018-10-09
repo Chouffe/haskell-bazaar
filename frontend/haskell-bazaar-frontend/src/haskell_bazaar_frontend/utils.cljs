@@ -9,3 +9,7 @@
 (defn url-encode
   [string]
   (some-> string str (js/encodeURIComponent) (.replace "+" "%20")))
+
+(defn target-value [e]
+  (-> e .-target .-value))
+
