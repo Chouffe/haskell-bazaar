@@ -12,7 +12,8 @@
                  [cljs-ajax "0.7.4"]
                  [re-frame "0.10.6"]
                  [day8.re-frame/http-fx "0.1.6"]
-                 [reagent "0.8.1"]]
+                 [reagent "0.8.1"]
+                 [secretary "1.2.3"]]
 
   :plugins [[lein-figwheel "0.5.16"]
             [lein-cljsbuild "1.1.7" :exclusions [[org.clojure/clojure]]]]

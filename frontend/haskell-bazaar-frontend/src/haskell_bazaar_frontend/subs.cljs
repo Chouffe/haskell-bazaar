@@ -15,3 +15,8 @@
   :items
   (fn [db _]
     (:items db)))
+
+(re-frame/reg-sub
+  :showing
+  (fn [db _]
+    (:showing db)))
