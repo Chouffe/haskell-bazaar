@@ -14,9 +14,9 @@ import           Data.Function                        ((&))
 import           Data.Semigroup                       ((<>))
 import qualified Data.Text                            as T
 
-import           Network.Wai                          (Application)
+import           Network.Wai                          (Application, Middleware)
 import qualified Network.Wai.Handler.Warp             as Warp
-import           Network.Wai.Middleware.Cors          (simpleCors)
+import           Network.Wai.Middleware.Cors          (CorsResourcePolicy(..), simpleCors, cors, simpleMethods)
 import           Network.Wai.Middleware.RequestLogger (logStdout, logStdoutDev)
 
 import qualified Database
@@ -33,7 +33,22 @@ middleware env =
   case env of
     Environment.Test -> simpleCors
     Environment.Dev  -> simpleCors . logStdoutDev
-    Environment.Prod -> logStdout
+    Environment.Prod -> apiCors . logStdout
+
+apiResourcePolicy :: CorsResourcePolicy
+apiResourcePolicy = CorsResourcePolicy
+  { corsOrigins = Just (["https://s3.amazonaws.com/haskell-bazaar/", "http://s3.amazonaws.com/haskell-bazaar/"], True)
+  , corsMethods = simpleMethods
+  , corsRequestHeaders = []
+  , corsExposedHeaders = Nothing
+  , corsMaxAge = Nothing
+  , corsVaryOrigin = False
+  , corsRequireOrigin = False
+  , corsIgnoreFailures = False
+  }
+
+apiCors :: Middleware
+apiCors  = cors $ const (Just apiResourcePolicy)
 
 run
   :: Server.Config.Config
