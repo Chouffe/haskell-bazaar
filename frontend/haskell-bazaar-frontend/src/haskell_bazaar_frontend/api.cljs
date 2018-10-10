@@ -17,7 +17,9 @@
     :test 8002))
 
 (defn base-url [environment]
-  (str (host environment) ":" (port environment) "/api/v0/" ))
+  (case environment
+    :prod (str "/api/v0/")
+    (str (host environment) ":" (port environment) "/api/v0/" )))
 
 (defn search [url search-query]
   (str url "search?q=" search-query))

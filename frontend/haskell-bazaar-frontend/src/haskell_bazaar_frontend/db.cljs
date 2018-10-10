@@ -1,15 +1,79 @@
 (ns haskell-bazaar-frontend.db
-  (:require [re-frame.core :as re-frame]
-            [cljs.spec.alpha :as s]
+  (:require
+    [cljs.spec.alpha :as s]
 
-            [haskell-bazaar-frontend.utils :as utils]
-            [haskell-bazaar-frontend.environment :as env]
+    [re-frame.core :as re-frame]
 
-            ;; TODO: remove stubs: only for debug mode
-            [haskell-bazaar-frontend.stubs :as stubs]
-            ))
+    [haskell-bazaar-frontend.utils :as utils]
+    [haskell-bazaar-frontend.environment :as env]
+    [haskell-bazaar-frontend.stubs :as stubs]))
 
-;; TODO: spec it out!
+;; TODO: move to a util namespace
+(def showing->title
+  {:all "all"
+   :videos "videos"
+   :papers "papers"
+   :blog-posts "blog posts"
+   :tutorials "tutorials"})
+
+;; Clojure.Spec
+;; ------------
+
+;; Environment
+(s/def ::environment #{:prod :dev :test})
+
+;; Search
+(s/def ::search-query (s/nilable string?))
+(s/def ::search-error (s/nilable string?))
+(s/def ::search-loading boolean?)
+(s/def ::showing (set (keys showing->title)))
+(s/def ::sorted #{:date})
+
+;; Keyword
+(s/def ::name string?)
+(s/def ::kind #{"tag", "author"})
+(s/def ::keyword (s/or
+                   :author (s/keys :req-un [::kind ::firstName ::lastName])
+                   :tag (s/keys :req-un [::kind ::name])))
+(s/def ::keywords (s/coll-of ::keyword))
+
+;; Tags
+(s/def ::tag (s/keys :req-un [::name]))
+(s/def ::tags (s/coll-of ::tag))
+
+;; Author
+(s/def ::lastName string?)
+(s/def ::firstName string?)
+(s/def ::author (s/keys :req-un [::lastName ::uuid ::firstName]))
+(s/def ::authors (s/coll-of ::author))
+
+;; Item
+(s/def ::uuid string?)
+(s/def ::url string?)
+(s/def ::title string?)
+(s/def ::description string?)
+(s/def ::type #{"Video"})
+(s/def ::item
+  (s/keys :req-un [::uuid
+                   ::url
+                   ::authors
+                   ::title
+                   ::type
+                   ::description
+                   ::tags]))
+(s/def ::items (s/map-of ::uuid ::item))
+
+;; App-state
+(s/def ::app-state
+  (s/keys :req-un [::environment
+                   ::search-query
+                   ::search-error
+                   ::search-loading
+                   ::showing
+                   ::sorted
+                   ::keywords
+                   ::items]))
+
 ;; TODO: add caching layer for search already performed in an interceptor
 (def default-db
   {:environment    (env/environment) ;; dev/prod/test environment
@@ -23,13 +87,6 @@
    :items          {}
    })
 
-(def showing->title
-  {:all "all"
-   :videos "videos"
-   :papers "papers"
-   :blog-posts "blog posts"
-   :tutorials "tutorials"
-   })
 
 (def title->showing
   (zipmap (vals showing->title) (keys showing->title)))

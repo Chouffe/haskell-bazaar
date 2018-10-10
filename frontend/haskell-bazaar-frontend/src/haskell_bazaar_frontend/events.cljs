@@ -1,5 +1,7 @@
 (ns haskell-bazaar-frontend.events
   (:require
+    [cljs.spec.alpha :as s]
+
     [ajax.core :as ajax]
     [day8.re-frame.http-fx]   ;; Register the http-xhrio effect handler
     [re-frame.core :as re-frame]
@@ -9,8 +11,20 @@
     [haskell-bazaar-frontend.routes :as routes]
     [haskell-bazaar-frontend.utils :as utils]))
 
+;; Interceptors
+
+(defn check-and-throw
+  "Throws an exception if `db` doesn't match the Spec `a-spec`."
+  [a-spec db]
+  (when-not (s/valid? a-spec db)
+    (throw (ex-info (str "spec check failed: " (s/explain-str a-spec db)) {}))))
+
+;; now we create an interceptor using `after`
+(def check-spec-interceptor (re-frame/after (partial check-and-throw :haskell-bazaar-frontend.db/app-state)))
+
 (def interceptors
-  [(when goog.DEBUG re-frame/debug)])
+  [(when goog.DEBUG check-spec-interceptor)
+   (when goog.DEBUG re-frame/debug)])
 
 (re-frame/reg-event-db
   :initialize-db
