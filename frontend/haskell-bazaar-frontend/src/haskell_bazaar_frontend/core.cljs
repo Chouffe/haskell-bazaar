@@ -4,6 +4,7 @@
             [re-frame.core :as re-frame]
 
             [haskell-bazaar-frontend.events]  ;; Register events
+            [haskell-bazaar-frontend.environment :as environment]
             [haskell-bazaar-frontend.fx :as fx]
             [haskell-bazaar-frontend.subs]    ;; Register subscriptions
             [haskell-bazaar-frontend.views :as views]
@@ -12,20 +13,22 @@
 ;; Should only be activated in dev mode
 
 (defonce app-setup!
-  (do
-    (when goog.DEBUG
+  (let [env (environment/environment)]
+    (when (= env :dev)
       (enable-console-print!)) ;; println is now console.log
 
     ;; Setting up routes
     (routes/set-config!)
 
-    ;; Setting up browser history
-    (let [history (routes/make-history!)]
-      ;; Registering the navigate effect
-      (fx/init! history))
+    ;; Setting up Stateful cofx and fx
+    (let [history (routes/make-history!)
+          ;; TODO: use a proper cache datastructure
+          cache (atom {})]
+      ;; Registering the navigate effect and the cache effect
+      (fx/init! history cache))
 
     ;; Setting initial db
-    (re-frame/dispatch-sync [:initialize-db])
+    (re-frame/dispatch-sync [:initialize-db env])
 
     ;; Loading keywords for auto completion
     (re-frame/dispatch [:api-keywords])))

@@ -20,7 +20,9 @@
     (throw (ex-info (str "spec check failed: " (s/explain-str a-spec db)) {}))))
 
 ;; now we create an interceptor using `after`
-(def check-spec-interceptor (re-frame/after (partial check-and-throw :haskell-bazaar-frontend.db/app-state)))
+(def check-spec-interceptor
+  (re-frame/after
+    (partial check-and-throw :haskell-bazaar-frontend.db/app-state)))
 
 (def interceptors
   [(when goog.DEBUG check-spec-interceptor)
@@ -29,8 +31,8 @@
 (re-frame/reg-event-db
   :initialize-db
   interceptors
-  (fn [db _]
-    db/default-db))
+  (fn [db [_ env]]
+    (db/default-db env)))
 
 (re-frame/reg-event-fx
   :api-keywords

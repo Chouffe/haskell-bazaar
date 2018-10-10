@@ -75,8 +75,8 @@
                    ::items]))
 
 ;; TODO: add caching layer for search already performed in an interceptor
-(def default-db
-  {:environment    (env/environment) ;; dev/prod/test environment
+(defn default-db [env]
+  {:environment    env
    :search-query   nil
    :search-error   nil
    :search-loading false
@@ -85,8 +85,8 @@
    :keywords       []
    ; :items          (utils/uuid-coll->hashmap stubs/search-result)
    :items          {}
-   })
-
+   }
+  )
 
 (def title->showing
   (zipmap (vals showing->title) (keys showing->title)))
