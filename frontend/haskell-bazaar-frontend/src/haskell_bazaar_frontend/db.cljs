@@ -45,7 +45,7 @@
 (s/def ::lastName string?)
 (s/def ::firstName string?)
 (s/def ::author (s/keys :req-un [::lastName ::uuid ::firstName]))
-(s/def ::authors (s/coll-of ::author))
+(s/def ::authors (s/coll-of ::author :kind vector?)) ;; TODO: add :distinct true here
 
 ;; Item
 (s/def ::uuid string?)

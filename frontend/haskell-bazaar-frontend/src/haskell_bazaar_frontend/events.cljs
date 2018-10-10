@@ -43,25 +43,28 @@
       :on-success [:api-keywords-success]
       :on-failure [:api-keywords-failure]}}))
 
+;; TODO: define higher order functions for handling the caching
 (re-frame/reg-event-fx
   :api-search
-  interceptors
-  (fn [{:keys [db]} [_ search-query]]
-    {:db (assoc db :search-loading true)
-     :http-xhrio
-     {:method :get
-      :uri (api/search (api/base-url (:environment db)) search-query)
-      :response-format api/response-format
-      :on-success [:api-search-success]
-      :on-failure [:api-search-failure]}}))
+  [(re-frame/inject-cofx :cache) interceptors]
+  (fn [{:keys [db cache]} [_ search-query]]
+    (when-not (get cache search-query)
+      {:db (assoc db :search-loading true)
+       :http-xhrio
+       {:method :get
+        :uri (api/search (api/base-url (:environment db)) search-query)
+        :response-format api/response-format
+        :on-success [:api-search-success search-query]
+        :on-failure [:api-search-failure]}})))
 
-(re-frame/reg-event-db
+(re-frame/reg-event-fx
   :api-search-success
   interceptors
-  (fn [db [_ results]]
-    (-> db
-        (assoc :search-loading false)
-        (update :items #(merge % (utils/uuid-coll->hashmap results))))))
+  (fn [{:keys [db]} [_ search-query results]]
+    {:cache {:k search-query :v results}
+     :db (-> db
+             (assoc :search-loading false)
+             (update :items #(merge % (utils/uuid-coll->hashmap results))))}))
 
 (re-frame/reg-event-db
   :api-keywords-success
@@ -73,7 +76,9 @@
   :api-keywords-failure
   interceptors
   (fn [db [_ results]]
-    (.log js/console "ERROR Loading keywords!!")))
+    ;; TODO: handle more gracefully
+    (.log js/console "ERROR Loading keywords!!")
+    db))
 
 (re-frame/reg-event-db
   :api-search-failure
