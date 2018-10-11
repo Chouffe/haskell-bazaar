@@ -24,8 +24,8 @@ WORKDIR /opt/app
 COPY --from=builder /opt/build/.stack-work/install/x86_64-linux/lts-9.21/8.0.2/bin/ .
 
 # Copying static files and config files
-# COPY static /opt/myapp/static
-# COPY config /opt/myapp/config
+COPY static /opt/myapp/static
+COPY config /opt/myapp/config
 
 # Running the command by default
 CMD ["/opt/app/haskell-bazaar-exe"]
