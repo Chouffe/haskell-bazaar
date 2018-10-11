@@ -14,7 +14,7 @@ services:
   loadbalancer:
     image: nginx:stable-alpine
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./config/nginx.conf:/etc/nginx/nginx.conf
     links:
       - web
     ports:
