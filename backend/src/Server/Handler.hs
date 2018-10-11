@@ -26,7 +26,7 @@ import qualified Server.Config
 
 
 health :: Monad m => m T.Text
-health = pure "OK"
+health = pure "OK!"
 
 search
   :: (MonadReader Server.Config.Handle m, MonadIO m)

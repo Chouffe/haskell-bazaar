@@ -22,7 +22,7 @@ spec clientEnv = do
   describe "/health" $
     it "is healthy" $ do
       result <- runClientM Server.Client.health clientEnv
-      result `shouldBe` Right "OK"
+      result `shouldBe` Right "OK!"
 
   describe "/" $
     it "serves static/index.html" $ do
