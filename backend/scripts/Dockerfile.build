@@ -1,5 +1,7 @@
-FROM fpco/stack-build:lts-9.21 as build
+# Use same lts version as stack.yaml
+FROM fpco/stack-build:lts-9.21
 RUN mkdir -p /opt/build
 COPY . /opt/build
 WORKDIR /opt/build
 RUN stack build --system-ghc
+CMD ["stack", "repl"]
