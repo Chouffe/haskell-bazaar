@@ -1,6 +1,7 @@
-#/bin/bash
+#!/bin/bash
 
 # Config
+# TODO: take BRANCH and GIT_SHA as a parameter of a function and do a git checkout
 BRANCH=`git rev-parse --abbrev-ref HEAD`
 GIT_SHA=`git rev-parse HEAD`
 BUILD_DIR=build/

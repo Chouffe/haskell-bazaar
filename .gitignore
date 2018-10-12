@@ -3,3 +3,4 @@ haskell-bazaar.cabal
 *~
 *.sqlite*
 data/
+set-env.sh
