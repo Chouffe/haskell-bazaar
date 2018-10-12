@@ -49,13 +49,11 @@
 
 ;; Item
 (s/def ::uuid string?)
-(s/def ::url string?)
 (s/def ::title string?)
 (s/def ::description string?)
 (s/def ::type #{"Video"})
 (s/def ::item
   (s/keys :req-un [::uuid
-                   ::url
                    ::authors
                    ::title
                    ::type
@@ -85,8 +83,7 @@
    :keywords       []
    ; :items          (utils/uuid-coll->hashmap stubs/search-result)
    :items          {}
-   }
-  )
+   })
 
 (def title->showing
   (zipmap (vals showing->title) (keys showing->title)))

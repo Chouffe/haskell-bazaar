@@ -28,7 +28,46 @@
     :tags [{:name "monad"}
 	   {:name "type class"}]}
 
+   {:uuid "2dab10af-04cb-4112-bc3d-ea877d737e7c"
+    :url "https://www.youtube.com/watch?v=6COvD8oynmI"
+    :authors [{:lastName "Peyton Jones"
+	       :uuid "f4ecaa79-5740-432e-82b4-519ba3e750e2"
+	       :firstName "Simon"}]
+    :title "Adventure with Types in Haskell"
+    :type "Video"
+    :description "Recorded at Oregon Programming Languages Summer School 2013"
+    :tags [{:name "type inference"}]}
+
+   {:uuid "3dab10af-04cb-4112-bc3d-ea877d737e7c"
+    :url "https://www.youtube.com/watch?v=6COvD8oynmI"
+    :authors [{:lastName "Peyton Jones"
+	       :uuid "f4ecaa79-5740-432e-82b4-519ba3e750e2"
+	       :firstName "Simon"}]
+    :title "Adventure with Types in Haskell"
+    :type "Video"
+    :description "Recorded at Oregon Programming Languages Summer School 2013"
+    :tags [{:name "type inference"}]}
+
+   {:uuid "4dab10af-04cb-4112-bc3d-ea877d737e7c"
+    :url "https://www.youtube.com/watch?v=6COvD8oynmI"
+    :authors [{:lastName "Peyton Jones"
+	       :uuid "f4ecaa79-5740-432e-82b4-519ba3e750e2"
+	       :firstName "Simon"}]
+    :title "Adventure with Types in Haskell"
+    :type "Video"
+    :description "Recorded at Oregon Programming Languages Summer School 2013"
+    :tags [{:name "type inference"}]}
    {:uuid "fdab10af-04cb-4112-bc3d-ea877d737e7c"
+    :url "https://www.youtube.com/watch?v=6COvD8oynmI"
+    :authors [{:lastName "Peyton Jones"
+	       :uuid "f4ecaa79-5740-432e-82b4-519ba3e750e2"
+	       :firstName "Simon"}]
+    :title "Adventure with Types in Haskell"
+    :type "Video"
+    :description "Recorded at Oregon Programming Languages Summer School 2013"
+    :tags [{:name "type inference"}]}
+
+   {:uuid "5dab10af-04cb-4112-bc3d-ea877d737e7c"
     :url "https://www.youtube.com/watch?v=6COvD8oynmI"
     :authors [{:lastName "Peyton Jones"
 	       :uuid "f4ecaa79-5740-432e-82b4-519ba3e750e2"

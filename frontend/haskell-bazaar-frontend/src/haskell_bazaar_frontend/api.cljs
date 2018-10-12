@@ -27,5 +27,8 @@
 (defn keywords [url]
   (str url "keywords"))
 
+(defn item-url [url uuid]
+  (str url "item-url/" uuid))
+
 (def response-format
   (ajax/json-response-format {:keywords? true}))

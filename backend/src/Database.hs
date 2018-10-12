@@ -14,6 +14,7 @@ module Database
   -- DB queries
   , allItems
   , allItemsWithTags
+  , itemUrlByUUID
   , keywords
   , searchByAuthor
   , searchByTagName
@@ -25,14 +26,15 @@ import           Control.Exception           (bracket)
 import           Control.Monad.IO.Class      (MonadIO)
 import           Control.Monad.Logger        (LoggingT, runStdoutLoggingT)
 import qualified Data.Map                    as M
-import           Data.Maybe                  (maybe)
+import           Data.Maybe                  (maybe, listToMaybe)
 import           Data.Pool                   (Pool, destroyAllResources,
                                               withResource)
 import           Data.Semigroup              ((<>))
 import qualified Data.Text                   as T
+import           Data.UUID                   (UUID)
 import           Database.Esqueleto          (InnerJoin (..), distinct, from,
-                                              in_, ilike, limit, on, select, val,
-                                              valList, where_, (%), (++.),
+                                              ilike, in_, limit, on, select,
+                                              val, unValue, valList, where_, (%), (++.),
                                               (==.), (^.))
 
 import           Database.Persist            (Entity (..))
@@ -194,17 +196,34 @@ allItemsWithTags = do
       toMap :: [(Item, Tag)] -> M.Map Item [Tag]
       toMap xs = M.fromListWith (++) (fmap (\(i, t) -> (i, [t])) xs)
 
-allTags :: MonadIO m => (SqlPersistT m) [Tag]
+allTags
+  :: MonadIO m
+  => (SqlPersistT m) [Tag]
 allTags = do
   results <- select . from $ return
   return (entityVal <$> results)
 
-allAuthors :: MonadIO m => (SqlPersistT m) [Author]
+allAuthors
+  :: MonadIO m
+  => (SqlPersistT m) [Author]
 allAuthors = do
   results <- select . from $ return
   return (entityVal <$> results)
 
-keywords :: MonadIO m => (SqlPersistT m) [PublicKeyword]
+itemUrlByUUID
+  :: MonadIO m
+  => UUID
+  -> (SqlPersistT m) (Maybe T.Text)
+itemUrlByUUID uuid = do
+  results <-
+    select . from $ \item -> do
+      where_ $ item ^. ItemUuid ==. val uuid
+      return $ item ^. ItemUrl
+  return $ listToMaybe $ unValue <$> results
+
+keywords
+  :: MonadIO m
+  => (SqlPersistT m) [PublicKeyword]
 keywords = do
   tags    <- allTags
   authors <- allAuthors

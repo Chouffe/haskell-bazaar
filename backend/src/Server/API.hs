@@ -16,6 +16,7 @@ module Server.API
 
 import           Data.Proxy                       (Proxy (..))
 import qualified Data.Text                        as T
+import           Data.UUID                        (UUID)
 
 import           Servant                          (serveDirectoryWebApp)
 import           Servant.API
@@ -32,6 +33,8 @@ type BazaarAPI
   -- TODO: return PublicItem in /api/v0/search
   :<|> "api" :> "v0" :> "search" :> QueryParam "q" T.Text :> Get '[JSON] [PublicItem]
   :<|> "api" :> "v0" :> "keywords" :> Get '[JSON] [PublicKeyword]
+  -- TODO: add a capture here to get the UUID of the Item
+  :<|> "api" :> "v0" :> "item-url" :> Capture "uuid" UUID :> Get '[JSON] T.Text
 
 type BazaarStaticAPI
   = Get '[HTML] RawHtml
@@ -57,6 +60,7 @@ serverAPI nt = enter nt
   $ Server.Handler.health
   :<|> Server.Handler.search
   :<|> Server.Handler.keywords
+  :<|> Server.Handler.itemUrl
 
 files :: ServerT BazaarStaticAPI Handler
 files = Server.Handler.root :<|> serveDirectoryWebApp "static"

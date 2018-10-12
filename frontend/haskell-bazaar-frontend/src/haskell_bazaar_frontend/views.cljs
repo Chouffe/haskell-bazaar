@@ -2,8 +2,10 @@
   (:require
     [re-frame.core :as re-frame]
     [clojure.string :as string]
-    [haskell-bazaar-frontend.utils :as utils]
-    [haskell-bazaar-frontend.routes :as routes]))
+
+    [haskell-bazaar-frontend.api :as api]
+    [haskell-bazaar-frontend.routes :as routes]
+    [haskell-bazaar-frontend.utils :as utils]))
 
 (defn search-box-button [on-click]
   (let [search-loading (re-frame/subscribe [:search-loading])]
@@ -11,7 +13,9 @@
      {:type "button"
       :on-click on-click
       :disabled @search-loading}
-     (if @search-loading "Loading" "Search")]))
+     (if @search-loading
+       [:i.fa.fa-spinner]
+       [:i.fa.fa-search])]))
 
 (defn search-box
   [{:keys [on-click-factory on-change on-key-down]}]
@@ -23,6 +27,7 @@
        :value @search-query
        :on-change on-change
        :on-key-down on-key-down}]
+
      [search-box-button (on-click-factory @search-query)]]))
 
 ;; Move to utils
@@ -87,10 +92,19 @@
      "")])
 
 (defn search-result-item
-  [{:keys [uuid url authors title type description tags]}]
+  [base-url {:keys [uuid authors title type description tags]}]
   [:ul.item
-   [:li.title title]
+  [:li.actions
+   [:ul.actions-list
+    [:li.action-link
+     [:a {:target "_blank"
+          :href (api/item-url base-url uuid)}
+      [:i.fa.fa-link]]]
+    ;; TODO: save button to local storage
+    #_[:li.action-save
+     [:i.fa.fa-heart-o.fa]]]] [:li.title title]
    [:li.description description]
+
    [:li.authors [item-authors authors]]
    [:li.tags [item-tags tags]]
    [:li.type [item-type type]]])
@@ -103,15 +117,16 @@
                                      (name showing-kw))))))
 
 (defn search-results-list
-  []
+  [base-url]
   (let [items (re-frame/subscribe [:items])
         showing (re-frame/subscribe [:showing])]
     (->> @items
          vals
          ((filter-items @showing))
-         (mapv (fn [item] [:li ^{:key (:uuid item)}
-                           [search-result-item item]]))
-         (into [:ul]))))
+         (mapv (fn [item] [:li.search-container-item
+                           ^{:key (:uuid item)}
+                           [search-result-item base-url item]]))
+         (into [:ul.search-container]))))
 
 (defn search-filters-item
   [on-click title showing-kw showing]
@@ -130,11 +145,11 @@
                   @showing]))
          (into [:ul.search-filters]))))
 
-(defn ui [dispatchers]
+(defn ui [dispatchers base-url]
   [:div
    [:div.topnav
     [search-box (:search-box dispatchers)]
     [:div.bar
      [search-filters (:filters dispatchers)]]]
    [:div.results
-    [search-results-list]]])
+    [search-results-list base-url]]])

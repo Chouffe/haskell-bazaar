@@ -23,7 +23,6 @@ instance ToJSON PublicItem where
   toJSON (PublicItem item authors tags) = object
     [ "title"       .= itemTitle item
     , "description" .= itemDescription item
-    , "url"         .= itemUrl item
     , "uuid"        .= itemUuid item
     , "type"        .= T.pack (show (itemItemType item))
     , "authors"     .= toJSON authors

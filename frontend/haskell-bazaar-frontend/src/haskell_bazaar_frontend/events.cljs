@@ -1,6 +1,7 @@
 (ns haskell-bazaar-frontend.events
   (:require
     [cljs.spec.alpha :as s]
+    [clojure.string :as string]
 
     [ajax.core :as ajax]
     [day8.re-frame.http-fx]   ;; Register the http-xhrio effect handler
@@ -50,7 +51,7 @@
   :api-search
   [(re-frame/inject-cofx :cache) interceptors]
   (fn [{:keys [db cache]} [_ search-query]]
-    (when-not (get cache search-query)
+    (when-not (and (string/blank? search-query) (get cache search-query))
       {:db (assoc db :search-loading true)
        :http-xhrio
        {:method :get

@@ -4,23 +4,29 @@
 
 module Server.Handler
   ( health
+  , itemUrl
   , keywords
   , search
   , root
   )
   where
 
+import           Control.Monad.Error.Class        (MonadError, throwError)
 import           Control.Monad.IO.Class           (MonadIO, liftIO)
 import           Control.Monad.Reader             (asks)
 import           Control.Monad.Reader.Class       (MonadReader)
 import qualified Data.ByteString.Lazy             as BS
 import           Data.Semigroup                   ((<>))
 import qualified Data.Text                        as T
+import qualified Data.Text.Encoding               as T
+import           Data.UUID                        (UUID)
 
 import           Servant.API.ContentTypesExtended (RawHtml (..))
+import           Servant.Server                   (ServantErr, err301, err404,
+                                                   errHeaders)
 
-import qualified Logger
 import qualified Database
+import qualified Logger
 import           Server.API.Types
 import qualified Server.Config
 
@@ -28,8 +34,37 @@ import qualified Server.Config
 health :: Monad m => m T.Text
 health = pure "OK!"
 
+itemUrl
+  :: ( MonadReader Server.Config.Handle m
+     , MonadError ServantErr m
+     , MonadIO m
+     )
+  => UUID
+  -> m T.Text
+itemUrl uuid = do
+  databaseHandle <- asks Server.Config.hDB
+  loggerHandle   <- asks Server.Config.hLogger
+
+  mUrl <- liftIO
+    $ Database.runDatabase databaseHandle
+    $ Database.itemUrlByUUID uuid
+
+  liftIO
+    $ Logger.info loggerHandle
+    $ "url returned " <> show mUrl
+
+  case mUrl of
+    Nothing  ->
+      throwError err404
+
+    Just url ->
+      throwError $ err301 {
+        errHeaders = [("Location", T.encodeUtf8 url)] }
+
 search
-  :: (MonadReader Server.Config.Handle m, MonadIO m)
+  :: ( MonadReader Server.Config.Handle m
+     , MonadIO m
+     )
   => Maybe T.Text  -- ^ Optional Search query
   -> m [PublicItem]
 search mQuery = do
@@ -53,7 +88,9 @@ root = do
   return $ RawHtml content
 
 keywords
-  :: (MonadReader Server.Config.Handle m, MonadIO m)
+  :: ( MonadReader Server.Config.Handle m
+     , MonadIO m
+     )
   => m [PublicKeyword]
 keywords = do
   databaseHandle <- asks Server.Config.hDB

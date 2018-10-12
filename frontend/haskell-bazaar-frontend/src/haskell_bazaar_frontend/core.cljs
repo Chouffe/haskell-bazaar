@@ -3,6 +3,7 @@
             [reagent.core :as reagent]
             [re-frame.core :as re-frame]
 
+            [haskell-bazaar-frontend.api :as api]
             [haskell-bazaar-frontend.events]  ;; Register events
             [haskell-bazaar-frontend.environment :as environment]
             [haskell-bazaar-frontend.fx :as fx]
@@ -40,8 +41,9 @@
 (defn ^:export run
   []
   ;; Mounting React component
-  (reagent/render [views/ui views/dispatchers]
-                  (js/document.getElementById "app")))
+  (let [environment (environment/environment)]
+    (reagent/render [views/ui views/dispatchers (api/base-url environment)]
+                    (js/document.getElementById "app"))))
 
 ;; ---------------
 ;; Figwheel reload

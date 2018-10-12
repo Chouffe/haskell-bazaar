@@ -39,19 +39,19 @@ html {
 
 .search-box-button {
   background-color:rgba(255, 255, 255, 0);
-  height: 44px;
-  display: block;
-  top: 1px;
-  bottom: 0;
-  right: -0.75em;
-  left: auto;
-  position: absolute;
-  font-size: 1em;
   border: none;
+  bottom: 0;
+  color: #C8C8C8;
+  cursor:pointer;
+  display: block;
+  font-size: 1em;
+  height: 44px;
+  left: auto;
   padding-left: 0.5em;
   padding-right: 0.5em;
-  cursor:pointer;
-  color: #C8C8C8;
+  position: absolute;
+  right: -0.75em;
+  top: 1px;
 }
 
 .search-box-button:hover {
@@ -103,23 +103,34 @@ html {
 }
 
 .results ul li {
-  cursor:pointer;
   display: block;
-  width: 100%;
-  max-width: 590px;
+  /* width: 100%; */
+  /* max-width: 590px; */
   border: 1px solid #C8C8C8;
-  margin: auto;
+  /* margin: auto; */
   padding:0.5em;
   color: #333;
   margin-bottom:2em;
 }
 
-.results ul li:hover {
-  background-color: #F8F8F8;
-}
-
 .item {
   border:none;
+}
+
+ul.search-container {
+  align-items:stretch;
+  display:flex;
+  flex-wrap: wrap;
+  justify-content:space-around;
+}
+
+ul.search-container li.search-container-item {
+  align-self: center;
+  background-color: #FEFEFE;
+  max-width: 350px;
+  min-width: 300px;
+  padding-left: 1em;
+  padding-right: 1em;
 }
 
 ul.item li {
@@ -128,8 +139,8 @@ ul.item li {
 }
 
 .item-section {
-  text-transform: capitalize;
   font-weight: 600;
+  text-transform: capitalize;
 }
 
 .item .title {
@@ -152,4 +163,37 @@ ul.item li {
   line-height: 100vh;
   color: #333;
   font-size: 3em;
+}
+
+ul.item li.actions {
+  display:inline;
+  padding:0;
+}
+
+ul.actions-list {
+  padding: .5em;
+  text-align: right;
+  float: right;
+}
+
+ul.actions-list li {
+  display:inline;
+  padding:.25em;
+}
+
+li.action-link a {
+  color: #333;
+}
+
+li.action-link a:hover {
+  color: #1AA824;
+}
+
+li.action-save {
+  color: #333;
+}
+
+li.action-save:hover {
+  color: #1AA824;
+  cursor:pointer;
 }
