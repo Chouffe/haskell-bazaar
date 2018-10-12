@@ -40,4 +40,15 @@ docker-prod-run:
 		-f production.yml \
 		up
 
-.PHONY: build run test clean lint ghcid-devel docker-build-dev docker-build docker-prod-run
+docker-build-save:
+	scripts/build.sh
+
+docker-deploy:
+	ssh \
+		-i ${SSH_PEM_FILE} \
+		${SSH_USER}@${SSH_HOST} \
+		GITLAB_ACCESS_TOKEN=${GITLAB_ACCESS_TOKEN} \
+		DEPLOY_GIT_SHA="$(shell git rev-parse HEAD)" \
+		'bash -s' < scripts/deploy.sh
+
+.PHONY: build run test clean lint ghcid-devel docker-build-dev docker-build docker-prod-run docker-build-save docker-deploy source-env
