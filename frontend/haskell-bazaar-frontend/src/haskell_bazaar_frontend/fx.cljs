@@ -41,8 +41,9 @@
     :local-store
     (fn [[local-store-key value]]
       (->> {:value value
-            :expiration-date (utils/add-seconds local-storage-ttl)}
-           (local-storage/set-item! local-store-key))))
+	    :expiration-date (utils/add-seconds local-storage-ttl)}
+	   pr-str
+	   (local-storage/set-item! local-store-key))))
 
   (re-frame/reg-fx
     :navigate

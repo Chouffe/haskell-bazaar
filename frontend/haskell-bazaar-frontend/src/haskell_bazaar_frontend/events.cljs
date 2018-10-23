@@ -45,7 +45,7 @@
     (cond
       ;; Always fetch api-items in dev mode
       (= env :dev)      {:dispatch [:api-items]}
-      (seq local-store) {:datascript/transact (cljs.reader/read-string local-store)}
+      (seq local-store) {:datascript/transact local-store}
       :else             {:dispatch [:api-items]})))
 
 (re-frame/reg-event-fx

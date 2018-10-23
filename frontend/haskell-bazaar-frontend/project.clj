@@ -59,11 +59,18 @@
 
                {:id "prod"
                 :source-paths ["src"]
-                :compiler {:output-to "resources/public/js/compiled/haskell_bazaar_frontend.js"
-                           :main haskell-bazaar-frontend.core
-                           :optimizations :advanced
-                           :closure-defines {goog.DEBUG false}
-                           :pretty-print false}}]}
+		:compiler {:output-to "resources/public/js/compiled/haskell_bazaar_frontend.js"
+			   ;; For debugging externs
+			   :externs ["externs/externs.js"]
+			   ; :pseudo-names true
+			   ; :pretty-print true  ;; default: `false`
+                           :pretty-print false
+			   ; :output-dir "resources/public/js/compiled"
+			   ; :source-map "resources/public/js/compiled/haskell_bazaar_frontend.js.map"
+
+			   :main haskell-bazaar-frontend.core
+			   :optimizations :advanced
+			   :closure-defines {goog.DEBUG false}}}]}
 
   :figwheel {;; :http-server-root "public" ;; default and assumes "resources"
              ;; :server-port 3449 ;; default
