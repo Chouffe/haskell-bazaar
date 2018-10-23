@@ -1,4 +1,5 @@
-(ns haskell-bazaar-frontend.utils)
+(ns haskell-bazaar-frontend.utils
+  (:require [clojure.walk :as w]))
 
 (defn coll->hashmap [key-fn]
   (fn [xs]
@@ -13,3 +14,18 @@
 (defn target-value [e]
   (-> e .-target .-value))
 
+(defn traverse-keys [k-fn]
+  (fn [m]
+    (letfn [(inner-fn [[k v]]
+              (cond
+                (map? v)    [(k-fn k) ((traverse-keys k-fn) v)]
+                (vector? v) [(k-fn k) (mapv (traverse-keys k-fn) v)]
+                :else       [(k-fn k) v]))]
+      (w/walk inner-fn identity m))))
+
+(def ns-keyword->keyword (comp keyword name))
+
+(defn re-pattern?
+  "re-find case insensitive `e` in `m`"
+  [e m]
+  (re-find (re-pattern (str "(?i)" e)) m))

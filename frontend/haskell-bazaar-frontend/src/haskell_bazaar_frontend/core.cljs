@@ -2,14 +2,17 @@
   (:require [ajax.core :as ajax]
             [reagent.core :as reagent]
             [re-frame.core :as re-frame]
+            [datascript.core :as d]
 
+            [haskell-bazaar-frontend.ds :as ds]
             [haskell-bazaar-frontend.api :as api]
             [haskell-bazaar-frontend.events]  ;; Register events
             [haskell-bazaar-frontend.environment :as environment]
             [haskell-bazaar-frontend.fx :as fx]
+            [haskell-bazaar-frontend.routes :as routes]
+            [haskell-bazaar-frontend.stubs :as stubs]
             [haskell-bazaar-frontend.subs]    ;; Register subscriptions
-            [haskell-bazaar-frontend.views :as views]
-            [haskell-bazaar-frontend.routes :as routes]))
+            [haskell-bazaar-frontend.views :as views]))
 
 ;; Should only be activated in dev mode
 
@@ -23,16 +26,22 @@
 
     ;; Setting up Stateful cofx and fx
     (let [history (routes/make-history!)
-          ;; TODO: use a proper cache datastructure
-          cache (atom {})]
-      ;; Registering the navigate effect and the cache effect
+          cache (atom {}) ;; TODO: use a proper cache datastructure
+          datascript-conn (d/create-conn ds/schema)]
+      (ds/init! datascript-conn)
       (fx/init! history cache))
 
     ;; Setting initial db
-    (re-frame/dispatch-sync [:initialize-db env])
+    (re-frame/dispatch-sync [:db/initialize env])
+    ;; TODO: use real data instead
+    (re-frame/dispatch-sync [:datascript/initialize stubs/search-result])
 
+    ;; TODO: load all data from server and load id in datascript db
+
+    ;; TODO: remove
     ;; Loading keywords for auto completion
-    (re-frame/dispatch [:api-keywords])))
+    ; (re-frame/dispatch [:api-keywords])
+    ))
 
 ;; ---------
 ;; app-state

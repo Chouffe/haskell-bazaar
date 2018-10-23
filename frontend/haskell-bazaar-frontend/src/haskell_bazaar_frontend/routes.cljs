@@ -19,7 +19,8 @@
     ;; TODO: sanitize `q`
     (when-not (string/blank? q)
       (re-frame/dispatch [:set-search-query q])
-      (re-frame/dispatch [:api-search q]))
+      ; (re-frame/dispatch [:api-search q])
+      (re-frame/dispatch [:datascript/search q]))
     (when-let [showing-kw (some-> tab keyword)]
       (re-frame/dispatch [:set-showing showing-kw]))))
 

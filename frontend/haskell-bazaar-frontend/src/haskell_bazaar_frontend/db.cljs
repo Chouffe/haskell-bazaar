@@ -3,6 +3,7 @@
     [cljs.spec.alpha :as s]
 
     [re-frame.core :as re-frame]
+    [datascript.core :as d]
 
     [haskell-bazaar-frontend.utils :as utils]
     [haskell-bazaar-frontend.environment :as env]
@@ -51,7 +52,9 @@
 (s/def ::uuid string?)
 (s/def ::title string?)
 (s/def ::description string?)
-(s/def ::type #{"Video"})
+; (s/def ::type #{"Video"})
+(s/def ::type (s/keys :req-un [::item-type]))
+(s/def ::item-type #{:Video})
 (s/def ::item
   (s/keys :req-un [::uuid
                    ::authors
@@ -60,6 +63,14 @@
                    ::description
                    ::tags]))
 (s/def ::items (s/map-of ::uuid ::item))
+(s/def ::search-item
+  (s/keys :req-un [::uuid
+                   ::authors
+                   ::title
+                   ::type
+                   ::description
+                   ::tags]))
+(s/def ::search-items (s/map-of ::uuid ::search-item))
 
 ;; App-state
 (s/def ::app-state
@@ -67,6 +78,7 @@
                    ::search-query
                    ::search-error
                    ::search-loading
+                   ::search-items
                    ::showing
                    ::sorted
                    ::keywords
@@ -78,11 +90,14 @@
    :search-query   nil
    :search-error   nil
    :search-loading false
+   :search-items   {}
    :showing        :all
    :sorted         :date
+   ;; TODO: deprecate :keywords?
    :keywords       []
-   ; :items          (utils/uuid-coll->hashmap stubs/search-result)
+   ;; TODO: deprecate :items
    :items          {}
+   ; :items          (utils/uuid-coll->hashmap stubs/search-result)
    })
 
 (def title->showing

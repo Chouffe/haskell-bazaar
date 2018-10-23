@@ -88,7 +88,7 @@
   [:span
    [:span.item-section "Type: "]
    (case t
-     "Video" "video"
+     :Video "video"
      "")])
 
 (defn search-result-item
@@ -107,18 +107,18 @@
 
    [:li.authors [item-authors authors]]
    [:li.tags [item-tags tags]]
-   [:li.type [item-type type]]])
+   [:li.type [item-type (:item-type type)]]])
 
 (defn- filter-items [showing-kw]
   (if (= showing-kw :all)
     identity
     (partial filter
-             (fn [{:keys [type]}] (= (string/lower-case type)
+             (fn [{:keys [type]}] (= (string/lower-case (name (:item-type type)))
                                      (name showing-kw))))))
 
 (defn search-results-list
   [base-url]
-  (let [items (re-frame/subscribe [:items])
+  (let [items (re-frame/subscribe [:search-items])
         showing (re-frame/subscribe [:showing])]
     (->> @items
          vals

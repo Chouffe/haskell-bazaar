@@ -6,10 +6,13 @@
     [ajax.core :as ajax]
     [day8.re-frame.http-fx]   ;; Register the http-xhrio effect handler
     [re-frame.core :as re-frame]
+    [datascript.core :as d]
 
     [haskell-bazaar-frontend.api :as api]
     [haskell-bazaar-frontend.db :as db]
+    [haskell-bazaar-frontend.ds :as ds]
     [haskell-bazaar-frontend.routes :as routes]
+    [haskell-bazaar-frontend.stubs :as stubs]
     [haskell-bazaar-frontend.utils :as utils]))
 
 ;; Interceptors
@@ -30,10 +33,20 @@
    (when goog.DEBUG re-frame/debug)])
 
 (re-frame/reg-event-db
-  :initialize-db
+  :db/initialize
   interceptors
   (fn [db [_ env]]
     (db/default-db env)))
+
+(re-frame/reg-event-fx
+  :datascript/initialize
+  [interceptors]
+  (fn [_ [_ search-results]]
+    (let [facts (->> search-results
+                     (map ds/item->facts)
+                     flatten
+                     distinct)]
+      {:datascript/transact facts})))
 
 (re-frame/reg-event-fx
   :api-keywords
@@ -45,6 +58,17 @@
       :response-format api/response-format
       :on-success [:api-keywords-success]
       :on-failure [:api-keywords-failure]}}))
+
+(re-frame/reg-event-fx
+  :datascript/search
+  [(re-frame/inject-cofx :datascript) interceptors]
+  (fn [{:keys [datascript db]} [_ search-query]]
+    (let [search-item-results (->> search-query
+                                   (ds/search datascript)
+                                   utils/uuid-coll->hashmap)]
+      {:db (-> db
+               (assoc :search-loading false)
+               (assoc :search-items search-item-results))})))
 
 ;; TODO: define higher order functions for handling the caching
 (re-frame/reg-event-fx

@@ -9,6 +9,8 @@
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [org.clojure/clojurescript "1.10.238"]
                  [org.clojure/core.async  "0.4.474"]
+
+                 [datascript "0.16.6"]
                  [cljs-ajax "0.7.4"]
                  [re-frame "0.10.6"]
                  [day8.re-frame/http-fx "0.1.6"]
