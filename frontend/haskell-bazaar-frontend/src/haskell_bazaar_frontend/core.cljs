@@ -27,9 +27,10 @@
     ;; Setting up Stateful cofx and fx
     (let [history (routes/make-history!)
           cache (atom {}) ;; TODO: use a proper cache datastructure
-          datascript-conn (d/create-conn ds/schema)]
+          datascript-conn (d/create-conn ds/schema)
+          local-storage-ttl (* 60 60 24 1)] ;; 1 day in seconds
       (ds/init! datascript-conn)
-      (fx/init! history cache))
+      (fx/init! history cache local-storage-ttl))
 
     ;; Setting initial db
     (re-frame/dispatch-sync [:db/initialize env])

@@ -29,3 +29,7 @@
   "re-find case insensitive `e` in `m`"
   [e m]
   (re-find (re-pattern (str "(?i)" e)) m))
+
+(defn add-seconds
+  ([s] (add-seconds (js/Date.) s))
+  ([d s] (js/Date. (+ (.getTime d) (* 1000 s)))))
