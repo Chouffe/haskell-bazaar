@@ -30,11 +30,10 @@ import qualified Server.Monad
 
 type BazaarAPI
   = "health" :> Get '[JSON] T.Text
-  -- TODO: return PublicItem in /api/v0/search
   :<|> "api" :> "v0" :> "search" :> QueryParam "q" T.Text :> Get '[JSON] [PublicItem]
   :<|> "api" :> "v0" :> "keywords" :> Get '[JSON] [PublicKeyword]
-  -- TODO: add a capture here to get the UUID of the Item
   :<|> "api" :> "v0" :> "item-url" :> Capture "uuid" UUID :> Get '[JSON] T.Text
+  :<|> "api" :> "v0" :> "items" :> Get '[JSON] [PublicItem]
 
 type BazaarStaticAPI
   = Get '[HTML] RawHtml
@@ -61,6 +60,7 @@ serverAPI nt = enter nt
   :<|> Server.Handler.search
   :<|> Server.Handler.keywords
   :<|> Server.Handler.itemUrl
+  :<|> Server.Handler.allItems
 
 files :: ServerT BazaarStaticAPI Handler
 files = Server.Handler.root :<|> serveDirectoryWebApp "static"

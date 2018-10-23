@@ -1,6 +1,7 @@
 module Server.Client
   ( health
   , itemUrl
+  , allItems
   , search
   , keywords
   )
@@ -18,9 +19,11 @@ import           Server.API.Types
 
 health :: ClientM T.Text
 itemUrl :: UUID -> ClientM T.Text
+allItems :: ClientM [PublicItem]
 search :: Maybe T.Text -> ClientM [PublicItem]
 keywords :: ClientM [PublicKeyword]
-( health :<|>
-  search :<|>
+( health   :<|>
+  search   :<|>
   keywords :<|>
-  itemUrl ) = client bazaarAPI
+  itemUrl  :<|>
+  allItems  ) = client bazaarAPI

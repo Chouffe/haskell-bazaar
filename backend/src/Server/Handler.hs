@@ -5,6 +5,7 @@
 module Server.Handler
   ( health
   , itemUrl
+  , allItems
   , keywords
   , search
   , root
@@ -60,6 +61,19 @@ itemUrl uuid = do
     Just url ->
       throwError $ err301 {
         errHeaders = [("Location", T.encodeUtf8 url)] }
+
+allItems
+  :: ( MonadReader Server.Config.Handle m
+     , MonadIO m
+     )
+  => m [PublicItem]
+allItems = do
+  loggerHandle   <- asks Server.Config.hLogger
+  databaseHandle <- asks Server.Config.hDB
+
+  liftIO $ Logger.info loggerHandle ("Getting all the items in the Database" :: T.Text)
+  items <- liftIO $ Database.runDatabase databaseHandle Database.allItems
+  pure items
 
 search
   :: ( MonadReader Server.Config.Handle m

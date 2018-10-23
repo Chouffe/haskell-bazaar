@@ -81,12 +81,14 @@ runDatabase :: Handle -> SqlPersistT (LoggingT IO) a -> IO a
 runDatabase Handle {..} query =
   runStdoutLoggingT $ withResource hPool (runSqlConn query)
 
-allItems :: (MonadIO m) => (SqlPersistT m) [Item]
+allItems
+  :: (MonadIO m)
+  => (SqlPersistT m) [PublicItem]
 allItems = do
-    entities <- select . from $ \users -> do
-      limit 100
-      return users
-    return (entityVal <$> entities)
+    entities <- select . from $ \item -> do
+      limit 1000
+      return item
+    hydrateItems entities
 
 searchByTagName
   :: (MonadIO m)
