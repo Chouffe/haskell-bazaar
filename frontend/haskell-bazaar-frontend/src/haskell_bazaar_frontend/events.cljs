@@ -40,13 +40,13 @@
 
 (re-frame/reg-event-fx
   :datascript/initialize
-  [interceptors]
-  (fn [_ [_ search-results]]
-    (let [facts (->> search-results
-                     (map ds/item->facts)
-                     flatten
-                     distinct)]
-      {:datascript/transact facts})))
+  [(re-frame/inject-cofx :local-store "datascript-facts") interceptors]
+  (fn [{:keys [local-store] :as coeffects} [_ env]]
+    (cond
+      ;; Always fetch api-items in dev mode
+      (= env :dev)      {:dispatch [:api-items]}
+      (seq local-store) {:datascript/transact (cljs.reader/read-string local-store)}
+      :else             {:dispatch [:api-items]})))
 
 (re-frame/reg-event-fx
   :api-keywords
@@ -83,6 +83,35 @@
         :response-format api/response-format
         :on-success [:api-search-success search-query]
         :on-failure [:api-search-failure]}})))
+
+(re-frame/reg-event-fx
+  :api-items
+  [interceptors]
+  (fn [{:keys [db]} _]
+    {:db (assoc db :search-loading true)
+     :http-xhrio
+     {:method :get
+      :uri (-> db :environment api/base-url api/items)
+      :response-format api/response-format
+      :on-success [:api-items-success]
+      :on-failure [:api-items-failure]}}))
+
+(re-frame/reg-event-fx
+  :api-items-success
+  (fn [{:keys [db]} [_ results]]
+    (let [all-facts (->> results
+                         (map ds/item->facts)
+                         flatten
+                         distinct)]
+      {:db (assoc db :search-loading false)
+       :local-store ["datascript-facts" all-facts]
+       :datascript/transact all-facts})))
+
+(re-frame/reg-event-fx
+  :api-items-failure
+  (fn [{:keys [db]} results]
+    (.log js/console "ERROR Loading keywords!!")
+    {}))
 
 (re-frame/reg-event-fx
   :api-search-success

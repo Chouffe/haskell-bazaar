@@ -24,6 +24,9 @@
 (defn search [url search-query]
   (str url "search?q=" search-query))
 
+(defn items [url]
+  (str url "items"))
+
 (defn keywords [url]
   (str url "keywords"))
 

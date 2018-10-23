@@ -33,10 +33,7 @@
 
     ;; Setting initial db
     (re-frame/dispatch-sync [:db/initialize env])
-    ;; TODO: use real data instead
-    (re-frame/dispatch-sync [:datascript/initialize stubs/search-result])
-
-    ;; TODO: load all data from server and load id in datascript db
+    (re-frame/dispatch-sync [:datascript/initialize env])
 
     ;; TODO: remove
     ;; Loading keywords for auto completion
