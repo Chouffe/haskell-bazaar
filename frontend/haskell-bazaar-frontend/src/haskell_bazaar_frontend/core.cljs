@@ -48,7 +48,7 @@
     (reagent/render [views/ui views/dispatchers (api/base-url environment)]
                     (js/document.getElementById "app"))
     ;; Focusing the search field
-    (utils/focus! "search-box")))
+    (js/setTimeout #(utils/focus! "search-box") 500)))
 
 ;; ---------------
 ;; Figwheel reload

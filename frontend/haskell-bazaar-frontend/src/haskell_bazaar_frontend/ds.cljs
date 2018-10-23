@@ -167,7 +167,7 @@
   (->> search-query
        ((juxt (partial find-items-by-tag db)
               (partial find-items-by-author db)
-              (partial find-items-by-author db)
+              (partial find-items-by-title db)
               (partial find-items-by-description db)))
        flatten
        distinct
