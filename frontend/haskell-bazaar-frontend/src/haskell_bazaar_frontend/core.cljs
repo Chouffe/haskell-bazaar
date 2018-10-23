@@ -12,6 +12,7 @@
             [haskell-bazaar-frontend.routes :as routes]
             [haskell-bazaar-frontend.stubs :as stubs]
             [haskell-bazaar-frontend.subs]    ;; Register subscriptions
+            [haskell-bazaar-frontend.utils :as utils]
             [haskell-bazaar-frontend.views :as views]))
 
 ;; Should only be activated in dev mode
@@ -24,7 +25,7 @@
     ;; Setting up routes
     (routes/set-config!)
 
-    ;; Setting up Stateful cofx and fx
+    ;; Setting up stateful cofx and fx
     (let [history (routes/make-history!)
           cache (atom {}) ;; TODO: use a proper cache datastructure
           datascript-conn (d/create-conn ds/schema)
@@ -34,12 +35,7 @@
 
     ;; Setting initial db
     (re-frame/dispatch-sync [:db/initialize env])
-    (re-frame/dispatch-sync [:datascript/initialize env])
-
-    ;; TODO: remove
-    ;; Loading keywords for auto completion
-    ; (re-frame/dispatch [:api-keywords])
-    ))
+    (re-frame/dispatch-sync [:datascript/initialize env])))
 
 ;; ---------
 ;; app-state
@@ -47,10 +43,12 @@
 
 (defn ^:export run
   []
-  ;; Mounting React component
   (let [environment (environment/environment)]
+    ;; Mounting React component
     (reagent/render [views/ui views/dispatchers (api/base-url environment)]
-                    (js/document.getElementById "app"))))
+                    (js/document.getElementById "app"))
+    ;; Focusing the search field
+    (utils/focus! "search-box")))
 
 ;; ---------------
 ;; Figwheel reload

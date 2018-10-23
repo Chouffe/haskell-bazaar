@@ -33,3 +33,9 @@
 (defn add-seconds
   ([s] (add-seconds (js/Date.) s))
   ([d s] (js/Date. (+ (.getTime d) (* 1000 s)))))
+
+(defn focus!
+  [input-name-str]
+  (-> js/document
+      (.querySelector (str "input[name='" input-name-str "']"))
+      .focus))

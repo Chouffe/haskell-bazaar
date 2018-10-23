@@ -18,15 +18,16 @@
        [:i.fa.fa-search])]))
 
 (defn search-box
-  [{:keys [on-click-factory on-change on-key-down]}]
+  [{:keys [on-click-factory on-change on-key-up]}]
   (let [search-query (re-frame/subscribe [:search-query])]
     [:div.search-box
      [:input.search-box-input
       {:type "text"
        :autoComplete "off"
+       :name "search-box"
        :value @search-query
        :on-change on-change
-       :on-key-down on-key-down}]
+       :on-key-up on-key-up}]
 
      [search-box-button (on-click-factory @search-query)]]))
 
@@ -47,9 +48,12 @@
    :search-box
    {:on-change
     (fn [e]
-      (re-frame/dispatch [:set-search-query (utils/target-value e)]))
+      (re-frame/dispatch [:set-search-query (utils/target-value e)])
+      ;; TODO: add a delay or something
+      (re-frame/dispatch [:datascript/search (utils/target-value e)])
+      )
 
-    :on-key-down
+    :on-key-up
     (fn [e]
       (when (= (:enter keystrokes) (.-which e))
         (re-frame/dispatch [:navigate-search (utils/target-value e)])))
