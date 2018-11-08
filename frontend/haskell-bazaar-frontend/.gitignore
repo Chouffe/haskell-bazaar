@@ -14,3 +14,5 @@ pom.xml
 nashorn_code_cache/
 .cljs_nashorn_repl/
 build/
+node_modules/
+.tern-port
