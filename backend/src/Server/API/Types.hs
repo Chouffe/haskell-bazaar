@@ -27,6 +27,7 @@ instance ToJSON PublicItem where
     , "type"        .= T.pack (show (itemItemType item))
     , "authors"     .= toJSON authors
     , "tags"        .= toJSON tags
+    , "created_at"  .= itemCreatedAt item
     ]
 
 -- TODO
