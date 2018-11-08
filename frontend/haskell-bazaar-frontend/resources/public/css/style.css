@@ -22,6 +22,7 @@ html {
   max-width: 590px;
   position:relative;
   margin: auto;
+  padding-bottom: 2.5em;
 }
 
 .search-box-input {
@@ -106,15 +107,51 @@ html {
   display: block;
   /* width: 100%; */
   /* max-width: 590px; */
-  border: 1px solid #C8C8C8;
+  /* border: 1px solid #C8C8C8; */
   /* margin: auto; */
-  padding:0.5em;
+  padding: 0.5em;
   color: #333;
-  margin-bottom:2em;
+  /* margin-bottom:2em; */
+}
+
+.x-lg {
+  font-size: 1.35em;
+}
+
+.lg {
+  font-size: 1.2em;
+}
+
+.md {
+  font-size: 1em;
+}
+
+.sm {
+  font-size: 0.9em;
+}
+
+.x-sm {
+  font-size: 0.8em;
 }
 
 .item {
   border:none;
+}
+
+.search-item .description {
+  display: inline-block;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  line-height: 1.33em;
+}
+
+.search-item .authors {
+  color: #3F6E35;
+}
+
+.search-item .tags {
+  font-style: italic;
+  color: #3F6E35;
 }
 
 ul.search-container {

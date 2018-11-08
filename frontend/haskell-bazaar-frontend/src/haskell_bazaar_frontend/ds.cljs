@@ -15,7 +15,7 @@
                                  :db/unique      :db.unique/identity}
 
    ; Authors
-   :author/firstName             {:db/cardinality :db.cardinality/one}
+   :author/firstName            {:db/cardinality :db.cardinality/one}
    :author/lastName             {:db/cardinality :db.cardinality/one}
    :author/uuid                 {:db/unique      :db.unique/identity}
 
@@ -26,6 +26,7 @@
    :item/title                  {:db/cardinality :db.cardinality/one}
    :item/type                   {:db/cardinality :db.cardinality/one
                                  :db/valueType   :db.type/ref}
+   :item/created-at             {:db/cardinality :db.cardinality/one}
    :item/description            {:db/cardinality :db.cardinality/one}
    :item/tags                   {:db/cardinality :db.cardinality/many
                                  :db/valueType   :db.type/ref}
@@ -63,7 +64,7 @@
    :item-type (keyword item-type)})
 
 (defn item->facts
-  [{:keys [uuid authors title type description tags]}]
+  [{:keys [uuid authors title type description tags created_at]}]
   (let [tag-facts (mapv tag->facts tags)
         author-facts (mapv author->facts authors)
         item-type-facts (item-type->facts type)]
@@ -75,6 +76,7 @@
         :item/authors     (mapv (fn [a] (select-keys a [:db/id])) author-facts)
         :item/title       title
         :item/type        (select-keys item-type-facts [:db/id])
+        :item/created-at  (js/Date. created_at)
         :item/description description
         :item/tags        (mapv (fn [t] (select-keys t [:db/id])) tag-facts)}])))
 

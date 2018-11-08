@@ -54,22 +54,20 @@
 (s/def ::description string?)
 ; (s/def ::type #{"Video"})
 (s/def ::type (s/keys :req-un [::item-type]))
-(s/def ::item-type #{:Video})
+(s/def ::item-type #{:Video :Tutorial :Book})
 (s/def ::item
   (s/keys :req-un [::uuid
-                   ::authors
                    ::title
                    ::type
-                   ::description
-                   ::tags]))
+                   ::description]
+          :opt [::tags ::authors]))
 (s/def ::items (s/map-of ::uuid ::item))
 (s/def ::search-item
   (s/keys :req-un [::uuid
-                   ::authors
                    ::title
                    ::type
-                   ::description
-                   ::tags]))
+                   ::description]
+          :opt [::tags ::authors]))
 (s/def ::search-items (s/map-of ::uuid ::search-item))
 
 ;; App-state

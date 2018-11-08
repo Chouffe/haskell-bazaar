@@ -65,53 +65,55 @@
     }})
 
 (defn item-tag [{:keys [name]}]
-  [:span name])
+  (into [:span]
+        (->> (string/split name #" ")
+             (string/join "-")
+             (str "#"))))
 
 (defn item-tags [tags]
-  (->> tags
-       distinct
-       (sort <)
-       (mapv (fn [tag] [item-tag tag]))
-       (interpose ", ")
-       (into [:span [:span.item-section "tags: "]])))
+  (when (seq tags)
+    (->> tags
+         distinct
+         (sort <)
+         (mapv (fn [tag] [item-tag tag]))
+         (interpose " ")
+         (into [:span.tags]))))
 
 (defn item-author [{:keys [firstName lastName uuid]}]
   [:span (str firstName " " lastName)])
 
-(defn item-authors [authors]
-  (let [title (if (> (count (distinct authors)) 1) "authors" "author")]
-  (->> authors
-       distinct
-       (sort <)
-       (mapv (fn [author] [item-author author]))
-       (interpose ", ")
-       (into [:span [:span.item-section (str title ": ")]]))))
+(defn trunc
+  [s n]
+  (subs s 0 (min (count s) n)))
 
-;; TODO: use icons instead?
-(defn item-type [t]
-  [:span
-   [:span.item-section "Type: "]
-   (case t
-     :Video "video"
-     "")])
+(defn item-description [description]
+  (let [truncated-description (trunc description 500)]
+    [:span.md.description
+     (if (= description truncated-description)
+       description
+       (str truncated-description "..."))]))
+
+(defn item-authors [authors]
+  (when (seq authors)
+    (->> authors
+         distinct
+         (sort <)
+         (mapv (fn [author] [item-author author]))
+         (interpose ", ")
+         (into [:span.authors]))))
 
 (defn search-result-item
   [base-url {:keys [uuid authors title type description tags]}]
-  [:ul.item
-  [:li.actions
-   [:ul.actions-list
-    [:li.action-link
-     [:a {:target "_blank"
-          :href (api/item-url base-url uuid)}
-      [:i.fa.fa-link]]]
-    ;; TODO: save button to local storage
-    #_[:li.action-save
-     [:i.fa.fa-heart-o.fa]]]] [:li.title title]
-   [:li.description description]
-
-   [:li.authors [item-authors authors]]
-   [:li.tags [item-tags tags]]
-   [:li.type [item-type (:item-type type)]]])
+  [:li.search-item
+   [:a.lg {:target "_blank" :href (api/item-url base-url uuid)} title]
+   (when (seq authors)
+     [:span.md
+      (str " ‧ ")
+      [item-authors authors]])
+   [:br]
+   [item-description description]
+   [:br]
+   [item-tags tags]])
 
 (defn- filter-items [showing-kw]
   (if (= showing-kw :all)
@@ -127,10 +129,8 @@
     (->> @items
          vals
          ((filter-items @showing))
-         (mapv (fn [item] [:li.search-container-item
-                           ^{:key (:uuid item)}
-                           [search-result-item base-url item]]))
-         (into [:ul.search-container]))))
+         (mapv (fn [item] [search-result-item base-url item]))
+         (into [:ul.search-items]))))
 
 (defn search-filters-item
   [on-click title showing-kw showing]
@@ -153,7 +153,7 @@
   [:div
    [:div.topnav
     [search-box (:search-box dispatchers)]
-    [:div.bar
+    #_[:div.bar
      [search-filters (:filters dispatchers)]]]
    [:div.results
     [search-results-list base-url]]])

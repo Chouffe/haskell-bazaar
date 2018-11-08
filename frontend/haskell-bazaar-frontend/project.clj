@@ -8,14 +8,15 @@
 
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [org.clojure/clojurescript "1.10.238"]
-                 [org.clojure/core.async  "0.4.474"]
+                 ; [org.clojure/core.async  "0.4.474"]
 
                  [datascript "0.16.6"]
                  [cljs-ajax "0.7.4"]
+                 [reagent "0.8.1"]
                  [re-frame "0.10.6"]
                  [day8.re-frame/http-fx "0.1.6"]
-                 [reagent "0.8.1"]
-                 [secretary "1.2.3"]]
+                 [secretary "1.2.3"]
+                 ]
 
   :plugins [[lein-figwheel "0.5.16"]
             [lein-cljsbuild "1.1.7" :exclusions [[org.clojure/clojure]]]]
@@ -41,6 +42,11 @@
                            :output-to "resources/public/js/compiled/haskell_bazaar_frontend.js"
                            :output-dir "resources/public/js/compiled/out"
                            :source-map-timestamp true
+
+                           ;; External node modules
+                           ; :npm-deps {:left-pad "1.1.3"}
+                           ; :install-deps true
+
                            ;; To console.log CLJS data-structures make sure you enable devtools in Chrome
                            ;; https://github.com/binaryage/cljs-devtools
                            :preloads [devtools.preload]}}
@@ -117,7 +123,7 @@
   ;; https://github.com/bhauman/lein-figwheel/wiki/Using-the-Figwheel-REPL-within-NRepl
   :profiles {:dev {:dependencies [[binaryage/devtools "0.9.9"]
                                   [figwheel-sidecar "0.5.16"]
-                                  [cider/piggieback "0.3.1"]]
+                                  [cider/piggieback "0.3.10"]]
                    ;; need to add dev source path here to get user.clj loaded
                    :source-paths ["src" "dev"]
                    ;; for CIDER
@@ -125,4 +131,5 @@
                    :repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]}
                    ;; need to add the compliled assets to the :clean-targets
                    :clean-targets ^{:protect false} ["resources/public/js/compiled"
-                                                     :target-path]}})
+                                                     :target-path]
+                   }})
