@@ -19,6 +19,7 @@ INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES
   , (5, 'Lenses', 'Lens tour and tutorial', 'http://www.haskellforall.com/2012/01/haskell-for-mainstream-programmers_28.html', 'Tutorial', '2012-01-28')
   , (6, 'Lens Over Tea #1', 'lenses 101, traversals 101, and some implementation details', 'https://artyom.me/lens-over-tea-1', 'Tutorial', '2016-01-01')
   , (7, 'Lenses and functional references', 'This chapter is about functional references. By "references", we mean they point at parts of values, allowing us to access and modify them. By "functional", we mean they do so in a way that provides the flexibility and composability we came to expect from functions. We will study functional references as implemented by the powerful lens library. lens is named after lenses, a particularly well known kind of functional reference. Beyond being very interesting from a conceptual point of view, lenses and other functional references allow for several convenient and increasingly common idioms, put into use by a number of useful libraries.', 'https://en.wikibooks.org/wiki/Haskell/Lenses_and_functional_references', 'Book', '2018-06-19')
+  , (8, 'Functors, Applicatives, And Monads In Pictures', 'Visualize functors, applicative and monads with pictures', 'http://adit.io/posts/2013-04-17-functors,_applicatives,_and_monads_in_pictures.html', 'Article', '2013-04-17')
   ;
 
 INSERT INTO "tag" (id, name) VALUES
@@ -37,6 +38,7 @@ INSERT INTO "tag" (id, name) VALUES
   , (13, 'design pattern')
   , (14, 'dependency injection')
   , (15, 'lens')
+  , (16, 'traversal')
   ;
 
 -- TODO: add a nickname or handle?
@@ -49,6 +51,8 @@ INSERT INTO "author" (id, first_name, last_name) VALUES
   , (4, 'Joe', 'Nelson')
   , (5, 'Gabriel', 'Gonzales')
   , (6, 'Artyom', 'Kazak')
+  , (7, 'Aditya', 'Bhargava')
+  , (8, 'Haskell', 'WikiBook')
   ;
 
 INSERT INTO "item_author" (id, item_id, author_id) VALUES
@@ -58,6 +62,8 @@ INSERT INTO "item_author" (id, item_id, author_id) VALUES
   , (4, 4, 4)
   , (5, 5, 5)
   , (6, 6, 6)
+  , (7, 7, 8)
+  , (8, 8, 7)
   ;
 
 INSERT INTO "item_tag" (id, item_id, tag_id) VALUES
@@ -72,6 +78,10 @@ INSERT INTO "item_tag" (id, item_id, tag_id) VALUES
   , (9, 5, 15)
   , (10, 6, 15)
   , (11, 7, 15)
+  , (12, 7, 16)
+  , (13, 8, 2)
+  , (14, 8, 3)
+  , (15, 8, 4)
   ;
 
 COMMIT;

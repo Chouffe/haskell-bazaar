@@ -54,7 +54,7 @@
 (s/def ::description string?)
 ; (s/def ::type #{"Video"})
 (s/def ::type (s/keys :req-un [::item-type]))
-(s/def ::item-type #{:Video :Tutorial :Book})
+(s/def ::item-type #{:Video :Tutorial :Book :Article})
 (s/def ::item
   (s/keys :req-un [::uuid
                    ::title
