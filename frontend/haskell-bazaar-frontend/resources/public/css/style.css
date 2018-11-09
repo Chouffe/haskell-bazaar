@@ -96,6 +96,33 @@ html {
 
 .results {
   padding: 2em;
+  padding-left: 100px;
+}
+
+.results-definition {
+  background-color: #f2f2f2;
+  padding-bottom: 1em;
+  padding-top: 1em;
+  border-bottom: 1px solid #dbdbdb
+}
+
+.results-definition-body {
+  max-width: 590px;
+  padding-left: 100px;
+}
+
+.results-definition-body h1 {
+  font-size: 1.3em;
+}
+
+.results-definition-body pre {
+  margin: 1em 0;
+}
+
+.results-definition-body pre code {
+  background-color: #f7f7f7;
+  border: 1px solid #dbdbdb;
+  border-radius: 4px;
 }
 
 .results ul {
@@ -105,11 +132,12 @@ html {
 
 .results ul li {
   display: block;
+  max-width: 590px;
   /* width: 100%; */
   /* max-width: 590px; */
   /* border: 1px solid #C8C8C8; */
   /* margin: auto; */
-  padding: 0.5em;
+  padding: 0.5em 0;
   color: #333;
   /* margin-bottom:2em; */
 }

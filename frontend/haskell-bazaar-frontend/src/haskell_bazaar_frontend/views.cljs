@@ -1,5 +1,6 @@
 (ns haskell-bazaar-frontend.views
   (:require
+    [reagent.core :as reagent]
     [re-frame.core :as re-frame]
     [clojure.string :as string]
 
@@ -149,11 +150,45 @@
                   @showing]))
          (into [:ul.search-filters]))))
 
+(defn code-block [code]
+  (reagent/create-class
+    {:component-did-mount
+     (fn [this]
+       (let [node (reagent/dom-node this)]
+         ;; TODO: clojurize
+         (.highlightBlock js/hljs node)))
+
+     :reagent-render
+     (fn [code]
+       [:pre [:code.haskell.hljs code]])}))
+
+(defn results-definition [{:keys [title body]}]
+  (let [search-query (re-frame/subscribe [:search-query])]
+    (reagent/create-class
+      {:component-did-mount
+       (fn [this]
+         (let [node (reagent/dom-node this)]
+           (.highlightBlock js/hljs node))
+         (.log js/console "HELLO!"))
+
+       :reagent-render
+       (fn [{:keys [title body]}]
+         [:div.results-definition
+          [:div.results-definition-body
+           [:h1 title]
+           body]])})))
+
 (defn ui [dispatchers base-url]
-  [:div
-   [:div.topnav
-    [search-box (:search-box dispatchers)]
-    #_[:div.bar
-     [search-filters (:filters dispatchers)]]]
-   [:div.results
-    [search-results-list base-url]]])
+  (let [search-query (re-frame/subscribe [:search-query])]
+    [:div
+     [:div.topnav
+      [search-box (:search-box dispatchers)]
+      #_[:div.bar
+         [search-filters (:filters dispatchers)]]]
+     (when (= @search-query "functor")
+       [results-definition
+        {:title "Functor Typeclass"
+         :body [code-block "class Functor f where\n    fmap :: (a -> b) -> f a -> f b\n    (<$>) :: a -> f b -> f a"]}])
+
+     [:div.results
+      [search-results-list base-url]]]))
