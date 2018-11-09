@@ -39,4 +39,7 @@ docker-compose -f docker-compose.yml -f production.yml down
 echo "Bringing up the stack"
 docker-compose -f docker-compose.yml -f production.yml up -d
 
+echo "Seeding db data"
+docker exec -i haskell-bazaar-postgres psql -U haskellbazaar < scripts/db/seed.sql
+
 echo "Done"

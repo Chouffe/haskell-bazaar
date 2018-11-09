@@ -51,4 +51,10 @@ docker-deploy:
 		DEPLOY_GIT_SHA="$(shell git rev-parse HEAD)" \
 		'bash -s' < scripts/deploy.sh
 
+db-seed:
+	docker exec \
+		-i haskell-bazaar-postgres psql \
+		-U haskellbazaar \
+		< scripts/db/seed.sql
+
 .PHONY: build run test clean lint ghcid-devel docker-build-dev docker-build docker-prod-run docker-build-save docker-deploy source-env

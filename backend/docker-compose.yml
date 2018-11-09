@@ -16,8 +16,10 @@ services:
     container_name: haskell-bazaar-postgres
     volumes:
       - /data/postgresql:/var/lib/postgresql/data
-      # Run init.sql on startup
-      - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+      # Run init.sql and see.sql on startup
+      - ./scripts/db/init.sql:/docker-entrypoint-initdb.d/1-init.sql
+      # - ./scripts/db/seed.sql:/docker-entrypoint-initdb.d/2-seed.sql
     ports:
       - "5432:5432"
     environment:
