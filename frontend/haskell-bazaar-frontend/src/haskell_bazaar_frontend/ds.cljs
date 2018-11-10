@@ -17,6 +17,7 @@
    ; Authors
    :author/firstName            {:db/cardinality :db.cardinality/one}
    :author/lastName             {:db/cardinality :db.cardinality/one}
+   :author/fullName             {:db/cardinality :db.cardinality/one}
    :author/uuid                 {:db/unique      :db.unique/identity}
 
    ; Items
@@ -51,7 +52,8 @@
   {:db/id            uuid
    :author/uuid      uuid
    :author/firstName firstName
-   :author/lastName  lastName})
+   :author/lastName  lastName
+   :author/fullName  (str firstName " " lastName)})
 
 (defn tag->facts
   [{:keys [name]}]
@@ -134,7 +136,8 @@
          [(?re-pattern ?query-string ?attribute)]]
        db
        query-string
-       utils/re-pattern?))
+       utils/re-pattern?
+       [:author/fullName :author/firstName :author/lastName]))
 
 ;; REPL iteration
 ;; TODO: remove

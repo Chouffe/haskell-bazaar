@@ -109,6 +109,8 @@ html {
 .results-definition-body {
   max-width: 590px;
   padding-left: 100px;
+  padding-top: 1em;
+  padding-bottom: 1em;
 }
 
 .results-definition-body h1 {
