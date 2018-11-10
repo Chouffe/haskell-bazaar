@@ -115,10 +115,11 @@ html {
 
 .results-definition-body h1 {
   font-size: 1.3em;
+  margin-bottom: 1em;
 }
 
 .results-definition-body pre {
-  margin: 1em 0;
+  margin: 0.5em 0;
 }
 
 .results-definition-body pre code {

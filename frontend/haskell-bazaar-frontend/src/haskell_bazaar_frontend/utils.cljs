@@ -1,5 +1,7 @@
 (ns haskell-bazaar-frontend.utils
-  (:require [clojure.walk :as w]))
+  (:require
+    [clojure.walk :as w]
+    [reagent.core :as reagent]))
 
 (defn coll->hashmap [key-fn]
   (fn [xs]
@@ -62,3 +64,29 @@
   "truncates string to `n` characters"
   [s n]
   (subs s 0 (min (count s) n)))
+
+(defn code-block [code]
+  (reagent/create-class
+    {:component-did-mount
+     (fn [this]
+       (let [node (reagent/dom-node this)]
+         ;; TODO: clojurize
+         (.highlightBlock js/hljs node)))
+
+     :reagent-render
+     (fn [code]
+       [:pre [:code.haskell.hljs code]])}))
+
+(defn transform-extended-hiccup [v]
+  (cond
+    (or (keyword? v) (string? v) (integer? v)) v
+
+    (and (vector? v) (= (first v) :code-block))
+    (let [[_ body] v]
+      [code-block body])
+
+    (and (vector? v) (keyword? (first v)))
+    (let [[k & args] v]
+      (into [k] (mapv transform-extended-hiccup args)))
+
+    :else v))

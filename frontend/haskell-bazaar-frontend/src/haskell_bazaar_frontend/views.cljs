@@ -149,32 +149,38 @@
                   @showing]))
          (into [:ul.search-filters]))))
 
-(defn code-block [code]
-  (reagent/create-class
-    {:component-did-mount
-     (fn [this]
-       (let [node (reagent/dom-node this)]
-         ;; TODO: clojurize
-         (.highlightBlock js/hljs node)))
 
-     :reagent-render
-     (fn [code]
-       [:pre [:code.haskell.hljs code]])}))
 
 (defn results-definition [{:keys [title body]}]
-  (let [search-query (re-frame/subscribe [:search-query])]
-    (reagent/create-class
-      {:component-did-mount
-       (fn [this]
-         (let [node (reagent/dom-node this)]
-           (.highlightBlock js/hljs node)))
+  [:div.results-definition
+   [:div.results-definition-body
+    [:h1 title]
+    (utils/transform-extended-hiccup body)]])
 
-       :reagent-render
-       (fn [{:keys [title body]}]
-         [:div.results-definition
-          [:div.results-definition-body
-           [:h1 title]
-           body]])})))
+;; TODO: move to datascript and write queries for it
+(def definitions
+  {"monad" {:name "monad"
+            :title "Monad Typeclass"
+            :body [:code-block
+                   "class Applicative m => Monad m where\n  (>>=) :: m a -> (a -> m b) -> m b\n  return :: a -> m a"]}
+   "functor" {:name "functor"
+              :title "Functor Typeclass"
+              :body [:code-block
+                     "class Functor f where\n  fmap :: (a -> b) -> f a -> f b"]}
+   "applicative" {:name "applicative"
+                  :title "Applicative Typeclass"
+                  :body [:code-block
+                         "class Functor f => Applicative f where\n  pure :: a -> f a\n  (<*>) :: f (a -> b) -> f a -> f b"]}
+   "monoid" {:title "Monoid Typeclass"
+             :body [:code-block
+                    "class Semigroup a => Monoid a where\n  mempty :: a\n  (<>) :: a -> a -> a"]}
+   "lens" {:title "Lens Type"
+           :body
+           [:span
+            [:p "A Lens a b can be seen as getter and setter as first approximation"]
+            [:code-block "data Lens a b = Lens\n  { get :: a -> b\n  , set :: a -> b -> a\n  }"]
+            [:p "Below is the general Lens type definition"]
+            [:code-block "type Lens s t a b = forall f. Functor f => (a -> f b) -> s -> f t"]]}})
 
 (defn ui [dispatchers base-url]
   (let [search-query (re-frame/subscribe [:search-query])]
@@ -183,10 +189,9 @@
       [search-box (:search-box dispatchers)]
       #_[:div.bar
          [search-filters (:filters dispatchers)]]]
-     (when (= @search-query "functor")
-       [results-definition
-        {:title "Functor Typeclass"
-         :body [code-block "class Functor f where\n    fmap :: (a -> b) -> f a -> f b\n    (<$>) :: a -> f b -> f a"]}])
-
+     (when-let [definition (get definitions @search-query)]
+       [results-definition definition])
      [:div.results
       [search-results-list base-url]]]))
+
+
