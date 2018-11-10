@@ -9,7 +9,10 @@
 
 (defn url-encode
   [string]
-  (some-> string str (js/encodeURIComponent) (.replace "+" "%20")))
+  (some-> string
+          str
+          js/encodeURIComponent
+          (.replace "+" "%20")))
 
 (defn target-value [e]
   (-> e .-target .-value))
@@ -25,10 +28,16 @@
 
 (def ns-keyword->keyword (comp keyword name))
 
+(defn sanitize-re [s]
+  (let [forbidden-chars #{\} \{ \( \) \. \* \+ \-}]
+    (->> s
+         (filter (complement forbidden-chars))
+         (apply str))))
+
 (defn re-pattern?
   "re-find case insensitive `e` in `m`"
   [e m]
-  (re-find (re-pattern (str "(?i)" e)) m))
+  (re-find (re-pattern (str "(?i)" (sanitize-re e))) m))
 
 (defn add-seconds
   ([s] (add-seconds (js/Date.) s))
@@ -39,3 +48,17 @@
   (-> js/document
       (.querySelector (str "input[name='" input-name-str "']"))
       .focus))
+
+(defn rmatch [search-query s]
+  (let [pat (re-pattern (str "(?i)(.*)(" search-query ")(.*)"))]
+    (re-matches pat s)))
+
+(defn highlight-string-match [search-query s]
+  (if-let [[_ prefix match suffix] (rmatch (sanitize-re search-query) s)]
+    [:span prefix [:strong match] suffix]
+    s))
+
+(defn trunc
+  "truncates string to `n` characters"
+  [s n]
+  (subs s 0 (min (count s) n)))

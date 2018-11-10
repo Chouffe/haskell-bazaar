@@ -62,7 +62,6 @@
     :on-click-factory
     (fn [search-query]
       (fn [e] (re-frame/dispatch [:navigate-search search-query])))
-
     }})
 
 (defn item-tag [{:keys [name]}]
@@ -81,18 +80,16 @@
          (into [:span.tags]))))
 
 (defn item-author [{:keys [firstName lastName uuid]}]
-  [:span (str firstName " " lastName)])
-
-(defn trunc
-  [s n]
-  (subs s 0 (min (count s) n)))
+  (let [search-query (re-frame/subscribe [:search-query])]
+    (utils/highlight-string-match @search-query (str firstName " " lastName))))
 
 (defn item-description [description]
-  (let [truncated-description (trunc description 500)]
-    [:span.md.description
-     (if (= description truncated-description)
-       description
-       (str truncated-description "..."))]))
+  (let [search-query (re-frame/subscribe [:search-query])]
+    (let [truncated-description (utils/trunc description 500)]
+      [:span.md.description
+       (if (= description truncated-description)
+         (utils/highlight-string-match @search-query description)
+         (utils/highlight-string-match @search-query (str truncated-description "...")))])))
 
 (defn item-authors [authors]
   (when (seq authors)
@@ -105,16 +102,18 @@
 
 (defn search-result-item
   [base-url {:keys [uuid authors title type description tags]}]
-  [:li.search-item
-   [:a.lg {:target "_blank" :href (api/item-url base-url uuid)} title]
-   (when (seq authors)
-     [:span.md
-      (str " ‧ ")
-      [item-authors authors]])
-   [:br]
-   [item-description description]
-   [:br]
-   [item-tags tags]])
+  (let [search-query (re-frame/subscribe [:search-query])]
+    [:li.search-item
+     [:a.lg {:target "_blank" :href (api/item-url base-url uuid)}
+      (utils/highlight-string-match @search-query title)]
+     (when (seq authors)
+       [:span.md
+        (str " ‧ ")
+        [item-authors authors]])
+     [:br]
+     [item-description description]
+     [:br]
+     [item-tags tags]]))
 
 (defn- filter-items [showing-kw]
   (if (= showing-kw :all)
@@ -168,8 +167,7 @@
       {:component-did-mount
        (fn [this]
          (let [node (reagent/dom-node this)]
-           (.highlightBlock js/hljs node))
-         (.log js/console "HELLO!"))
+           (.highlightBlock js/hljs node)))
 
        :reagent-render
        (fn [{:keys [title body]}]
