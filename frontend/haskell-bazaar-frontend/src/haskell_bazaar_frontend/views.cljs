@@ -149,6 +149,7 @@
                   @showing]))
          (into [:ul.search-filters]))))
 
+<<<<<<< HEAD
 
 
 (defn results-definition [{:keys [title body]}]
@@ -181,6 +182,34 @@
             [:code-block "data Lens a b = Lens\n  { get :: a -> b\n  , set :: a -> b -> a\n  }"]
             [:p "Below is the general Lens type definition"]
             [:code-block "type Lens s t a b = forall f. Functor f => (a -> f b) -> s -> f t"]]}})
+=======
+(defn code-block [code]
+  (reagent/create-class
+    {:component-did-mount
+     (fn [this]
+       (let [node (reagent/dom-node this)]
+         ;; TODO: clojurize
+         (.highlightBlock js/hljs node)))
+
+     :reagent-render
+     (fn [code]
+       [:pre [:code.haskell.hljs code]])}))
+
+(defn results-definition [{:keys [title body]}]
+  (let [search-query (re-frame/subscribe [:search-query])]
+    (reagent/create-class
+      {:component-did-mount
+       (fn [this]
+         (let [node (reagent/dom-node this)]
+           (.highlightBlock js/hljs node))
+         (.log js/console "HELLO!"))
+
+       :reagent-render
+       (fn [{:keys [title body]}]
+         [:div.results-definition
+          [:div.results-definition-body
+           [:h1 title]
+           body]])})))
 
 (defn ui [dispatchers base-url]
   (let [search-query (re-frame/subscribe [:search-query])]
@@ -189,9 +218,9 @@
       [search-box (:search-box dispatchers)]
       #_[:div.bar
          [search-filters (:filters dispatchers)]]]
-     (when-let [definition (get definitions @search-query)]
-       [results-definition definition])
+     (when (= @search-query "functor")
+       [results-definition
+        {:title "Functor Typeclass"
+         :body [code-block "class Functor f where\n    fmap :: (a -> b) -> f a -> f b\n    (<$>) :: a -> f b -> f a"]}])
      [:div.results
       [search-results-list base-url]]]))
-
-
