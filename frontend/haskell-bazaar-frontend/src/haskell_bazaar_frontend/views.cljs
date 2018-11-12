@@ -286,4 +286,11 @@
 
      [:div.search-results
       [:> ui/container
-       [search-results-list base-url]]]]))
+       [search-results-list base-url]]]
+
+     [:div.ui.vertical.footer.segment
+      [:> ui/divider]
+      [:div.ui.center.aligned.container
+       [:p "Built with "
+        [:> ui/icon {:name "heart"}]
+         " for the Haskell community"]]]]))

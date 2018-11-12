@@ -17,8 +17,9 @@
     (goog.object/get semantic-ui k)))
 
 (def container      (component "Container"))
+(def divider        (component "Divider"))
 (def grid           (component "Grid"))
 (def column         (component "Column"))
 (def segment        (component "Segment"))
 (def search         (component "Search"))
-
+(def icon           (component "Icon"))

@@ -53,6 +53,7 @@ html {
 }
 
 .search-results {
+  min-height: 75vh;
 }
 
 .search-results ul {
@@ -106,4 +107,12 @@ html {
 .search-item .tags {
   font-style: italic;
   color: #3F6E35;
+}
+
+.footer {
+  color: #333;
+}
+
+.footer i.heart {
+  color: #DE5833;
 }

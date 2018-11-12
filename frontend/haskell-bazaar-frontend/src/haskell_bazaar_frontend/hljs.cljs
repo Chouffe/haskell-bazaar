@@ -1,8 +1,7 @@
 (ns haskell-bazaar-frontend.hljs
-  )
+  (:require [re-frame.core :as re-frame]))
 
 (re-frame/reg-event-fx
   ::code-block
-  interceptors
   (fn [_ [_ dom-node]]
     {:highlight-code-block dom-node}))
