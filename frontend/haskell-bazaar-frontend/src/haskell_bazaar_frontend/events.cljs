@@ -63,13 +63,19 @@
   :datascript/search
   [(re-frame/inject-cofx :datascript) interceptors]
   (fn [{:keys [datascript db]} [_ search-query]]
-    (when-not (empty? search-query)
+    (when-not (string/blank? search-query)
       (let [search-item-results (->> search-query
                                      (ds/search datascript)
                                      utils/uuid-coll->hashmap)]
-        {:db (-> db
-                 (assoc :search-loading false)
-                 (assoc :search-items search-item-results))}))))
+        {:db (assoc db
+                    :search-items search-item-results
+                    :search-loading false)}))))
+
+(re-frame/reg-event-fx
+  :datascript/search-later
+  [interceptors]
+  (fn [_ [_ {:keys [q ms]}]]
+    {:dispatch-later [{:ms ms :dispatch [:datascript/search q]}]}))
 
 ;; TODO: define higher order functions for handling the caching
 (re-frame/reg-event-fx

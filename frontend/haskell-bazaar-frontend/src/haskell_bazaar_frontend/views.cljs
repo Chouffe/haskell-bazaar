@@ -271,6 +271,7 @@
            ; TODO: should we add categories?
            ; :category true
            :name "fluid"
+           :defaultValue @search-query
            :fluid true
            :placeholder "Eg. Monad, Applicative, Lens, Category Theory"
            :showNoResults false
