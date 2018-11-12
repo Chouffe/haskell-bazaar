@@ -172,3 +172,9 @@
   (fn [{:keys [db]} [_ showing-kw]]
     {:db (assoc db :showing showing-kw)
      :dispatch [:navigate-search (:search-query db)]}))
+
+(re-frame/reg-event-fx
+  :hljs/code-block
+  interceptors
+  (fn [_ [_ dom-node]]
+    {:highlight-code-block dom-node}))

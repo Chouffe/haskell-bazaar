@@ -1,12 +1,15 @@
 (ns haskell-bazaar-frontend.views
   (:require
+    [clojure.string :as string]
+
     [reagent.core :as reagent]
     [re-frame.core :as re-frame]
-    [clojure.string :as string]
 
     [haskell-bazaar-frontend.api :as api]
     [haskell-bazaar-frontend.routes :as routes]
-    [haskell-bazaar-frontend.utils :as utils]))
+    [haskell-bazaar-frontend.utils :as utils]
+    [haskell-bazaar-frontend.ui :as ui]))
+
 
 (defn search-box-button [on-click]
   (let [search-loading (re-frame/subscribe [:search-loading])]
@@ -46,6 +49,19 @@
       (fn [e]
         (re-frame/dispatch [:set-showing showing-kw])))}
 
+   :search
+   {:onResultSelect
+    (fn [event data]
+      (let [selected-result (get-in (js->clj data) ["result" "title"])]
+        (re-frame/dispatch [:datascript/search selected-result])
+        (re-frame/dispatch [:set-search-query selected-result])))
+
+    :onSearchChange
+    (fn [e]
+      (re-frame/dispatch [:set-search-query (utils/target-value e)])
+      (re-frame/dispatch [:datascript/search (utils/target-value e)]))
+    }
+   ;; TODO: unused, remove
    :search-box
    {:on-change
     (fn [e]
@@ -149,27 +165,15 @@
                   @showing]))
          (into [:ul.search-filters]))))
 
-<<<<<<< HEAD
-
-
-(defn results-definition [{:keys [title body]}]
-  [:div.results-definition
-   [:div.results-definition-body
-    [:h1 title]
-    (utils/transform-extended-hiccup body)]])
-
 ;; TODO: move to datascript and write queries for it
 (def definitions
-  {"monad" {:name "monad"
-            :title "Monad Typeclass"
+  {"monad" {:title "Monad Typeclass"
             :body [:code-block
                    "class Applicative m => Monad m where\n  (>>=) :: m a -> (a -> m b) -> m b\n  return :: a -> m a"]}
-   "functor" {:name "functor"
-              :title "Functor Typeclass"
+   "functor" {:title "Functor Typeclass"
               :body [:code-block
                      "class Functor f where\n  fmap :: (a -> b) -> f a -> f b"]}
-   "applicative" {:name "applicative"
-                  :title "Applicative Typeclass"
+   "applicative" {:title "Applicative Functor Typeclass"
                   :body [:code-block
                          "class Functor f => Applicative f where\n  pure :: a -> f a\n  (<*>) :: f (a -> b) -> f a -> f b"]}
    "monoid" {:title "Monoid Typeclass"
@@ -182,45 +186,104 @@
             [:code-block "data Lens a b = Lens\n  { get :: a -> b\n  , set :: a -> b -> a\n  }"]
             [:p "Below is the general Lens type definition"]
             [:code-block "type Lens s t a b = forall f. Functor f => (a -> f b) -> s -> f t"]]}})
-=======
-(defn code-block [code]
-  (reagent/create-class
-    {:component-did-mount
-     (fn [this]
-       (let [node (reagent/dom-node this)]
-         ;; TODO: clojurize
-         (.highlightBlock js/hljs node)))
-
-     :reagent-render
-     (fn [code]
-       [:pre [:code.haskell.hljs code]])}))
 
 (defn results-definition [{:keys [title body]}]
-  (let [search-query (re-frame/subscribe [:search-query])]
-    (reagent/create-class
-      {:component-did-mount
-       (fn [this]
-         (let [node (reagent/dom-node this)]
-           (.highlightBlock js/hljs node))
-         (.log js/console "HELLO!"))
+  [:div.results-definition
+   [:div.results-definition-body
+    [:h1 title]
+    (utils/transform-extended-hiccup body)]])
 
-       :reagent-render
-       (fn [{:keys [title body]}]
-         [:div.results-definition
-          [:div.results-definition-body
-           [:h1 title]
-           body]])})))
+(def source
+  [
+   {
+    :title "Monad"
+    :description "Monad type class"
+   }
+   {
+    :title "Functor"
+    :description "Functor type class"
+   }
+   {
+    :title "Applicative"
+    :description "Applicative type class"
+   }
+   ; {
+   ;  "title" "Emmerich Group",
+   ;  "description" "Extended maximized product",
+   ;  "image" "https://s3.amazonaws.com/uifaces/faces/twitter/cdavis565/128.jpg",
+   ;  "price" "$80.20"
+   ;  },
+   ; {
+   ;  "title" "Bergstrom - Koelpin",
+   ;  "description" "Synergized directional collaboration",
+   ;  "image" "https://s3.amazonaws.com/uifaces/faces/twitter/chadengle/128.jpg",
+   ;  "price" "$70.16"
+   ;  },
+   ; {
+   ;  "title" "Mante Group",
+   ;  "description" "Visionary tertiary toolset",
+   ;  "image" "https://s3.amazonaws.com/uifaces/faces/twitter/hasslunsford/128.jpg",
+   ;  "price" "$53.11"
+   ;  },
+   ; {
+   ;  "title" "Kertzmann LLC",
+   ;  "description" "Enhanced explicit budgetary management",
+   ;  "image" "https://s3.amazonaws.com/uifaces/faces/twitter/madshensel/128.jpg",
+   ;  "price" "$8.02"
+   ;  },
+   ; {
+   ;  "title" "Schmidt, Prohaska and Mayer",
+   ;  "description" "User-centric contextually-based knowledge base",
+   ;  "image" "https://s3.amazonaws.com/uifaces/faces/twitter/markwienands/128.jpg",
+   ;  "price" "$49.23"
+   ;  }
+   ]
+  )
+
+(def source-2
+  {:tags
+   {:name "tag"
+    :results [{:title "Monad"
+                :description "Monad type class"}
+               {:title "Monoid"
+                :description "Monoid type class"}]}
+   :authors {:name "author"
+             :results [{:title "Simon Peyton Jones"}
+                       {:title "Simon Marlow"}
+                       {:title "Rich Hickey"}]}})
+
+(defn filter-results [search-query results]
+  (into []
+        (filter (fn [{:keys [title]}]
+                  (utils/re-pattern? search-query title)) results)))
 
 (defn ui [dispatchers base-url]
-  (let [search-query (re-frame/subscribe [:search-query])]
+  (let [search-query (re-frame/subscribe [:search-query])
+        tags (re-frame/subscribe [:autocomplete-tags])]
+    (.log js/console @tags)
     [:div
-     [:div.topnav
-      [search-box (:search-box dispatchers)]
-      #_[:div.bar
-         [search-filters (:filters dispatchers)]]]
-     (when (= @search-query "functor")
-       [results-definition
-        {:title "Functor Typeclass"
-         :body [code-block "class Functor f where\n    fmap :: (a -> b) -> f a -> f b\n    (<$>) :: a -> f b -> f a"]}])
-     [:div.results
-      [search-results-list base-url]]]))
+     (let [filtered-source (if-not (string/blank? @search-query)
+                             (filter-results @search-query source) source)]
+       [:div.topnav
+        [:> ui/container
+         [:> ui/search
+          {:results filtered-source
+           ; TODO: should we add categories?
+           ; :category true
+           :name "fluid"
+           :fluid true
+           :placeholder "Eg. Monad, Applicative, Lens, Category Theory"
+           :showNoResults false
+           :onResultSelect (get-in dispatchers [:search :onResultSelect])
+           :onSearchChange (get-in dispatchers [:search :onSearchChange])
+           }]]])
+
+     (when-let [definition (get definitions @search-query)]
+       [:div.enriched-result
+        [:> ui/container
+         ;; TODO: rename enriched result
+         [results-definition definition]]])
+
+     [:div.search-results
+      [:> ui/container
+       [search-results-list base-url]]]]))

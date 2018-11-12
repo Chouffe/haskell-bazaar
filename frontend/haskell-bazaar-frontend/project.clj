@@ -8,7 +8,8 @@
 
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [org.clojure/clojurescript "1.10.238"]
-                 ; [org.clojure/core.async  "0.4.474"]
+
+                 [cljsjs/semantic-ui-react "0.83.0-0" :exclusions [cljsjs/react]]
 
                  [datascript "0.16.6"]
                  [cljs-ajax "0.7.4"]

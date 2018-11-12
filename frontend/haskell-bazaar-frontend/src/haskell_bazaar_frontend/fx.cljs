@@ -59,3 +59,8 @@
     :cache
     (fn [{:keys [k v]}]
       (swap! cache assoc k v))))
+
+(re-frame/reg-fx
+  :highlight-code-block
+  (fn [dom-node]
+    (.highlightBlock js/hljs dom-node)))

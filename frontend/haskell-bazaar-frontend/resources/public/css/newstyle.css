@@ -1,0 +1,109 @@
+html {
+  font-family: "DDG_ProximaNova","DDG_ProximaNova_UI_0","DDG_ProximaNova_UI_1","DDG_ProximaNova_UI_2","DDG_ProximaNova_UI_3","DDG_ProximaNova_UI_4","DDG_ProximaNova_UI_5","DDG_ProximaNova_UI_6","Proxima Nova","Helvetica Neue","Helvetica","Segoe UI","Nimbus Sans L","Liberation Sans","Open Sans",FreeSans,Arial,sans-serif;
+}
+
+.topnav {
+  width: 100%;
+  background-color: #F7F7F7;
+  border-bottom: 1px solid #C8C8C8;
+  padding-top: 2.5em;
+  padding-bottom: 2.5em;
+}
+
+.topnav .container .search .input {
+  display: flex;
+}
+
+.topnav .container .search .input input {
+  padding-left: .75em;
+  font-size: 1.1em;
+  border: 1px solid #C8C8C8;
+  border-radius: 3px;
+  box-shadow: 0px 2px #E8E8E8;
+  color: #333;
+  display: block;
+  position:relative;
+  height: 44px;
+}
+
+.enriched-result {
+  background-color: #f2f2f2;
+  padding-bottom: 1em;
+  padding-top: 1em;
+  border-bottom: 1px solid #dbdbdb
+}
+
+.results-definition-body {
+  max-width: 590px;
+}
+
+.results-definition-body h1 {
+  font-size: 1.3em;
+  margin-bottom: 1em;
+}
+
+.results-definition-body pre {
+  margin: 0.5em 0;
+}
+
+.results-definition-body pre code {
+  background-color: #f7f7f7;
+  border: 1px solid #dbdbdb;
+  border-radius: 4px;
+}
+
+.search-results {
+}
+
+.search-results ul {
+  list-style: none;
+  overflow: hidden;
+  padding:0;
+}
+
+.search-results ul li {
+  display: block;
+  max-width: 590px;
+  padding: 0.5em 0;
+  color: #333;
+}
+
+.x-lg {
+  font-size: 1.35em;
+}
+
+.lg {
+  font-size: 1.2em;
+}
+
+.md {
+  font-size: 1em;
+}
+
+.sm {
+  font-size: 0.9em;
+}
+
+.x-sm {
+  font-size: 0.8em;
+}
+
+.item {
+  border:none;
+}
+
+.search-item .description {
+  display: inline-block;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  line-height: 1.33em;
+}
+
+.search-item .authors {
+  color: #3F6E35;
+}
+
+.search-item .tags {
+  font-style: italic;
+  color: #3F6E35;
+}

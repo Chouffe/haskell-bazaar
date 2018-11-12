@@ -1,6 +1,7 @@
 (ns haskell-bazaar-frontend.utils
   (:require
     [clojure.walk :as w]
+    [re-frame.core :as re-frame]
     [reagent.core :as reagent]))
 
 (defn coll->hashmap [key-fn]
@@ -68,15 +69,12 @@
 (defn code-block [code]
   (reagent/create-class
     {:component-did-mount
-     (fn [this]
-       (let [node (reagent/dom-node this)]
-         ;; TODO: clojurize
-         (.highlightBlock js/hljs node)))
+     (fn [this] (re-frame/dispatch [:hljs/code-block (reagent/dom-node this)]))
 
      :reagent-render
-     (fn [code]
-       [:pre [:code.haskell.hljs code]])}))
+     (fn [code] [:pre [:code.haskell.hljs code]])}))
 
+; TODO: abstract over a set of rules and dispatchers
 (defn transform-extended-hiccup [v]
   (cond
     (or (keyword? v) (string? v) (integer? v)) v

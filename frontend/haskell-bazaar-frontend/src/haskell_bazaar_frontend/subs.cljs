@@ -17,6 +17,15 @@
     (:items db)))
 
 (re-frame/reg-sub
+  :autocomplete-tags
+  (fn [db _]
+    (->> db
+         :search-items
+         vals
+         (mapcat #(->> % :tags (map :name)))
+         )))
+
+(re-frame/reg-sub
   :search-items
   (fn [db _]
     (:search-items db)))
