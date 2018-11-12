@@ -29,7 +29,7 @@ port Environment.Dev  = 8002
 port Environment.Prod = 8001
 
 filepathFeedback :: Environment.Environment -> FilePath
-filepathFeedback Environment.Prod = "home/ubuntu/haskellbazaar-feedback-data.txt"
+filepathFeedback Environment.Prod = "/home/ubuntu/haskellbazaar-feedback-data.txt"
 filepathFeedback _ = "/home/chouffe/haskellbazaar-feedback-data.txt"
 
 data Config
