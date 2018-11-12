@@ -269,17 +269,19 @@
        [:div.topnav
         [:> ui/container
          [:> ui/search
-          {:results filtered-source
-           ; TODO: should we add categories?
-           ; :category true
-           :name "fluid"
-           :defaultValue @search-query
-           :fluid true
-           :placeholder "Eg. Monad, Applicative, Lens, Category Theory"
-           :showNoResults false
-           :onResultSelect (get-in dispatchers [:search :onResultSelect])
-           :onSearchChange (get-in dispatchers [:search :onSearchChange])
-           }]]])
+          (merge
+            (when-not (string/blank? @search-query)
+              {:defaultValue @search-query})
+            {:results filtered-source
+             ; TODO: should we add categories?
+             ; :category true
+             :name "fluid"
+             :fluid true
+             :placeholder "Eg. Monad, Applicative, Lens, Category Theory"
+             :showNoResults false
+             :onResultSelect (get-in dispatchers [:search :onResultSelect])
+             :onSearchChange (get-in dispatchers [:search :onSearchChange])
+             })]]])
 
      (when-let [definition (get definitions @search-query)]
        [:div.enriched-result
