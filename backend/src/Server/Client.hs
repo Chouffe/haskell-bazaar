@@ -2,6 +2,7 @@ module Server.Client
   ( health
   , itemUrl
   , allItems
+  , feedback
   , search
   , keywords
   )
@@ -22,8 +23,10 @@ itemUrl :: UUID -> ClientM T.Text
 allItems :: ClientM [PublicItem]
 search :: Maybe T.Text -> ClientM [PublicItem]
 keywords :: ClientM [PublicKeyword]
+feedback :: Feedback -> ClientM T.Text
 ( health   :<|>
   search   :<|>
   keywords :<|>
   itemUrl  :<|>
-  allItems  ) = client bazaarAPI
+  allItems :<|>
+  feedback  ) = client bazaarAPI

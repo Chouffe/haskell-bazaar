@@ -6,6 +6,7 @@ module Server.Handler
   ( health
   , itemUrl
   , allItems
+  , feedback
   , keywords
   , search
   , root
@@ -20,7 +21,9 @@ import qualified Data.ByteString.Lazy             as BS
 import           Data.Semigroup                   ((<>))
 import qualified Data.Text                        as T
 import qualified Data.Text.Encoding               as T
+import qualified Data.Time.Clock                  as TC
 import           Data.UUID                        (UUID)
+import           System.IO                        (appendFile)
 
 import           Servant.API.ContentTypesExtended (RawHtml (..))
 import           Servant.Server                   (ServantErr, err301, err404,
@@ -31,9 +34,29 @@ import qualified Logger
 import           Server.API.Types
 import qualified Server.Config
 
-
 health :: Monad m => m T.Text
 health = pure "OK!"
+
+feedback
+  :: ( MonadReader Server.Config.Handle m
+     , MonadIO m
+     )
+  => Feedback
+  -> m T.Text
+feedback (Feedback msg) = do
+  config       <- asks Server.Config.hConfig
+  loggerHandle <- asks Server.Config.hLogger
+  currentTime  <- liftIO TC.getCurrentTime
+
+  liftIO
+    $ Logger.info loggerHandle
+    $ "Feedback Received:  " <> show msg
+
+  -- TODO: send to S3 instead...
+  liftIO $ appendFile (Server.Config.cPathFeedback config)  -- TODO: make it a config param
+         $ show currentTime <> "\n" <> T.unpack msg <> "\n\n\n\n"
+
+  pure "OK"
 
 itemUrl
   :: ( MonadReader Server.Config.Handle m

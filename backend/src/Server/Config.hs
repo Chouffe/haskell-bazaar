@@ -6,6 +6,7 @@ module Server.Config
   , config
   , cPort
   , cEnvironment
+  , cPathFeedback
 
   , Handle
   , new
@@ -27,15 +28,20 @@ port Environment.Test = 8003
 port Environment.Dev  = 8002
 port Environment.Prod = 8001
 
+filepathFeedback :: Environment.Environment -> FilePath
+filepathFeedback Environment.Prod = "home/ubuntu/haskellbazaar-feedback-data.txt"
+filepathFeedback _ = "/home/chouffe/haskellbazaar-feedback-data.txt"
+
 data Config
   = Config
-    { cEnvironment :: Environment.Environment -- ^ Environment
-    , cPort        :: Port                    -- ^ Port to run the server on
+    { cEnvironment  :: Environment.Environment -- ^ Environment
+    , cPort         :: Port                    -- ^ Port to run the server on
+    , cPathFeedback :: FilePath                -- ^ FilePath to save the feedback
     }
   deriving (Eq, Show)
 
 config :: Environment.Environment -> Config
-config env = Config env (port env)
+config env = Config env (port env) (filepathFeedback env)
 
 data Handle
   = Handle

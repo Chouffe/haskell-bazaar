@@ -34,6 +34,7 @@ type BazaarAPI
   :<|> "api" :> "v0" :> "keywords" :> Get '[JSON] [PublicKeyword]
   :<|> "api" :> "v0" :> "item-url" :> Capture "uuid" UUID :> Get '[JSON] T.Text
   :<|> "api" :> "v0" :> "items" :> Get '[JSON] [PublicItem]
+  :<|> "api" :> "v0" :> "feedback" :> ReqBody '[JSON] Feedback :> Post '[JSON] T.Text
 
 type BazaarStaticAPI
   = Get '[HTML] RawHtml
@@ -61,6 +62,7 @@ serverAPI nt = enter nt
   :<|> Server.Handler.keywords
   :<|> Server.Handler.itemUrl
   :<|> Server.Handler.allItems
+  :<|> Server.Handler.feedback
 
 files :: ServerT BazaarStaticAPI Handler
 files = Server.Handler.root :<|> serveDirectoryWebApp "static"
