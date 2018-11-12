@@ -30,6 +30,9 @@
 (defn keywords [url]
   (str url "keywords"))
 
+(defn feedback [url]
+  (str url "feedback"))
+
 (defn item-url [url uuid]
   (str url "item-url/" uuid))
 

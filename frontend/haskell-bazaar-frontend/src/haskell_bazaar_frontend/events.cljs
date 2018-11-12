@@ -60,6 +60,19 @@
       :on-failure [:api-keywords-failure]}}))
 
 (re-frame/reg-event-fx
+  :api-feedback
+  interceptors
+  (fn [{:keys [db]} [_ message]]
+    {:http-xhrio
+     {:method :post
+      :params {:message message}
+      :uri (api/feedback (api/base-url (:environment db)))
+      :format (ajax/json-request-format)
+      :response-format api/response-format
+      :on-success [:api-feedback-success]
+      :on-failure [:api-feedback-failure]}}))
+
+(re-frame/reg-event-fx
   :datascript/search
   [(re-frame/inject-cofx :datascript) interceptors]
   (fn [{:keys [datascript db]} [_ search-query]]
@@ -184,3 +197,16 @@
   interceptors
   (fn [_ [_ dom-node]]
     {:highlight-code-block dom-node}))
+
+;; Modals
+(re-frame/reg-event-db
+  :modal/close
+  interceptors
+  (fn [db _]
+    (dissoc db :modal)))
+
+(re-frame/reg-event-db
+  :modal/open
+  interceptors
+  (fn [db [_ modal-kw]]
+    (assoc db :modal modal-kw)))

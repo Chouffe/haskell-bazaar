@@ -34,3 +34,8 @@
   :showing
   (fn [db _]
     (:showing db)))
+
+(re-frame/reg-sub
+  :modal
+  (fn [db _]
+    (:modal db)))

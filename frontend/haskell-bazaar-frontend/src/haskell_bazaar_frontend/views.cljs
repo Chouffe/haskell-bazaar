@@ -196,49 +196,16 @@
 (def source
   [
    {
-    :title "Monad"
+    :title "monad"
     :description "Monad type class"
    }
    {
-    :title "Functor"
+    :title "functor"
     :description "Functor type class"
    }
    {
-    :title "Applicative"
-    :description "Applicative type class"
-   }
-   ; {
-   ;  "title" "Emmerich Group",
-   ;  "description" "Extended maximized product",
-   ;  "image" "https://s3.amazonaws.com/uifaces/faces/twitter/cdavis565/128.jpg",
-   ;  "price" "$80.20"
-   ;  },
-   ; {
-   ;  "title" "Bergstrom - Koelpin",
-   ;  "description" "Synergized directional collaboration",
-   ;  "image" "https://s3.amazonaws.com/uifaces/faces/twitter/chadengle/128.jpg",
-   ;  "price" "$70.16"
-   ;  },
-   ; {
-   ;  "title" "Mante Group",
-   ;  "description" "Visionary tertiary toolset",
-   ;  "image" "https://s3.amazonaws.com/uifaces/faces/twitter/hasslunsford/128.jpg",
-   ;  "price" "$53.11"
-   ;  },
-   ; {
-   ;  "title" "Kertzmann LLC",
-   ;  "description" "Enhanced explicit budgetary management",
-   ;  "image" "https://s3.amazonaws.com/uifaces/faces/twitter/madshensel/128.jpg",
-   ;  "price" "$8.02"
-   ;  },
-   ; {
-   ;  "title" "Schmidt, Prohaska and Mayer",
-   ;  "description" "User-centric contextually-based knowledge base",
-   ;  "image" "https://s3.amazonaws.com/uifaces/faces/twitter/markwienands/128.jpg",
-   ;  "price" "$49.23"
-   ;  }
-   ]
-  )
+    :title "applicative"
+    :description "Applicative type class"}])
 
 (def source-2
   {:tags
@@ -257,6 +224,40 @@
         (filter (fn [{:keys [title]}]
                   (utils/re-pattern? search-query title)) results)))
 
+(defn feedback-modal []
+  (let [state (reagent/atom {:message nil :sent? false})]
+    (fn []
+      [:> ui/modal {:open true
+                    :onClose #(re-frame/dispatch [:modal/close])}
+       [:> ui/modal-header "Leave us your Feedback"]
+       [:> ui/modal-content
+        [:> ui/modal-description
+         [:div.ui.form
+          [:div.field
+           [:textarea {:on-change #(swap! state assoc :message (utils/target-value %))
+                       :placeholder "Please leave us a message here. If you want us to follow up fo not forget to include your email address in your message"}]]]
+         [:br]
+         [:div.ui.center.aligned
+          (if (:sent? @state)
+            [:p "Thanks for your valuable feedback!"]
+            [:button.ui.primary.button
+             (merge
+               {:class "disabled"}
+               (when-not (string/blank? (:message @state))
+                 {:class "enabled"
+                  :on-click #(do
+                               (swap! state assoc :sent? true)
+                               (re-frame/dispatch [:api-feedback (:message @state)]))}))
+             "Submit"])]]]])))
+
+;; TODO: use a multimethod
+(defn modal []
+  (let [modal-kw (re-frame/subscribe [:modal])]
+    (when-let [modal @modal-kw]
+      (case modal
+        :feedback [feedback-modal]
+        [:div]))))
+
 (defn ui [dispatchers base-url]
   (let [search-query (re-frame/subscribe [:search-query])
         tags (re-frame/subscribe [:autocomplete-tags])]
@@ -264,6 +265,7 @@
     [:div
      (let [filtered-source (if-not (string/blank? @search-query)
                              (filter-results @search-query source) source)]
+
        [:div.topnav
         [:> ui/container
          [:> ui/search
@@ -294,4 +296,8 @@
       [:div.ui.center.aligned.container
        [:p "Built with "
         [:> ui/icon {:name "heart"}]
-         " for the Haskell community"]]]]))
+         " for the Haskell community"]
+       [:p
+        [:a {:on-click #(re-frame/dispatch [:modal/open :feedback])}
+         "Leave us some feedback here"]]
+       [modal]]]]))

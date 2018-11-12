@@ -69,6 +69,7 @@
                    ::description]
           :opt [::tags ::authors]))
 (s/def ::search-items (s/map-of ::uuid ::search-item))
+(s/def ::modal #{:feedback})
 
 ;; App-state
 (s/def ::app-state
@@ -80,7 +81,9 @@
                    ::showing
                    ::sorted
                    ::keywords
-                   ::items]))
+                   ::items]
+          :opt-un [::modal]))
+
 
 ;; TODO: add caching layer for search already performed in an interceptor
 (defn default-db [env]
