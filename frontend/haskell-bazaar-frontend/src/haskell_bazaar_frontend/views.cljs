@@ -260,7 +260,7 @@
 (defn ui [dispatchers base-url]
   (let [search-query (re-frame/subscribe [:search-query])
         tags (re-frame/subscribe [:autocomplete-tags])]
-    (.log js/console @tags)
+    ; (.log js/console @tags)
     [:div
      (let [filtered-source (if-not (string/blank? @search-query)
                              (filter-results @search-query source) source)]
