@@ -42,8 +42,6 @@
                            :output-to "resources/public/js/compiled/haskell_bazaar_frontend.js"
                            :output-dir "resources/public/js/compiled/out"
                            :source-map-timestamp true
-                           :closure-defines {goog.DEBUG true
-                                             goog.PROD false}
 
                            ;; External node modules
                            ; :npm-deps {:left-pad "1.1.3"}
@@ -78,8 +76,7 @@
 
 			   :main haskell-bazaar-frontend.core
 			   :optimizations :advanced
-			   :closure-defines {goog.DEBUG false
-                                             goog.PROD true}}}]}
+			   :closure-defines {"goog.DEBUG" false}}}]}
 
   :figwheel {;; :http-server-root "public" ;; default and assumes "resources"
              ;; :server-port 3449 ;; default

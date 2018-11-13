@@ -44,9 +44,9 @@
 
 (defn ^:export run
   []
-  (let [environment (environment/environment)]
+  (let [env (environment/environment)]
     ;; Mounting React component
-    (reagent/render [views/ui views/dispatchers (api/base-url environment)]
+    (reagent/render [views/ui views/dispatchers (api/base-url env)]
                     (js/document.getElementById "app"))))
 
 ;; ---------------
