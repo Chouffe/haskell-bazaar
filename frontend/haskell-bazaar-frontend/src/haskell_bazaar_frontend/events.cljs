@@ -220,3 +220,13 @@
   interceptors
   (fn [db [_ tab-kw]]
     (assoc db :tab tab-kw)))
+
+(re-frame/reg-event-fx
+  :analytics/page-view
+  (fn [db [_ {:keys [title path] :as params}]]
+    {:gtag/page-view params}))
+
+(re-frame/reg-event-fx
+  :analytics/event
+  (fn [db [_ {:keys [action category label value] :as params}]]
+    {:gtag/event params}))

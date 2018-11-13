@@ -4,6 +4,7 @@
             [re-frame.core :as re-frame]
             [datascript.core :as d]
 
+            [haskell-bazaar-frontend.analytics :as analytics]
             [haskell-bazaar-frontend.ds :as ds]
             [haskell-bazaar-frontend.api :as api]
             [haskell-bazaar-frontend.events]  ;; Register events

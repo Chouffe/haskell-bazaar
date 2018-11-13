@@ -5,6 +5,7 @@
   (:require
     [re-frame.core :as re-frame]
 
+    [haskell-bazaar-frontend.analytics :as analytics]
     [haskell-bazaar-frontend.local-storage :as local-storage]
     [haskell-bazaar-frontend.routes :as routes]
     [haskell-bazaar-frontend.utils :as utils]))
@@ -69,3 +70,13 @@
   :ui/focus
   (fn [query-selector]
     (utils/focus! query-selector)))
+
+(re-frame/reg-fx
+  :gtag/page-view
+  (fn [{:keys [title path] :as params}]
+    (analytics/page-view! params)))
+
+(re-frame/reg-fx
+  :gtag/event
+  (fn [{:keys [action category label value] :as params}]
+    (analytics/event! params)))
