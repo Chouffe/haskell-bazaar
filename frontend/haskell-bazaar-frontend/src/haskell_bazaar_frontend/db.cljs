@@ -100,7 +100,7 @@
    :keywords       []
    ;; TODO: deprecate :items
    :items          {}
-   :tab           :search
+   :tab           #_:search :landing-page
    ; :items          (utils/uuid-coll->hashmap stubs/search-result)
    })
 

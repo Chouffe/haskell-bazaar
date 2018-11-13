@@ -49,6 +49,17 @@
       (fn [e]
         (re-frame/dispatch [:set-showing showing-kw])))}
 
+   :landing-page-search
+   {:onResultSelect
+    (fn [event data]
+      (let [selected-result (get-in (js->clj data) ["result" "title"])]
+        (re-frame/dispatch [:navigate-search selected-result])))
+
+    :onSearchChange
+    (fn [e]
+      (re-frame/dispatch [:set-search-query (utils/target-value e)])
+      (re-frame/dispatch [:datascript/search (utils/target-value e)]))}
+
    :search
    {:onResultSelect
     (fn [event data]
@@ -279,6 +290,7 @@
               ; TODO: should we add categories?
               ; :category true
               :name "fluid"
+              :selectFirstResult true
               :fluid true
               :placeholder "Eg. Monad, Applicative, Lens, Category Theory"
               :showNoResults false
@@ -300,7 +312,33 @@
 (defmulti tab-pannel (fn [params] (:tab params)))
 
 (defmethod tab-pannel :default [args] (.log js/console args) [:div "Hello World"])
-(defmethod tab-pannel :landing-page [_] [:div "Landing Page"])
+
+(defmethod tab-pannel :landing-page [{:keys [dispatchers base-url]}]
+  (let [search-query (re-frame/subscribe [:search-query])]
+    [:div#landing-page
+     ;; TODO: verical align content
+     [:div.header
+      [:> ui/container
+       [:img.ui.small.circular.centered.image
+        {:src "images/haskell-bazaar-logo.png"
+         :alt "Haskell Bazaar Logo"}]
+       [:form {:on-submit (fn [e]
+                            (.preventDefault e)
+                            (.stopPropagation e)
+                            (re-frame/dispatch [:navigate-search @search-query])
+                            (.log js/console "SUBMITTING")
+                            )}
+        [search (merge (:landing-page-search dispatchers)
+                       {:id "landing-page-search-box"
+                        :autofocus? true
+                        :source source
+                        :search-query @search-query})]]
+       [:h1.center.aligned.header.tag-line
+        "The search engine for "
+        [:strong "Haskell"]
+        " resources!"]]]
+     #_[:div#page-1 "TODO"]]))
+
 (defmethod tab-pannel :search [{:keys [dispatchers base-url]}]
   (let [search-query (re-frame/subscribe [:search-query])]
     [:div
@@ -308,7 +346,7 @@
       [:> ui/container
        [search (merge (:search dispatchers)
                       {:id "search-box"
-                       :autofocus? true
+                       :autofocus? false
                        :source source
                        :search-query @search-query})]]]
        (when-let [definition (get definitions @search-query)]

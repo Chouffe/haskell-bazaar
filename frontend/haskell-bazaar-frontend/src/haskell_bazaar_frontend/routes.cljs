@@ -14,6 +14,9 @@
 (defn set-config! []
   (secretary/set-config! :prefix "#"))
 
+(defroute "/" [_]
+  (re-frame/dispatch [:tab :landing-page]))
+
 (defroute "/search" [query-params]
   (let [{:keys [q tab]} query-params]
     ;; TODO: sanitize `q`

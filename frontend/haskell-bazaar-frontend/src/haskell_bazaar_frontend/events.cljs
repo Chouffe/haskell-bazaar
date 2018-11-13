@@ -174,10 +174,8 @@
   :navigate-search
   interceptors
   (fn [{:keys [db]} [_ search-query]]
-    ;; TODO: url encode the search query?
-    {:navigate (str "/search"
-                    "?q=" search-query
-                    "&tab=" (name (:showing db)))}))
+    {:db (assoc db :tab :search)
+     :navigate (str "/search?q=" search-query)}))
 
 (re-frame/reg-event-fx
   :navigate
@@ -216,3 +214,9 @@
   interceptors
   (fn [_ [_ query-selector]]
     {:ui/focus query-selector}))
+
+(re-frame/reg-event-db
+  :tab
+  interceptors
+  (fn [db [_ tab-kw]]
+    (assoc db :tab tab-kw)))
