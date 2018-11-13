@@ -47,9 +47,10 @@
   ([d s] (js/Date. (+ (.getTime d) (* 1000 s)))))
 
 (defn focus!
-  [input-name-str]
+  "Focus based on a queryselector `qs`"
+  [qs]
   (-> js/document
-      (.querySelector (str "input[name='" input-name-str "']"))
+      (.querySelector qs)
       .focus))
 
 (defn rmatch [search-query s]

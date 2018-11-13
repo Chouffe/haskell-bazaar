@@ -250,7 +250,7 @@
                                (re-frame/dispatch [:api-feedback (:message @state)]))}))
              "Submit"])]]]])))
 
-;; TODO: use a multimethod
+;; TODO: use a multimethod instead
 (defn modal []
   (let [modal-kw (re-frame/subscribe [:modal])]
     (when-let [modal @modal-kw]
@@ -258,48 +258,71 @@
         :feedback [feedback-modal]
         [:div]))))
 
-(defn ui [dispatchers base-url]
-  (let [search-query (re-frame/subscribe [:search-query])
-        tags (re-frame/subscribe [:autocomplete-tags])]
-    ; (.log js/console @tags)
+(defn search [{:keys [source onResultSelect onSearchChange autofocus? id]}]
+  (reagent/create-class
+    {:component-did-mount
+     (fn [e]
+       (when autofocus?
+         (re-frame/dispatch [:ui/focus (str "#" id " input")])))
+
+     :reagent-render
+     (fn [{:keys [source onResultSelect onSearchChange autofocus? id]}]
+       (let [search-query (re-frame/subscribe [:search-query])
+             filtered-source (if-not (string/blank? @search-query)
+                               (filter-results @search-query source) source)]
+         [:div {:id id}
+          [:> ui/search
+           (merge
+             (when-not (string/blank? @search-query)
+               {:defaultValue @search-query})
+             {:results filtered-source
+              ; TODO: should we add categories?
+              ; :category true
+              :name "fluid"
+              :fluid true
+              :placeholder "Eg. Monad, Applicative, Lens, Category Theory"
+              :showNoResults false
+              :onResultSelect onResultSelect
+              :onSearchChange onSearchChange
+              })]]))}))
+
+(defn footer []
+  [:div.ui.vertical.footer.segment
+   [:> ui/divider]
+   [:div.ui.center.aligned.container
+    [:p "Built with "
+     [:> ui/icon {:name "heart"}]
+     " for the Haskell community"]
+    [:p
+     [:a {:on-click #(re-frame/dispatch [:modal/open :feedback])}
+      "Leave us some feedback here"]]]])
+
+(defmulti tab-pannel (fn [params] (:tab params)))
+
+(defmethod tab-pannel :default [args] (.log js/console args) [:div "Hello World"])
+(defmethod tab-pannel :landing-page [_] [:div "Landing Page"])
+(defmethod tab-pannel :search [{:keys [dispatchers base-url]}]
+  (let [search-query (re-frame/subscribe [:search-query])]
     [:div
-     (let [filtered-source (if-not (string/blank? @search-query)
-                             (filter-results @search-query source) source)]
-
-       [:div.topnav
-        [:> ui/container
-         [:> ui/search
-          (merge
-            (when-not (string/blank? @search-query)
-              {:defaultValue @search-query})
-            {:results filtered-source
-             ; TODO: should we add categories?
-             ; :category true
-             :name "fluid"
-             :fluid true
-             :placeholder "Eg. Monad, Applicative, Lens, Category Theory"
-             :showNoResults false
-             :onResultSelect (get-in dispatchers [:search :onResultSelect])
-             :onSearchChange (get-in dispatchers [:search :onSearchChange])
-             })]]])
-
-     (when-let [definition (get definitions @search-query)]
-       [:div.enriched-result
-        [:> ui/container
-         ;; TODO: rename enriched result
-         [results-definition definition]]])
-
-     [:div.search-results
+     [:div.topnav
       [:> ui/container
-       [search-results-list base-url]]]
+       [search (merge (:search dispatchers)
+                      {:id "search-box"
+                       :autofocus? true
+                       :source source
+                       :search-query @search-query})]]]
+       (when-let [definition (get definitions @search-query)]
+         [:div.enriched-result
+          [:> ui/container
+           ;; TODO: rename enriched result
+           [results-definition definition]]])
+       [:div.search-results
+        [:> ui/container
+         [search-results-list base-url]]]]))
 
-     [:div.ui.vertical.footer.segment
-      [:> ui/divider]
-      [:div.ui.center.aligned.container
-       [:p "Built with "
-        [:> ui/icon {:name "heart"}]
-         " for the Haskell community"]
-       [:p
-        [:a {:on-click #(re-frame/dispatch [:modal/open :feedback])}
-         "Leave us some feedback here"]]
-       [modal]]]]))
+(defn ui [dispatchers base-url]
+  (let [tab (re-frame/subscribe [:tab])]
+    [:div
+     [modal]
+     [tab-pannel {:dispatchers dispatchers :base-url base-url :tab @tab}]
+     [footer]]))

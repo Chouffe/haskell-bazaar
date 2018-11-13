@@ -7,13 +7,24 @@
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/semantic-ui@2.4.0/dist/semantic.min.css"></link>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/default.min.css">
     <link rel="icon" href="https://clojurescript.org/images/cljs-logo-icon-32.png">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=UA-129140929-1"></script> -->
+    <!-- <script> -->
+    <!--   window.dataLayer = window.dataLayer || []; -->
+    <!--   function gtag(){dataLayer.push(arguments);} -->
+    <!--   gtag('js', new Date()); -->
+    <!--   gtag('config', 'UA-129140929-1'); -->
+    <!-- </script> -->
+
   </head>
   <body>
     <div id="app">
-      <div class="loader-wrapper">
-        <div class="loader-text">
-          Loading
+      <div class="ui segment" style="height:100vh;">
+        <div class="ui active inverted dimmer">
+          <div class="ui large text loader">Loading</div>
         </div>
+        <p></p>
       </div>
     </div>
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/highlight.min.js"></script>

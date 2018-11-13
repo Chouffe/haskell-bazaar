@@ -39,3 +39,8 @@
   :modal
   (fn [db _]
     (:modal db)))
+
+(re-frame/reg-sub
+  :tab
+  (fn [db _]
+    (:tab db)))

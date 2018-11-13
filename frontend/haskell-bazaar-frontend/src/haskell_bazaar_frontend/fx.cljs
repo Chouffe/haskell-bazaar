@@ -64,3 +64,8 @@
   :highlight-code-block
   (fn [dom-node]
     (.highlightBlock js/hljs dom-node)))
+
+(re-frame/reg-fx
+  :ui/focus
+  (fn [query-selector]
+    (utils/focus! query-selector)))

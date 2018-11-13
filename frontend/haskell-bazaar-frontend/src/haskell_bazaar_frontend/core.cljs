@@ -46,11 +46,7 @@
   (let [environment (environment/environment)]
     ;; Mounting React component
     (reagent/render [views/ui views/dispatchers (api/base-url environment)]
-                    (js/document.getElementById "app"))
-    ;; Focusing the search field
-    ;; TODO: dispatch a reframe event and perform an effect instead
-    (js/setTimeout #(utils/focus! "fluid") 500)
-    ))
+                    (js/document.getElementById "app"))))
 
 ;; ---------------
 ;; Figwheel reload

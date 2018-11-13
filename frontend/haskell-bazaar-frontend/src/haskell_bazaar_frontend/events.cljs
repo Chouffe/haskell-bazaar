@@ -210,3 +210,9 @@
   interceptors
   (fn [db [_ modal-kw]]
     (assoc db :modal modal-kw)))
+
+(re-frame/reg-event-fx
+  :ui/focus
+  interceptors
+  (fn [_ [_ query-selector]]
+    {:ui/focus query-selector}))

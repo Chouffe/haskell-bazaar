@@ -70,6 +70,7 @@
           :opt [::tags ::authors]))
 (s/def ::search-items (s/map-of ::uuid ::search-item))
 (s/def ::modal #{:feedback})
+(s/def ::tab #{:search :landing-page})
 
 ;; App-state
 (s/def ::app-state
@@ -81,7 +82,8 @@
                    ::showing
                    ::sorted
                    ::keywords
-                   ::items]
+                   ::items
+                   ::tab]
           :opt-un [::modal]))
 
 
@@ -98,6 +100,7 @@
    :keywords       []
    ;; TODO: deprecate :items
    :items          {}
+   :tab           :search
    ; :items          (utils/uuid-coll->hashmap stubs/search-result)
    })
 
