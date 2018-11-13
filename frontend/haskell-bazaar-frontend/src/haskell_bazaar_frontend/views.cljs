@@ -50,7 +50,14 @@
         (re-frame/dispatch [:set-showing showing-kw])))}
 
    :landing-page-search
-   {:onResultSelect
+   {:on-submit
+    (fn [search-query]
+      (fn [e]
+        (.preventDefault e)
+        (.stopPropagation e)
+        (re-frame/dispatch [:navigate-search @search-query])))
+
+    :onResultSelect
     (fn [event data]
       (let [selected-result (get-in (js->clj data) ["result" "title"])]
         (re-frame/dispatch [:navigate-search selected-result])))
@@ -322,12 +329,9 @@
        [:img.ui.small.circular.centered.image
         {:src "images/haskell-bazaar-logo.png"
          :alt "Haskell Bazaar Logo"}]
-       [:form {:on-submit (fn [e]
-                            (.preventDefault e)
-                            (.stopPropagation e)
-                            (re-frame/dispatch [:navigate-search @search-query])
-                            (.log js/console "SUBMITTING")
-                            )}
+       [:form
+        {:on-submit
+         ((get-in dispatchers [:landing-page-search :on-submit]) search-query)}
         [search (merge (:landing-page-search dispatchers)
                        {:id "landing-page-search-box"
                         :autofocus? true
