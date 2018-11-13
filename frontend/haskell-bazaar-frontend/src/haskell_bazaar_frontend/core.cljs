@@ -30,7 +30,7 @@
     (let [history (routes/make-history!)
           cache (atom {}) ;; TODO: use a proper cache datastructure
           datascript-conn (d/create-conn ds/schema)
-          local-storage-ttl (* 60 60 24 1)] ;; 1 day in seconds
+          local-storage-ttl (* 60 60)] ;; 1 hour in seconds
       (ds/init! datascript-conn)
       (fx/init! history cache local-storage-ttl))
 
