@@ -71,12 +71,19 @@
   (fn [query-selector]
     (utils/focus! query-selector)))
 
+;; TODO: spec it out
 (re-frame/reg-fx
   :gtag/page-view
   (fn [{:keys [title path] :as params}]
     (analytics/page-view! params)))
 
+;; TODO: spec it out
 (re-frame/reg-fx
   :gtag/event
   (fn [{:keys [action category label value] :as params}]
     (analytics/event! params)))
+
+(re-frame/reg-fx
+  :gtag/event-n
+  (fn [xs-params]
+    (run! analytics/event! xs-params)))

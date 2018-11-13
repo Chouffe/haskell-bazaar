@@ -28,9 +28,58 @@
   (re-frame/after
     (partial check-and-throw :haskell-bazaar-frontend.db/app-state)))
 
+;; Google Analytics Interceptor
+
+(defn effects->gtag [{:keys [http-xhrio navigate] :as effects}]
+  (cond
+    (not (nil? http-xhrio))
+    (let [{:keys [method uri]} http-xhrio]
+      {:gtag/event {:action "http-xhrio"
+                    :category (name method)
+                    :label uri
+                    :value uri}})
+    :else {}))
+
+;; TODO: spec it out
+(defn tab->path [tab]
+  (get {:landing-page "/" :search "/search"} tab "/"))
+
+;; TODO: spec it out
+(defn modal->path [modal]
+  (get {:feedback "/modal-feedback"} modal "/"))
+
+(defn coeffects->gtag [{:keys [event] :as coeffects}]
+  (let [[event-kw & args] event]
+    (case event-kw
+      :navigate-search
+      (let [tab-kw :search]
+        {:gtag/page-view {:title (name tab-kw)
+                          :path (tab->path tab-kw)}})
+
+      :tab
+      (let [[tab-kw _] args]
+        {:gtag/page-view {:title (name tab-kw)
+                          :path (tab->path tab-kw)}})
+
+      :modal/open
+      (let [[modal-kw _] args]
+        {:gtag/page-view {:title (str "modal-open-" (name modal-kw))
+                          :path (modal->path modal-kw)}})
+
+      {})))
+
+(def gtrack
+  (re-frame.core/->interceptor
+    :id      :gtrack
+    :after   (fn [{:keys [coeffects effects] :as context}]
+               (->> (effects->gtag effects)
+                    (merge (coeffects->gtag coeffects))
+                    (update context :effects merge)))))
+
 (def interceptors
-  [(when goog.DEBUG check-spec-interceptor)
-   (when goog.DEBUG re-frame/debug)])
+  [(when-not goog.DEBUG gtrack)              ;; Track in :prod
+   (when goog.DEBUG check-spec-interceptor)  ;; Check Spec in :dev
+   (when goog.DEBUG re-frame/debug)])        ;; Debug in :dev
 
 (re-frame/reg-event-db
   :db/initialize

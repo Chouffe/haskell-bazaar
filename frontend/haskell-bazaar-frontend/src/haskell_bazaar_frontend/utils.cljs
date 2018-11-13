@@ -89,3 +89,12 @@
       (into [k] (mapv transform-extended-hiccup args)))
 
     :else v))
+
+(defn remove-nils
+  "remove nil values from a map `m`
+
+  >>> (remove-nils {:a nil :b false :c 42})
+  {:b false :c 42}
+  "
+  [m]
+  (into {} (remove (comp nil? second) m)))
