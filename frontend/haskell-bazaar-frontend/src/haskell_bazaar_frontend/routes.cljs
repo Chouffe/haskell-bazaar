@@ -22,6 +22,7 @@
     ;; TODO: sanitize `q`
     (when-not (string/blank? q)
       (re-frame/dispatch [:set-search-query q])
+      (re-frame/dispatch [:tab :search])
       (re-frame/dispatch [:datascript/search-later {:q q :ms 1000}]))))
 
 (defn make-history!

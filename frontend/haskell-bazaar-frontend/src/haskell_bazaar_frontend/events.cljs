@@ -77,9 +77,9 @@
                     (update context :effects merge)))))
 
 (def interceptors
-  [(when-not goog.DEBUG gtrack)              ;; Track in :prod
-   (when goog.DEBUG check-spec-interceptor)  ;; Check Spec in :dev
-   (when goog.DEBUG re-frame/debug)])        ;; Debug in :dev
+  [(when ^boolean goog.PROD gtrack)                   ;; Track in :prod
+   (when ^boolean goog.DEBUG check-spec-interceptor)  ;; Check Spec in :dev
+   (when ^boolean goog.DEBUG re-frame/debug)])        ;; Debug in :dev
 
 (re-frame/reg-event-db
   :db/initialize
