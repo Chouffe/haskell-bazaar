@@ -183,59 +183,11 @@
                   @showing]))
          (into [:ul.search-filters]))))
 
-;; TODO: move to datascript and write queries for it
-(def definitions
-  {"monad" {:title "Monad Typeclass"
-            :body [:code-block
-                   "class Applicative m => Monad m where\n  (>>=) :: m a -> (a -> m b) -> m b\n  return :: a -> m a"]}
-   "functor" {:title "Functor Typeclass"
-              :body [:code-block
-                     "class Functor f where\n  fmap :: (a -> b) -> f a -> f b"]}
-   "applicative" {:title "Applicative Functor Typeclass"
-                  :body [:code-block
-                         "class Functor f => Applicative f where\n  pure :: a -> f a\n  (<*>) :: f (a -> b) -> f a -> f b"]}
-   "monoid" {:title "Monoid Typeclass"
-             :body [:code-block
-                    "class Semigroup a => Monoid a where\n  mempty :: a\n  (<>) :: a -> a -> a"]}
-   "lens" {:title "Lens Type"
-           :body
-           [:span
-            [:p "A Lens a b can be seen as getter and setter as first approximation"]
-            [:code-block "data Lens a b = Lens\n  { get :: a -> b\n  , set :: a -> b -> a\n  }"]
-            [:p "Below is the general Lens type definition"]
-            [:code-block "type Lens s t a b = forall f. Functor f => (a -> f b) -> s -> f t"]]}})
-
 (defn results-definition [{:keys [title body]}]
   [:div.results-definition
    [:div.results-definition-body
     [:h1 title]
     (utils/transform-extended-hiccup body)]])
-
-(def source
-  [
-   {
-    :title "monad"
-    :description "Monad type class"
-   }
-   {
-    :title "functor"
-    :description "Functor type class"
-   }
-   {
-    :title "applicative"
-    :description "Applicative type class"}])
-
-(def source-2
-  {:tags
-   {:name "tag"
-    :results [{:title "Monad"
-                :description "Monad type class"}
-               {:title "Monoid"
-                :description "Monoid type class"}]}
-   :authors {:name "author"
-             :results [{:title "Simon Peyton Jones"}
-                       {:title "Simon Marlow"}
-                       {:title "Rich Hickey"}]}})
 
 (defn filter-results [search-query results]
   (into []
@@ -321,7 +273,8 @@
 (defmethod tab-pannel :default [args] (.log js/console args) [:div "Hello World"])
 
 (defmethod tab-pannel :landing-page [{:keys [dispatchers base-url]}]
-  (let [search-query (re-frame/subscribe [:search-query])]
+  (let [search-query (re-frame/subscribe [:search-query])
+        search-source (re-frame/subscribe [:search-source])]
     [:div#landing-page
      ;; TODO: verical align content
      [:div.header
@@ -335,7 +288,7 @@
         [search (merge (:landing-page-search dispatchers)
                        {:id "landing-page-search-box"
                         :autofocus? true
-                        :source source
+                        :source @search-source
                         :search-query @search-query})]]
        [:h1.center.aligned.header.tag-line
         "The search engine for "
@@ -344,20 +297,22 @@
      #_[:div#page-1 "TODO"]]))
 
 (defmethod tab-pannel :search [{:keys [dispatchers base-url]}]
-  (let [search-query (re-frame/subscribe [:search-query])]
+  (let [search-query (re-frame/subscribe [:search-query])
+        search-source (re-frame/subscribe [:search-source])
+        search-enriched-results (re-frame/subscribe [:search-enriched-results])]
     [:div
      [:div.topnav
       [:> ui/container
        [search (merge (:search dispatchers)
                       {:id "search-box"
                        :autofocus? false
-                       :source source
+                       :source @search-source
                        :search-query @search-query})]]]
-       (when-let [definition (get definitions @search-query)]
+       (when-let [enriched-result (get @search-enriched-results @search-query)]
          [:div.enriched-result
           [:> ui/container
            ;; TODO: rename enriched result
-           [results-definition definition]]])
+           [results-definition enriched-result]]])
        [:div.search-results
         [:> ui/container
          [search-results-list base-url]]]]))

@@ -125,6 +125,30 @@
        query-string
        utils/re-pattern?))
 
+(defn all-tags
+  [db]
+  (d/q '[:find [?t ...]
+         :where [?t :tag/name]]
+       db))
+
+(defn all-tags-names
+  [db]
+  (d/q '[:find [?n ...]
+         :where [_ :tag/name ?n]]
+       db))
+
+(defn all-authors
+  [db]
+  (d/q '[:find ?a
+         :where [?a :author/fullName]]
+       db))
+
+(defn all-authors-full-names
+  [db]
+  (d/q '[:find [?fn ...]
+         :where [_ :author/fullName ?fn]]
+       db))
+
 ;; Authors
 (defn find-items-by-author
   [db query-string]
@@ -142,6 +166,16 @@
 ;; REPL iteration
 ;; TODO: remove
 ; (def conn (d/create-conn schema))
+
+; (d/transact! conn stubs/ds-facts)
+
+; (->> (all-tags (d/db conn))
+;      (mapv (fn [id] (d/pull (d/db conn) [:tag/name] id)))
+;      (mapv (fn [tag] {:title (:tag/name tag)})))
+
+; (->> (all-authors (d/db conn))
+;      (mapv (fn [[id]] (d/pull (d/db conn) [:author/fullName] id)))
+;      (mapv (fn [author] {:title (:author/fullName author)})))
 
 ;; Insert data in datascript db
 ; (persist-search-results! conn stubs/search-result)

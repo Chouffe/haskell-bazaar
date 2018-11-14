@@ -44,3 +44,13 @@
   :tab
   (fn [db _]
     (:tab db)))
+
+(re-frame/reg-sub
+  :search-source
+  (fn [db _]
+    (:search-source db)))
+
+(re-frame/reg-sub
+  :search-enriched-results
+  (fn [db _]
+    (:search-enriched-results db)))

@@ -94,7 +94,7 @@
     (cond
       ;; Always fetch api-items in dev mode
       (= env :dev)      {:dispatch [:api-items]}
-      (seq local-store) {:datascript/transact local-store}
+      ; (seq local-store) {:datascript/transact local-store}
       :else             {:dispatch [:api-items]})))
 
 (re-frame/reg-event-fx
@@ -172,8 +172,10 @@
                          (map ds/item->facts)
                          flatten
                          distinct)]
+      ;; TODO: remove search loading
       {:db (assoc db :search-loading false)
        :local-store ["datascript-facts" all-facts]
+       :dispatch-later [{:ms 100 :dispatch [:search-populate-source]}]
        :datascript/transact all-facts})))
 
 (re-frame/reg-event-fx
@@ -181,6 +183,21 @@
   (fn [{:keys [db]} results]
     (.log js/console "ERROR Loading keywords!!")
     {}))
+
+(defn enriched-result-item->source-item [[k {:keys [title]}]]
+  {:description title :title k})
+
+(re-frame/reg-event-fx
+  :search-populate-source
+  [(re-frame/inject-cofx :datascript) interceptors]
+  (fn [{:keys [datascript db]} _]
+    (let [enriched-results nil #_(mapv enriched-result-item->source-item (:search-enriched-results db))]
+      {:db (->> datascript
+                ((juxt ds/all-tags-names ds/all-authors-full-names))
+                flatten
+                distinct
+                (mapv (fn [s] {:title s}))
+                (assoc db :search-source))})))
 
 (re-frame/reg-event-fx
   :api-search-success

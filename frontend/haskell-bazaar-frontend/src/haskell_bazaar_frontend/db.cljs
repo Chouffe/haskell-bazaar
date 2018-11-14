@@ -86,13 +86,49 @@
                    ::tab]
           :opt-un [::modal]))
 
+(def search-enriched-results
+  {"monad" {:title "Monad Typeclass"
+            :body [:code-block
+                   "class Applicative m => Monad m where\n  (>>=) :: m a -> (a -> m b) -> m b\n  return :: a -> m a"]}
+   "functor" {:title "Functor Typeclass"
+              :body [:code-block
+                     "class Functor f where\n  fmap :: (a -> b) -> f a -> f b"]}
+   "applicative" {:title "Applicative Functor Typeclass"
+                  :body [:code-block
+                         "class Functor f => Applicative f where\n  pure :: a -> f a\n  (<*>) :: f (a -> b) -> f a -> f b"]}
+   "monoid" {:title "Monoid Typeclass"
+             :body [:code-block
+                    "class Semigroup a => Monoid a where\n  mempty :: a\n  (<>) :: a -> a -> a"]}
+   "lens" {:title "Lens Type"
+           :body
+           [:span
+            [:p "A Lens a b can be seen as getter and setter as first approximation"]
+            [:code-block "data Lens a b = Lens\n  { get :: a -> b\n  , set :: a -> b -> a\n  }"]
+            [:p "Below is the general Lens type definition"]
+            [:code-block "type Lens s t a b = forall f. Functor f => (a -> f b) -> s -> f t"]]}})
 
-;; TODO: add caching layer for search already performed in an interceptor
+;; For categories
+; (def source-2
+;   {:tags
+;    {:name "tag"
+;     :results [{:title "Monad"
+;                 :description "Monad type class"}
+;                {:title "Monoid"
+;                 :description "Monoid type class"}]}
+;    :authors {:name "author"
+;              :results [{:title "Simon Peyton Jones"}
+;                        {:title "Simon Marlow"}
+;                        {:title "Rich Hickey"}]}})
+
 (defn default-db [env]
   {:environment    env
    :search-query   nil
    :search-error   nil
    :search-loading false
+   ;; TODO: spec me out!
+   :search-source  {}
+   ;; TODO: spec me out!
+   :search-enriched-results search-enriched-results
    :search-items   {}
    :showing        :all
    :sorted         :date
@@ -100,9 +136,10 @@
    :keywords       []
    ;; TODO: deprecate :items
    :items          {}
-   :tab           #_:search :landing-page
+   :tab           :landing-page
    ; :items          (utils/uuid-coll->hashmap stubs/search-result)
    })
 
 (def title->showing
   (zipmap (vals showing->title) (keys showing->title)))
+

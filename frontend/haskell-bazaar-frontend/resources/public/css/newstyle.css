@@ -9,6 +9,7 @@ html {
   padding-top: 3em;
   padding-bottom: 2em;
   border-bottom: 1px solid #C8C8C8;
+  min-height: 400px;
 }
 
 #landing-page .header .tag-line {
@@ -19,6 +20,7 @@ html {
   border: 0;
   height: 1em;
   padding:0;
+  min-height: 0;
 }
 
 #landing-page #page-1 {
