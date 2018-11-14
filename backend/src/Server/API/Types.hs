@@ -3,7 +3,7 @@
 module Server.API.Types
   ( PublicItem (..)
   , PublicKeyword (..)
-  , Feedback (..)
+  , PublicFeedback (..)
   )
   where
 
@@ -12,17 +12,16 @@ import qualified Data.Text      as T
 
 import           Model
 
-newtype Feedback = Feedback
+newtype PublicFeedback = PublicFeedback
   { fdbMessage :: T.Text }
   deriving (Show)
 
-instance FromJSON Feedback where
+instance FromJSON PublicFeedback where
   parseJSON = withObject "Feedback" $ \o ->
-    Feedback <$> o .: "message"
+    PublicFeedback <$> o .: "message"
 
-instance ToJSON Feedback where
-  toJSON (Feedback msg) = object [ "message"     .= msg ]
-
+instance ToJSON PublicFeedback where
+  toJSON (PublicFeedback msg) = object [ "message"     .= msg ]
 
 data PublicItem =
   PublicItem

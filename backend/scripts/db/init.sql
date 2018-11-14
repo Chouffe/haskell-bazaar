@@ -4,6 +4,12 @@ BEGIN TRANSACTION;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- Tables Creations
+CREATE TABLE IF NOT EXISTS "feedback" (
+  "id"          INTEGER   PRIMARY KEY,
+  "message"     VARCHAR   NOT NULL,
+  "created_at"  DATE      NULL      DEFAULT NULL
+);
+
 CREATE TABLE IF NOT EXISTS "item" (
   "id"          INTEGER   PRIMARY KEY,
   "title"       VARCHAR   NOT NULL,

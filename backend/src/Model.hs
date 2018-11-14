@@ -16,6 +16,7 @@ import qualified Data.Text              as T
 import           Data.Aeson
 import           Data.ByteString.Char8  as B8
 import           Data.Time.Calendar     (Day)
+import           Data.Time.Clock        (UTCTime)
 import           Data.UUID              (UUID)
 import qualified Data.UUID              as UUID
 import           Database.Persist.Class (PersistField (..))
@@ -58,6 +59,11 @@ ItemTag
     itemId      ItemId
     tagId       TagId
     UniqueItemTag itemId tagId
+
+Feedback
+    message     T.Text
+    createdAt   UTCTime
+    deriving Show
 |]
 
 instance Ord Item where

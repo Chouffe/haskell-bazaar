@@ -34,7 +34,7 @@ type BazaarAPI
   :<|> "api" :> "v0" :> "keywords" :> Get '[JSON] [PublicKeyword]
   :<|> "api" :> "v0" :> "item-url" :> Capture "uuid" UUID :> Get '[JSON] T.Text
   :<|> "api" :> "v0" :> "items" :> Get '[JSON] [PublicItem]
-  :<|> "api" :> "v0" :> "feedback" :> ReqBody '[JSON] Feedback :> Post '[JSON] T.Text
+  :<|> "api" :> "v0" :> "feedback" :> ReqBody '[JSON] PublicFeedback :> Post '[JSON] T.Text
 
 type BazaarStaticAPI
   = Get '[HTML] RawHtml

@@ -18,12 +18,13 @@ module Database
   , keywords
   , searchByAuthor
   , searchByTagName
+  , feedback
   )
   where
 
 import           Control.Arrow               ((***))
 import           Control.Exception           (bracket)
-import           Control.Monad.IO.Class      (MonadIO)
+import           Control.Monad.IO.Class      (MonadIO, liftIO)
 import           Control.Monad.Logger        (LoggingT, runStdoutLoggingT)
 import qualified Data.Map                    as M
 import           Data.Maybe                  (maybe, listToMaybe)
@@ -32,12 +33,13 @@ import           Data.Pool                   (Pool, destroyAllResources,
 import           Data.Semigroup              ((<>))
 import qualified Data.Text                   as T
 import           Data.UUID                   (UUID)
+import           Data.Time.Clock             (getCurrentTime)
 import           Database.Esqueleto          (InnerJoin (..), distinct, from,
                                               ilike, in_, limit, on, select,
                                               val, unValue, valList, where_, (%), (++.),
                                               (==.), (^.))
 
-import           Database.Persist            (Entity (..))
+import           Database.Persist            (Entity (..), insert_)
 import           Database.Persist.Postgresql (ConnectionString,
                                               createPostgresqlPool)
 import           Database.Persist.Sql        (SqlBackend, SqlPersistT,
@@ -230,3 +232,11 @@ keywords = do
   tags    <- allTags
   authors <- allAuthors
   return $ (PublicTag <$> tags) <> (PublicAuthor <$> authors)
+
+feedback
+  :: MonadIO m
+  => PublicFeedback
+  -> (SqlPersistT m) ()
+feedback (PublicFeedback msg) = do
+  currentTime <- liftIO getCurrentTime
+  insert_ (Feedback msg currentTime)
