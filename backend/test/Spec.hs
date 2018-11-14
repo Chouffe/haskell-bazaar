@@ -12,6 +12,7 @@ import           Test.Tasty.Hspec        (hspec)
 import qualified Database
 import qualified Environment
 import qualified Logger
+import qualified Mailchimp
 import           Model                   (migrateAll)
 import qualified Server
 import qualified Server.API
@@ -52,7 +53,8 @@ withApp f =
         ("Starting Server on port " <> show (Server.Config.cPort serverConfig))
       Logger.info loggerHandle (show serverConfig)
 
-      Server.withServer serverConfig loggerHandle databaseHandle (f serverConfig)
+      Mailchimp.withHandle loggerHandle mailchimpConfig $ \mailchimpHandle ->
+        Server.withServer serverConfig loggerHandle databaseHandle mailchimpHandle (f serverConfig)
 
   where
     env :: Environment.Environment
@@ -66,3 +68,6 @@ withApp f =
 
     serverConfig :: Server.Config.Config
     serverConfig = Server.Config.config env
+
+    mailchimpConfig :: Mailchimp.Config
+    mailchimpConfig = Mailchimp.config

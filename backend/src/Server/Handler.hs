@@ -10,6 +10,7 @@ module Server.Handler
   , keywords
   , search
   , root
+  , subscribe
   )
   where
 
@@ -29,6 +30,7 @@ import           Servant.Server                   (ServantErr, err301, err404,
 
 import qualified Database
 import qualified Logger
+import qualified Mailchimp
 import           Server.API.Types
 import qualified Server.Config
 
@@ -129,3 +131,21 @@ keywords
 keywords = do
   databaseHandle <- asks Server.Config.hDB
   liftIO $ Database.runDatabase databaseHandle Database.keywords
+
+subscribe
+  :: ( MonadReader Server.Config.Handle m
+     , MonadIO m
+     )
+  => EmailAddress
+  -> m ()
+subscribe (EmailAddress email) = do
+  mailchimpHandle <- asks Server.Config.hMailchimp
+  loggerHandle    <- asks Server.Config.hLogger
+
+  r <- liftIO $ Mailchimp.subscribe mailchimpHandle email
+
+  liftIO
+    $ Logger.info loggerHandle
+    $ "Mailchimp Subscribing Result " <> show r
+
+  return ()

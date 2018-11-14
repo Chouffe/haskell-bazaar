@@ -21,6 +21,7 @@ import           Network.Wai.Middleware.RequestLogger (logStdout, logStdoutDev)
 
 import qualified Database
 import qualified Environment
+import qualified Mailchimp
 import qualified Logger
 import           Server.API                           (app)
 import qualified Server.Config
@@ -54,8 +55,9 @@ run
   :: Server.Config.Config
   -> Logger.Handle
   -> Database.Handle
+  -> Mailchimp.Handle
   -> IO ()
-run cfg loggerHandle databaseHandle =
+run cfg loggerHandle databaseHandle mailchimpHandle =
   app handle &
   middleware (Server.Config.cEnvironment cfg) &
   Warp.runSettings appSettings
@@ -68,7 +70,7 @@ run cfg loggerHandle databaseHandle =
       Warp.setLogger (\r st mfs -> Logger.info loggerHandle $ display r st mfs)
 
     handle :: Server.Config.Handle
-    handle = Server.Config.new cfg loggerHandle databaseHandle
+    handle = Server.Config.new cfg loggerHandle databaseHandle mailchimpHandle
 
     display r st mfs =
       "[Status: " <> T.pack (show st) <> "] " <>
@@ -79,15 +81,16 @@ withServer
   :: Server.Config.Config
   -> Logger.Handle
   -> Database.Handle
+  -> Mailchimp.Handle
   -> IO a
   -> IO a
-withServer cfg loggerHandle databaseHandle io =
+withServer cfg loggerHandle databaseHandle mailchimpHandle io =
   bracket startBackgroundServer shutdownBackgroundServer (const io)
 
   where
     startBackgroundServer :: IO ThreadId
     startBackgroundServer = do
-      tid <- forkIO $ run cfg loggerHandle databaseHandle
+      tid <- forkIO $ run cfg loggerHandle databaseHandle mailchimpHandle
       -- Hack :( wait till the server is properly started
       threadDelay 100000
       return tid

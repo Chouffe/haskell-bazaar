@@ -13,6 +13,7 @@ import           Database.Persist.Sql (runMigration)
 
 import qualified Database
 import qualified Environment
+import qualified Mailchimp
 import qualified Logger
 import           Model                (migrateAll)
 import qualified Server
@@ -33,6 +34,9 @@ main = do
   let serverConfig :: Server.Config.Config
       serverConfig = Server.Config.config env
 
+  let mailchimpConfig :: Mailchimp.Config
+      mailchimpConfig = Mailchimp.config
+
   -- print env
 
   Logger.withHandle loggerConfig $ \loggerHandle -> do
@@ -48,4 +52,6 @@ main = do
         ("Starting Server on port " <> show (Server.Config.cPort serverConfig))
       Logger.info loggerHandle (show serverConfig)
 
-      Server.run serverConfig loggerHandle databaseHandle
+      Mailchimp.withHandle loggerHandle mailchimpConfig $ \mailchimpHandle ->
+
+        Server.run serverConfig loggerHandle databaseHandle mailchimpHandle

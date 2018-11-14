@@ -4,6 +4,7 @@ module Server.API.Types
   ( PublicItem (..)
   , PublicKeyword (..)
   , PublicFeedback (..)
+  , EmailAddress(..)
   )
   where
 
@@ -15,6 +16,18 @@ import           Model
 newtype PublicFeedback = PublicFeedback
   { fdbMessage :: T.Text }
   deriving (Show)
+
+newtype EmailAddress
+  = EmailAddress
+    { emailAddress :: T.Text }
+  deriving (Show)
+
+instance FromJSON EmailAddress where
+  parseJSON = withObject "EmailAddress" $ \o ->
+    EmailAddress <$> o .: "email_address"
+
+instance ToJSON EmailAddress where
+  toJSON (EmailAddress email) = object [ "email_address"     .= email ]
 
 instance FromJSON PublicFeedback where
   parseJSON = withObject "Feedback" $ \o ->

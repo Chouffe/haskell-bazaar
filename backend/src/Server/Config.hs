@@ -6,19 +6,20 @@ module Server.Config
   , config
   , cPort
   , cEnvironment
-  , cPathFeedback
 
   , Handle
   , new
   , hDB
   , hLogger
   , hConfig
+  , hMailchimp
   )
   where
 
 import qualified Database
 import qualified Environment
 import qualified Logger
+import qualified Mailchimp
 
 
 type Port = Int
@@ -28,32 +29,29 @@ port Environment.Test = 8003
 port Environment.Dev  = 8002
 port Environment.Prod = 8001
 
-filepathFeedback :: Environment.Environment -> FilePath
-filepathFeedback Environment.Prod = "/home/ubuntu/haskellbazaar-feedback-data.txt"
-filepathFeedback _ = "/home/chouffe/haskellbazaar-feedback-data.txt"
-
 data Config
   = Config
     { cEnvironment  :: Environment.Environment -- ^ Environment
     , cPort         :: Port                    -- ^ Port to run the server on
-    , cPathFeedback :: FilePath                -- ^ FilePath to save the feedback
     }
   deriving (Eq, Show)
 
 config :: Environment.Environment -> Config
-config env = Config env (port env) (filepathFeedback env)
+config env = Config env (port env)
 
 data Handle
   = Handle
-    { hDB           :: Database.Handle  -- ^ Database Handle
-    , hLogger       :: Logger.Handle    -- ^ Logger Handle
-    , hConfig       :: Config           -- ^ Server Config
+    { hDB           :: Database.Handle   -- ^ Database Handle
+    , hLogger       :: Logger.Handle     -- ^ Logger Handle
+    , hMailchimp    :: Mailchimp.Handle  -- ^ Mailchimp Handle
+    , hConfig       :: Config            -- ^ Server Config
     }
 
 new
   :: Config
   -> Logger.Handle
   -> Database.Handle
+  -> Mailchimp.Handle
   -> Handle
-new cfg loggerHandle databaseHandle =
-  Handle databaseHandle loggerHandle cfg
+new cfg loggerHandle databaseHandle mailchimpHandle =
+  Handle databaseHandle loggerHandle mailchimpHandle cfg

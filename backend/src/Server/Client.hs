@@ -5,6 +5,7 @@ module Server.Client
   , feedback
   , search
   , keywords
+  , subscribe
   )
   where
 
@@ -24,9 +25,11 @@ allItems :: ClientM [PublicItem]
 search :: Maybe T.Text -> ClientM [PublicItem]
 keywords :: ClientM [PublicKeyword]
 feedback :: PublicFeedback -> ClientM T.Text
+subscribe :: EmailAddress -> ClientM ()
 ( health   :<|>
   search   :<|>
   keywords :<|>
   itemUrl  :<|>
   allItems :<|>
-  feedback  ) = client bazaarAPI
+  feedback :<|>
+  subscribe ) = client bazaarAPI
