@@ -27,7 +27,7 @@ import           Data.UUID                        (UUID)
 import           Network.Socket                   (SockAddr)
 
 import           Servant.API.ContentTypesExtended (RawHtml (..))
-import           Servant.Server                   (ServantErr, err301, err404,
+import           Servant.Server                   (ServantErr, err307, err404,
                                                    errHeaders)
 
 
@@ -93,7 +93,8 @@ itemUrl sockAddr uuid = do
         $ Database.runDatabase databaseHandle
         $ Database.itemClick sockAddr itemId
 
-      throwError $ err301 {
+      -- Temporary redirect to prevent caching so that it can keep counting clicks
+      throwError $ err307 {
         errHeaders = [("Location", T.encodeUtf8 url)] }
 
 allItems
