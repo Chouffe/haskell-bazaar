@@ -1,6 +1,7 @@
 {-# LANGUAGE FlexibleContexts      #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE OverloadedStrings     #-}
+{-# LANGUAGE ScopedTypeVariables   #-}
 
 module Server.Handler
   ( health
@@ -23,10 +24,12 @@ import           Data.Semigroup                   ((<>))
 import qualified Data.Text                        as T
 import qualified Data.Text.Encoding               as T
 import           Data.UUID                        (UUID)
+import           Network.Socket                   (SockAddr)
 
 import           Servant.API.ContentTypesExtended (RawHtml (..))
 import           Servant.Server                   (ServantErr, err301, err404,
                                                    errHeaders)
+
 
 import qualified Database
 import qualified Logger
@@ -62,25 +65,34 @@ itemUrl
      , MonadError ServantErr m
      , MonadIO m
      )
-  => UUID
+  => SockAddr
+  -> UUID
   -> m T.Text
-itemUrl uuid = do
+itemUrl sockAddr uuid = do
   databaseHandle <- asks Server.Config.hDB
   loggerHandle   <- asks Server.Config.hLogger
 
-  mUrl <- liftIO
+  mIdAndUrl <- liftIO
     $ Database.runDatabase databaseHandle
     $ Database.itemUrlByUUID uuid
 
   liftIO
     $ Logger.info loggerHandle
-    $ "url returned " <> show mUrl
+    $ "url returned " <> show mIdAndUrl
 
-  case mUrl of
+  case mIdAndUrl of
     Nothing  ->
       throwError err404
 
-    Just url ->
+    Just (itemId, url) -> do
+      liftIO
+        $ Logger.info loggerHandle
+        $ "Tracking Click " <> show mIdAndUrl
+
+      liftIO
+        $ Database.runDatabase databaseHandle
+        $ Database.itemClick sockAddr itemId
+
       throwError $ err301 {
         errHeaders = [("Location", T.encodeUtf8 url)] }
 

@@ -33,6 +33,7 @@ dependencies:
 - lens
 - mtl
 - monad-logger
+- network
 - persistent
 - persistent-postgresql
 - persistent-template

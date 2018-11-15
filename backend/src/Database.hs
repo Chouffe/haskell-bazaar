@@ -15,6 +15,8 @@ module Database
   , allItems
   , allItemsWithTags
   , itemUrlByUUID
+  , itemByUUID
+  , itemClick
   , keywords
   , searchByAuthor
   , searchByTagName
@@ -44,6 +46,7 @@ import           Database.Persist.Postgresql (ConnectionString,
                                               createPostgresqlPool)
 import           Database.Persist.Sql        (SqlBackend, SqlPersistT,
                                               runSqlConn)
+import           Network.Socket              (SockAddr)
 
 import           Environment                 (Environment (..))
 import           Model
@@ -217,13 +220,26 @@ allAuthors = do
 itemUrlByUUID
   :: MonadIO m
   => UUID
-  -> (SqlPersistT m) (Maybe T.Text)
+  -> (SqlPersistT m) (Maybe (ItemId, T.Text))
 itemUrlByUUID uuid = do
   results <-
     select . from $ \item -> do
       where_ $ item ^. ItemUuid ==. val uuid
-      return $ item ^. ItemUrl
-  return $ listToMaybe $ unValue <$> results
+      return (item ^. ItemId, item ^. ItemUrl)
+  return
+    $ listToMaybe
+    $ (unValue *** unValue) <$> results
+
+itemByUUID
+  :: MonadIO m
+  => UUID
+  -> (SqlPersistT m) (Maybe (Entity Item))
+itemByUUID uuid = do
+  results <-
+    select . from $ \item -> do
+      where_ $ item ^. ItemUuid ==. val uuid
+      return item
+  return $ listToMaybe results
 
 keywords
   :: MonadIO m
@@ -240,3 +256,8 @@ feedback
 feedback (PublicFeedback msg) = do
   currentTime <- liftIO getCurrentTime
   insert_ (Feedback msg currentTime)
+
+itemClick :: MonadIO m => SockAddr -> ItemId -> (SqlPersistT m) ()
+itemClick sockAddr itemId = do
+  currentTime <- liftIO getCurrentTime
+  insert_ (ItemClick itemId currentTime (show sockAddr))

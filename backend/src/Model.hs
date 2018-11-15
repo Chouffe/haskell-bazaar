@@ -64,6 +64,12 @@ Feedback
     message     T.Text
     createdAt   UTCTime
     deriving Show
+
+ItemClick
+  itemId ItemId
+  createdAt UTCTime
+  sockAddr  String
+  deriving Show
 |]
 
 instance Ord Item where
