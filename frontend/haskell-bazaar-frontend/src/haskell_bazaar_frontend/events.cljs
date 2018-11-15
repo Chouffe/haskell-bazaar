@@ -46,7 +46,9 @@
 
 ;; TODO: spec it out
 (defn modal->path [modal]
-  (get {:feedback "/modal-feedback"} modal "/"))
+  (get {:feedback "/modal-feedback"
+        :mailing-list "/modal-mailing-list"
+        } modal "/"))
 
 (defn coeffects->gtag [{:keys [event] :as coeffects}]
   (let [[event-kw & args] event]
