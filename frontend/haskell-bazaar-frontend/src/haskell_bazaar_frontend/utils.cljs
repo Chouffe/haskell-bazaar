@@ -98,3 +98,8 @@
   "
   [m]
   (into {} (remove (comp nil? second) m)))
+
+(defn validate-email
+  "validate `email` address using regex"
+  [email]
+  (re-matches #".+\@.+\..+" email))

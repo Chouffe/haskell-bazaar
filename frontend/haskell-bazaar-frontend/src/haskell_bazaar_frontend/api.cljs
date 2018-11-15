@@ -36,5 +36,8 @@
 (defn item-url [url uuid]
   (str url "item-url/" uuid))
 
+(defn mailing-list-subscribe [url]
+  (str url "mailing-list/subscribe"))
+
 (def response-format
   (ajax/json-response-format {:keywords? true}))

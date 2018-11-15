@@ -122,6 +122,19 @@
       :on-failure [:api-feedback-failure]}}))
 
 (re-frame/reg-event-fx
+  :api-mailing-list-subscribe
+  interceptors
+  (fn [{:keys [db]} [_ email]]
+    {:http-xhrio
+     {:method :post
+      :params {:email_address email}
+      :uri (api/mailing-list-subscribe (api/base-url (:environment db)))
+      :format (ajax/json-request-format)
+      :response-format api/response-format
+      :on-success [:api-mailing-list-subscribe-success]
+      :on-failure [:api-mailing-list-subscribe-failure]}}))
+
+(re-frame/reg-event-fx
   :datascript/search
   [(re-frame/inject-cofx :datascript) interceptors]
   (fn [{:keys [datascript db]} [_ search-query]]

@@ -69,7 +69,7 @@
                    ::description]
           :opt [::tags ::authors]))
 (s/def ::search-items (s/map-of ::uuid ::search-item))
-(s/def ::modal #{:feedback})
+(s/def ::modal #{:feedback :mailing-list})
 (s/def ::tab #{:search :landing-page})
 
 ;; App-state
@@ -79,7 +79,6 @@
                    ::search-error
                    ::search-loading
                    ::search-items
-                   ::showing
                    ::sorted
                    ::keywords
                    ::items
@@ -130,13 +129,13 @@
    ;; TODO: spec me out!
    :search-enriched-results search-enriched-results
    :search-items   {}
-   :showing        :all
    :sorted         :date
    ;; TODO: deprecate :keywords?
    :keywords       []
    ;; TODO: deprecate :items
    :items          {}
-   :tab           :landing-page
+   :tab            :landing-page
+   ; :modal          #_:mailing-list
    ; :items          (utils/uuid-coll->hashmap stubs/search-result)
    })
 

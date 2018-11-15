@@ -1,4 +1,4 @@
-(ns haskell-bazaar-frontend.views
+(ns haskell-bazaar-frontend.views.core
   (:require
     [clojure.string :as string]
 
@@ -8,8 +8,8 @@
     [haskell-bazaar-frontend.api :as api]
     [haskell-bazaar-frontend.routes :as routes]
     [haskell-bazaar-frontend.utils :as utils]
-    [haskell-bazaar-frontend.ui :as ui]))
-
+    [haskell-bazaar-frontend.ui :as ui]
+    [haskell-bazaar-frontend.views.modal :as modal]))
 
 (defn search-box-button [on-click]
   (let [search-loading (re-frame/subscribe [:search-loading])]
@@ -35,13 +35,7 @@
 
      [search-box-button (on-click-factory @search-query)]]))
 
-;; Move to utils
-(def keystrokes
-  {:enter 13
-   :esc   27})
-
 ;; TODO: have different dispatchers for test environment for instance
-;; Very easy to mock
 (def dispatchers
   {:filters
    {:on-click-factory
@@ -78,24 +72,6 @@
     (fn [e]
       (re-frame/dispatch [:set-search-query (utils/target-value e)])
       (re-frame/dispatch [:datascript/search (utils/target-value e)]))
-    }
-   ;; TODO: unused, remove
-   :search-box
-   {:on-change
-    (fn [e]
-      (re-frame/dispatch [:set-search-query (utils/target-value e)])
-      ;; TODO: add a delay or something
-      (re-frame/dispatch [:datascript/search (utils/target-value e)])
-      )
-
-    :on-key-up
-    (fn [e]
-      (when (= (:enter keystrokes) (.-which e))
-        (re-frame/dispatch [:navigate-search (utils/target-value e)])))
-
-    :on-click-factory
-    (fn [search-query]
-      (fn [e] (re-frame/dispatch [:navigate-search search-query])))
     }})
 
 (defn item-tag [{:keys [name]}]
@@ -158,77 +134,24 @@
 
 (defn search-results-list
   [base-url]
-  (let [items (re-frame/subscribe [:search-items])
-        showing (re-frame/subscribe [:showing])]
+  (let [items (re-frame/subscribe [:search-items])]
     (->> @items
          vals
-         ((filter-items @showing))
          (mapv (fn [item] [search-result-item base-url item]))
          (into [:ul.search-items]))))
 
-(defn search-filters-item
-  [on-click title showing-kw showing]
-  (if (= showing-kw showing)
-    [:li.active title]
-    [:li {:on-click on-click} title]))
-
-(defn search-filters [{:keys [on-click-factory]}]
-  (let [showing (re-frame/subscribe [:showing])]
-    (->> routes/filters
-         (mapv (fn [[title showing-kw]]
-                 [search-filters-item
-                  (on-click-factory showing-kw)
-                  title
-                  showing-kw
-                  @showing]))
-         (into [:ul.search-filters]))))
-
-(defn results-definition [{:keys [title body]}]
+(defn enriched-result [{:keys [title body]}]
   [:div.results-definition
    [:div.results-definition-body
     [:h1 title]
     (utils/transform-extended-hiccup body)]])
 
 (defn filter-results [search-query results]
-  (into []
-        (filter (fn [{:keys [title]}]
-                  (utils/re-pattern? search-query title)) results)))
+  (->> results
+       (filter (fn [{:keys [title]}] (utils/re-pattern? search-query title)))
+       (into [])))
 
-(defn feedback-modal []
-  (let [state (reagent/atom {:message nil :sent? false})]
-    (fn []
-      [:> ui/modal {:open true
-                    :onClose #(re-frame/dispatch [:modal/close])}
-       [:> ui/modal-header "Leave us your Feedback"]
-       [:> ui/modal-content
-        [:> ui/modal-description
-         [:div.ui.form
-          [:div.field
-           [:textarea {:on-change #(swap! state assoc :message (utils/target-value %))
-                       :placeholder "Please leave us a message here. If you want us to follow up fo not forget to include your email address in your message"}]]]
-         [:br]
-         [:div.ui.center.aligned
-          (if (:sent? @state)
-            [:p "Thanks for your valuable feedback!"]
-            [:button.ui.primary.button
-             (merge
-               {:class "disabled"}
-               (when-not (string/blank? (:message @state))
-                 {:class "enabled"
-                  :on-click #(do
-                               (swap! state assoc :sent? true)
-                               (re-frame/dispatch [:api-feedback (:message @state)]))}))
-             "Submit"])]]]])))
-
-;; TODO: use a multimethod instead
-(defn modal []
-  (let [modal-kw (re-frame/subscribe [:modal])]
-    (when-let [modal @modal-kw]
-      (case modal
-        :feedback [feedback-modal]
-        [:div]))))
-
-(defn search [{:keys [source onResultSelect onSearchChange autofocus? id]}]
+(defn search [{:keys [autofocus? id]}]
   (reagent/create-class
     {:component-did-mount
      (fn [e]
@@ -236,7 +159,7 @@
          (re-frame/dispatch [:ui/focus (str "#" id " input")])))
 
      :reagent-render
-     (fn [{:keys [source onResultSelect onSearchChange autofocus? id]}]
+     (fn [{:keys [source onResultSelect onSearchChange]}]
        (let [search-query (re-frame/subscribe [:search-query])
              filtered-source (if-not (string/blank? @search-query)
                                (filter-results @search-query source) source)]
@@ -254,29 +177,34 @@
               :placeholder "Eg. Monad, Applicative, Lens, Category Theory"
               :showNoResults false
               :onResultSelect onResultSelect
-              :onSearchChange onSearchChange
-              })]]))}))
+              :onSearchChange onSearchChange})]]))}))
 
 (defn footer []
-  [:div.ui.vertical.footer.segment
+  [:div.ui.vertical.footer.segment.centerd
+   [:p {:style {:text-align "center"}} "Built with "
+    [:> ui/icon {:name "heart"}]
+    " for the Haskell community"]
    [:> ui/divider]
    [:div.ui.center.aligned.container
-    [:p "Built with "
-     [:> ui/icon {:name "heart"}]
-     " for the Haskell community"]
-    [:p
-     [:a {:on-click #(re-frame/dispatch [:modal/open :feedback])}
-      "Leave us some feedback here"]]]])
+    [:div.ui.horizontal.list.relaxed
+     [:a.item {:style {:cursor "pointer"}}
+      "About"]
+     [:a.item {:style {:cursor "pointer"}
+               :on-click #(re-frame/dispatch [:modal/open :mailing-list])}
+      "Subscribe"]
+     [:a.item {:style {:cursor "pointer"}
+          :on-click #(re-frame/dispatch [:modal/open :feedback])}
+      "Contact"]]]])
 
 (defmulti tab-pannel (fn [params] (:tab params)))
 
-(defmethod tab-pannel :default [args] (.log js/console args) [:div "Hello World"])
+(defmethod tab-pannel :default [args]
+  [:div [:p [:strong "Error 404: "] "Page Not Found"]])
 
 (defmethod tab-pannel :landing-page [{:keys [dispatchers base-url]}]
   (let [search-query (re-frame/subscribe [:search-query])
         search-source (re-frame/subscribe [:search-source])]
     [:div#landing-page
-     ;; TODO: verical align content
      [:div.header
       [:> ui/container
        [:img.ui.small.circular.centered.image
@@ -286,9 +214,9 @@
         {:on-submit
          ((get-in dispatchers [:landing-page-search :on-submit]) search-query)}
         [search (merge (:landing-page-search dispatchers)
-                       {:id "landing-page-search-box"
-                        :autofocus? true
-                        :source @search-source
+                       {:id           "landing-page-search-box"
+                        :autofocus?   true
+                        :source       @search-source
                         :search-query @search-query})]]
        [:h1.center.aligned.header.tag-line
         "The search engine for "
@@ -296,7 +224,8 @@
         " resources!"]]]
      #_[:div#page-1 "TODO"]]))
 
-(defmethod tab-pannel :search [{:keys [dispatchers base-url]}]
+(defmethod tab-pannel :search
+  [{:keys [dispatchers base-url]}]
   (let [search-query (re-frame/subscribe [:search-query])
         search-source (re-frame/subscribe [:search-source])
         search-enriched-results (re-frame/subscribe [:search-enriched-results])]
@@ -304,22 +233,25 @@
      [:div.topnav
       [:> ui/container
        [search (merge (:search dispatchers)
-                      {:id "search-box"
-                       :autofocus? false
-                       :source @search-source
+                      {:id           "search-box"
+                       :autofocus?   false
+                       :source       @search-source
                        :search-query @search-query})]]]
-       (when-let [enriched-result (get @search-enriched-results @search-query)]
+       (when-let [enriched-result-data
+                  (get @search-enriched-results @search-query)]
          [:div.enriched-result
           [:> ui/container
            ;; TODO: rename enriched result
-           [results-definition enriched-result]]])
+           [enriched-result enriched-result-data]]])
        [:div.search-results
         [:> ui/container
          [search-results-list base-url]]]]))
 
 (defn ui [dispatchers base-url]
-  (let [tab (re-frame/subscribe [:tab])]
+  (let [tab (re-frame/subscribe [:tab])
+        modal-kw (re-frame/subscribe [:modal])]
     [:div
-     [modal]
+     (when @modal-kw
+       [modal/modal @modal-kw])
      [tab-pannel {:dispatchers dispatchers :base-url base-url :tab @tab}]
      [footer]]))

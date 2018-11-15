@@ -1,20 +1,19 @@
 (ns haskell-bazaar-frontend.core
-  (:require [ajax.core :as ajax]
-            [reagent.core :as reagent]
-            [re-frame.core :as re-frame]
-            [datascript.core :as d]
+  (:require
+    [ajax.core :as ajax]
+    [reagent.core :as reagent]
+    [re-frame.core :as re-frame]
+    [datascript.core :as d]
 
-            [haskell-bazaar-frontend.analytics :as analytics]
-            [haskell-bazaar-frontend.ds :as ds]
-            [haskell-bazaar-frontend.api :as api]
-            [haskell-bazaar-frontend.events]  ;; Register events
-            [haskell-bazaar-frontend.environment :as environment]
-            [haskell-bazaar-frontend.fx :as fx]
-            [haskell-bazaar-frontend.routes :as routes]
-            [haskell-bazaar-frontend.stubs :as stubs]
-            [haskell-bazaar-frontend.subs]    ;; Register subscriptions
-            [haskell-bazaar-frontend.utils :as utils]
-            [haskell-bazaar-frontend.views :as views]))
+    [haskell-bazaar-frontend.api :as api]
+    [haskell-bazaar-frontend.ds :as ds]
+    [haskell-bazaar-frontend.events]  ;; Register events
+    [haskell-bazaar-frontend.environment :as environment]
+    [haskell-bazaar-frontend.fx :as fx]  ;; Register fx
+    [haskell-bazaar-frontend.routes :as routes]
+    [haskell-bazaar-frontend.stubs :as stubs]
+    [haskell-bazaar-frontend.subs]    ;; Register subscriptions
+    [haskell-bazaar-frontend.views.core :as views]))
 
 ;; Should only be activated in dev mode
 

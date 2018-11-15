@@ -23,7 +23,7 @@
     (when-not (string/blank? q)
       (re-frame/dispatch [:set-search-query q])
       (re-frame/dispatch [:tab :search])
-      (re-frame/dispatch [:datascript/search-later {:q q :ms 1000}]))))
+      (re-frame/dispatch [:datascript/search-later {:q q :ms 200}]))))
 
 (defn make-history!
   "Returns a Goog.History object"
@@ -35,8 +35,3 @@
 
 (defn nav! [history token]
   (.setToken history token))
-
-(def filters
-  (mapv
-    (fn [title] [title (db/title->showing title)])
-    ["all" "videos" "papers" "blog posts" "tutorials"]))
