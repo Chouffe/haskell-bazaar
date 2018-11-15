@@ -38,13 +38,13 @@ middleware env =
 
 apiResourcePolicy :: CorsResourcePolicy
 apiResourcePolicy = CorsResourcePolicy
-  { corsOrigins = Just (["https://s3.amazonaws.com/haskell-bazaar/", "http://s3.amazonaws.com/haskell-bazaar/"], True)
-  , corsMethods = simpleMethods
+  { corsOrigins        = Just (["https://s3.amazonaws.com/haskell-bazaar/", "http://s3.amazonaws.com/haskell-bazaar/"], True)
+  , corsMethods        = simpleMethods
   , corsRequestHeaders = []
   , corsExposedHeaders = Nothing
-  , corsMaxAge = Nothing
-  , corsVaryOrigin = False
-  , corsRequireOrigin = False
+  , corsMaxAge         = Nothing
+  , corsVaryOrigin     = False
+  , corsRequireOrigin  = False
   , corsIgnoreFailures = False
   }
 

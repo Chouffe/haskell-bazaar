@@ -20,9 +20,12 @@ import           Data.Semigroup         ((<>))
 import qualified Data.Text              as T
 import qualified Data.Text.Encoding     as T
 
+
 import           Control.Lens
 import           Data.Aeson             (toJSON)
+import           Network.Connection      (TLSSettings (..))
 import           Network.Wreq
+import           Network.HTTP.Client.TLS (mkManagerSettings)
 
 import qualified Logger
 
@@ -85,6 +88,7 @@ subscribe Handle{..} emailAddress = do
     opts = defaults
              & auth ?~ basicAuth "anystring" (T.encodeUtf8 cAPIKey)
              & header "Accept" .~ ["application/json"]
+             & manager .~ Left (mkManagerSettings (TLSSettingsSimple True False False) Nothing)
 
 withHandle :: Logger.Handle -> Config -> (Handle -> IO a) -> IO a
 withHandle loggerHandle cfg f =

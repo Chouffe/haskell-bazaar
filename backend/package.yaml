@@ -23,11 +23,13 @@ dependencies:
 - aeson
 - base >= 4.9 && < 5
 - bytestring
+- connection
 - containers
 - esqueleto
 - fast-logger
 - http-media
 - http-types
+- http-client-tls
 - lens
 - mtl
 - monad-logger
