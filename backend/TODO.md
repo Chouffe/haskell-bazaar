@@ -10,3 +10,5 @@
 * SQL seed: add on conflict do nothing for each entry
   * Idempotence
   * Remove the table deletions
+* Data: add >100 entries
+* Setup automated psql database backup to S3
