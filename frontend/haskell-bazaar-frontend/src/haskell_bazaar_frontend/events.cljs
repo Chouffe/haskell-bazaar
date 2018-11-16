@@ -1,12 +1,12 @@
 (ns haskell-bazaar-frontend.events
   (:require
-    [cljs.spec.alpha :as s]
     [clojure.string :as string]
+    [cljs.spec.alpha :as s]
 
     [ajax.core :as ajax]
+    [datascript.core :as d]
     [day8.re-frame.http-fx]   ;; Register the http-xhrio effect handler
     [re-frame.core :as re-frame]
-    [datascript.core :as d]
 
     [haskell-bazaar-frontend.api :as api]
     [haskell-bazaar-frontend.db :as db]
@@ -55,13 +55,15 @@
     (case event-kw
       :navigate-search
       (let [tab-kw :search]
-        {:gtag/page-view {:title (name tab-kw)
-                          :path (tab->path tab-kw)}})
+        {:gtag/page-view {:title (name tab-kw) :path (tab->path tab-kw)}})
+
+      :navigate
+      (let [[path _] args]
+        {:gtag/page-view {:title path :path path}})
 
       :tab
       (let [[tab-kw _] args]
-        {:gtag/page-view {:title (name tab-kw)
-                          :path (tab->path tab-kw)}})
+        {:gtag/page-view {:title (name tab-kw) :path (tab->path tab-kw)}})
 
       :modal/open
       (let [[modal-kw _] args]
@@ -79,7 +81,7 @@
                     (update context :effects merge)))))
 
 (def interceptors
-  [(when-not ^boolean goog.DEBUG gtrack)                   ;; Track in :prod
+  [(when-not ^boolean goog.DEBUG gtrack)              ;; Track in :prod
    (when ^boolean goog.DEBUG check-spec-interceptor)  ;; Check Spec in :dev
    (when ^boolean goog.DEBUG re-frame/debug)])        ;; Debug in :dev
 

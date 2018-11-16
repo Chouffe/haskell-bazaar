@@ -8,7 +8,6 @@
     [haskell-bazaar-frontend.utils :as utils]
     [haskell-bazaar-frontend.ui :as ui]))
 
-;; Forms inside modals
 (defn mailing-list-form
   []
   (let [state (reagent/atom {:email nil :sent? false})
@@ -35,6 +34,7 @@
                 "Subscribe"]
                [:button.ui.button.disabled "Subscribe"])]
             (when sent?
+              [:p "Thank you for subscribing to Haskell Bazaar"])]))})))
 
  (defn feedback-form
   []
@@ -63,7 +63,7 @@
                    :on-click #(do
                                 (swap! state assoc :sent? true)
                                 (re-frame/dispatch [:api-feedback (:message @state)]))}))
-              "Submit"])]])})))             [:p "Thank you for subscribing to Haskell Bazaar"])]))})))
+              "Submit"])]])})))
 
 ;; Modals
 (defmulti modal identity)
@@ -74,6 +74,7 @@
    [:> ui/modal-content
     [:> ui/modal-description
      [mailing-list-form]]]])
+
 
 (defmethod modal :feedback [_]
   [:> ui/modal {:open true :onClose #(re-frame/dispatch [:modal/close])}

@@ -187,7 +187,8 @@
    [:> ui/divider]
    [:div.ui.center.aligned.container
     [:div.ui.horizontal.list.relaxed
-     [:a.item {:style {:cursor "pointer"}}
+     [:a.item {:on-click #(re-frame/dispatch [:navigate "/"])
+               :style {:cursor "pointer"}}
       "About"]
      [:a.item {:style {:cursor "pointer"}
                :on-click #(re-frame/dispatch [:modal/open :mailing-list])}
