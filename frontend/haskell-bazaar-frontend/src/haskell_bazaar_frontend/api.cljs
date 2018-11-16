@@ -33,8 +33,8 @@
 (defn feedback [url]
   (str url "feedback"))
 
-(defn item-url [url uuid]
-  (str url "item-url/" uuid))
+(defn item-url [url uuid search-query]
+  (str url "item-url/" uuid "?q=" search-query))
 
 (defn mailing-list-subscribe [url]
   (str url "mailing-list/subscribe"))

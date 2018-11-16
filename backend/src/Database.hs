@@ -257,7 +257,12 @@ feedback (PublicFeedback msg) = do
   currentTime <- liftIO getCurrentTime
   insert_ (Feedback msg currentTime)
 
-itemClick :: MonadIO m => SockAddr -> ItemId -> (SqlPersistT m) ()
-itemClick sockAddr itemId = do
+itemClick
+  :: MonadIO m
+  => SockAddr
+  -> ItemId
+  -> Maybe T.Text
+  -> (SqlPersistT m) ()
+itemClick sockAddr itemId mSearchQuery = do
   currentTime <- liftIO getCurrentTime
-  insert_ (ItemClick itemId currentTime (show sockAddr))
+  insert_ (ItemClick itemId currentTime (show sockAddr) mSearchQuery)

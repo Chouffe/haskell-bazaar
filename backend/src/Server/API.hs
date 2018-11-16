@@ -32,7 +32,7 @@ type BazaarAPI
   = "health" :> Get '[JSON] T.Text
   :<|> "api" :> "v0" :> "search" :> QueryParam "q" T.Text :> Get '[JSON] [PublicItem]
   :<|> "api" :> "v0" :> "keywords" :> Get '[JSON] [PublicKeyword]
-  :<|> "api" :> "v0" :> "item-url" :> RemoteHost :> Capture "uuid" UUID :> Get '[JSON] T.Text
+  :<|> "api" :> "v0" :> "item-url" :> RemoteHost :> Capture "uuid" UUID :> QueryParam "q" T.Text :> Get '[JSON] T.Text
   :<|> "api" :> "v0" :> "items" :> Get '[JSON] [PublicItem]
   :<|> "api" :> "v0" :> "feedback" :> ReqBody '[JSON] PublicFeedback :> Post '[JSON] T.Text
   :<|> "api" :> "v0" :> "mailing-list" :> "subscribe" :> ReqBody '[JSON] EmailAddress :> Post '[JSON] ()

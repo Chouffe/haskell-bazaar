@@ -114,7 +114,7 @@
   [base-url {:keys [uuid authors title type description tags]}]
   (let [search-query (re-frame/subscribe [:search-query])]
     [:li.search-item
-     [:a.lg {:target "_blank" :href (api/item-url base-url uuid)}
+     [:a.lg {:target "_blank" :href (api/item-url base-url uuid @search-query)}
       (utils/highlight-string-match @search-query title)]
      (when (seq authors)
        [:span.md

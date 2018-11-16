@@ -67,8 +67,9 @@ itemUrl
      )
   => SockAddr
   -> UUID
+  -> Maybe T.Text
   -> m T.Text
-itemUrl sockAddr uuid = do
+itemUrl sockAddr uuid mSearchQuery = do
   databaseHandle <- asks Server.Config.hDB
   loggerHandle   <- asks Server.Config.hLogger
 
@@ -91,7 +92,7 @@ itemUrl sockAddr uuid = do
 
       liftIO
         $ Database.runDatabase databaseHandle
-        $ Database.itemClick sockAddr itemId
+        $ Database.itemClick sockAddr itemId mSearchQuery
 
       -- Temporary redirect to prevent caching so that it can keep counting clicks
       throwError $ err307 {

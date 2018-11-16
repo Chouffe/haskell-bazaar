@@ -69,6 +69,7 @@ ItemClick
   itemId ItemId
   createdAt UTCTime
   sockAddr  String
+  searchQuery T.Text Maybe
   deriving Show
 |]
 
