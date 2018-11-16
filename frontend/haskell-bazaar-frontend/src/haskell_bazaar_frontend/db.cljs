@@ -135,7 +135,6 @@
    ;; TODO: deprecate :items
    :items          {}
    :tab            :landing-page
-   ; :modal          #_:mailing-list
    ; :items          (utils/uuid-coll->hashmap stubs/search-result)
    })
 
