@@ -35,6 +35,20 @@ html {
   padding-bottom: 2.5em;
 }
 
+/* Look and feel of the completion bar */
+.topnav .container .search .results {
+  border-radius: 0 0 3.4px 3.4px;
+  margin-top: -2px;
+  font-size: 0.9em;
+}
+
+#landing-page .header .search .results {
+  border-radius: 0 0 3.4px 3.4px;
+  margin-top: -2px;
+  font-size: 0.9em;
+}
+/* End Look and feel of the completion bar */
+
 .topnav .container .search .input {
   display: flex;
 }

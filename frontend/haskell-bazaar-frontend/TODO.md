@@ -5,4 +5,4 @@
 * Add definitions in datascript instead of hardcoded map
 * Add integration tests for frontend
 * Download assets and not rely on external CDN so that it works without internet connection
-* Autofocus on feedback modal and subscription modal
+* CSS minification pipeline
