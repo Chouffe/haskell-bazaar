@@ -1,52 +1,91 @@
 -- Running the file is idempotent
 BEGIN TRANSACTION;
 
--- TODO: add ON CONFLICT DO NOTHING TO EACH ROW
-
--- Delete all data
--- DELETE FROM item_tag;
--- DELETE FROM tag;
---
--- DELETE FROM item_author;
--- DELETE FROM author;
---
--- DELETE FROM item;
-
 -- Insert all data
-INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES
-    (1, 'Escape from the ivory tower: the Haskell journey', 'In this talk Simon discusses Haskell’s birth and evolution, including some of the research and engineering challenges he faced in design and implementation.', 'https://www.youtube.com/watch?v=re96UgMk6GQ', 'Video', '2017-03-01')
-  , (2, 'Adventure with Types in Haskell', 'Recorded at Oregon Programming Languages Summer School 2013', 'https://www.youtube.com/watch?v=6COvD8oynmI', 'Video', '2013-07-01')
-  , (3, 'Haskell Design Patterns: The Handle Pattern', 'A neat and simple way to build services in Haskell', 'https://jaspervdj.be/posts/2018-03-08-handle-pattern.html', 'Tutorial', '2018-03-08')
-  , (4, 'The Design and Use of QuickCheck', 'QuickCheck is the grandfather of property-based testing libraries. Despite being imitated in over thirty languages, the original implementation remains pre-eminent due to the type system and consistent logic of the Haskell language in which it is written.', 'https://begriffs.com/posts/2017-01-14-design-use-quickcheck.html', 'Tutorial', '2017-01-14')
-  , (5, 'Lenses', 'Lens tour and tutorial', 'http://www.haskellforall.com/2012/01/haskell-for-mainstream-programmers_28.html', 'Tutorial', '2012-01-28')
-  , (6, 'Lens Over Tea #1', 'lenses 101, traversals 101, and some implementation details', 'https://artyom.me/lens-over-tea-1', 'Tutorial', '2016-01-01')
-  , (7, 'Lenses and functional references', 'This chapter is about functional references. By "references", we mean they point at parts of values, allowing us to access and modify them. By "functional", we mean they do so in a way that provides the flexibility and composability we came to expect from functions. We will study functional references as implemented by the powerful lens library. lens is named after lenses, a particularly well known kind of functional reference. Beyond being very interesting from a conceptual point of view, lenses and other functional references allow for several convenient and increasingly common idioms, put into use by a number of useful libraries.', 'https://en.wikibooks.org/wiki/Haskell/Lenses_and_functional_references', 'Book', '2018-06-19')
-  , (8, 'Functors, Applicatives, And Monads In Pictures', 'Visualize functors, applicative and monads with pictures', 'http://adit.io/posts/2013-04-17-functors,_applicatives,_and_monads_in_pictures.html', 'Article', '2013-04-17')
-  , (9, 'Aeson: the tutorial', 'Aeson is the most widely used library for parsing JSON (in Haskell, of course, I''m not talking about the whole world). It''s also hopelessly magical for people who try to learn it by looking at provided examples, and existing tutorials don''t help that much, so I wrote my own. It''s supposed to be the most comprehensive Aeson tutorial on the web; if there''s anything missing from it, send me an email! (So far the only thing I haven''t covered is using lenses with Aeson, but this is coming soon.)', 'https://artyom.me/aeson', 'Tutorial', '2016-01-01')
-  ON CONFLICT DO NOTHING;
-  ;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (1, 'Escape from the ivory tower: the Haskell journey', 'In this talk Simon discusses Haskell’s birth and evolution, including some of the research and engineering challenges he faced in design and implementation.', 'https://www.youtube.com/watch?v=re96UgMk6GQ', 'Video', '2017-03-01') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (2, 'Adventure with Types in Haskell', 'Recorded at Oregon Programming Languages Summer School 2013', 'https://www.youtube.com/watch?v=6COvD8oynmI', 'Video', '2013-07-01') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (3, 'Haskell Design Patterns: The Handle Pattern', 'A neat and simple way to build services in Haskell', 'https://jaspervdj.be/posts/2018-03-08-handle-pattern.html', 'Tutorial', '2018-03-08') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (4, 'The Design and Use of QuickCheck', 'QuickCheck is the grandfather of property-based testing libraries. Despite being imitated in over thirty languages, the original implementation remains pre-eminent due to the type system and consistent logic of the Haskell language in which it is written.', 'https://begriffs.com/posts/2017-01-14-design-use-quickcheck.html', 'Tutorial', '2017-01-14') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (5, 'Lenses', 'Lens tour and tutorial', 'http://www.haskellforall.com/2012/01/haskell-for-mainstream-programmers_28.html', 'Tutorial', '2012-01-28') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (6, 'Lens Over Tea #1', 'lenses 101, traversals 101, and some implementation details', 'https://artyom.me/lens-over-tea-1', 'Tutorial', '2016-01-01') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (7, 'Lenses and functional references', 'This chapter is about functional references. By "references", we mean they point at parts of values, allowing us to access and modify them. By "functional", we mean they do so in a way that provides the flexibility and composability we came to expect from functions. We will study functional references as implemented by the powerful lens library. lens is named after lenses, a particularly well known kind of functional reference. Beyond being very interesting from a conceptual point of view, lenses and other functional references allow for several convenient and increasingly common idioms, put into use by a number of useful libraries.', 'https://en.wikibooks.org/wiki/Haskell/Lenses_and_functional_references', 'Book', '2018-06-19') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (8, 'Functors, Applicatives, And Monads In Pictures', 'Visualize functors, applicative and monads with pictures', 'http://adit.io/posts/2013-04-17-functors,_applicatives,_and_monads_in_pictures.html', 'Article', '2013-04-17') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (9, 'Aeson: the tutorial', 'Aeson is the most widely used library for parsing JSON (in Haskell, of course, I''m not talking about the whole world). It''s also hopelessly magical for people who try to learn it by looking at provided examples, and existing tutorials don''t help that much, so I wrote my own. It''s supposed to be the most comprehensive Aeson tutorial on the web; if there''s anything missing from it, send me an email! (So far the only thing I haven''t covered is using lenses with Aeson, but this is coming soon.)', 'https://artyom.me/aeson', 'Tutorial', '2016-01-01') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (10, 'Learn You a Haskell for Great Good: Types and Typeclasses', 'Previously we mentioned that Haskell has a static type system. The type of every expression is known at compile time, which leads to safer code. If you write a program where you try to divide a boolean type with some number, it won''t even compile. That''s good because it''s better to catch such errors at compile time instead of having your program crash. Everything in Haskell has a type, so the compiler can reason quite a lot about your program before compiling it.', 'http://learnyouahaskell.com/types-and-typeclasses', 'Book', '2011-04-01') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (11, 'Learn You a Haskell for Great Good: Recursion', 'We mention recursion briefly in the previous chapter. In this chapter, we''ll take a closer look at recursion, why it''s important to Haskell and how we can work out very concise and elegant solutions to problems by thinking recursively.', 'http://learnyouahaskell.com/recursion', 'Book', '2011-04-01') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (12, 'Learn You a Haskell for Great Good: Higher order functions', 'Haskell functions can take functions as parameters and return functions as return values. A function that does either of those is called a higher order function. Higher order functions aren''t just a part of the Haskell experience, they pretty much are the Haskell experience. It turns out that if you want to define computations by defining what stuff is instead of defining steps that change some state and maybe looping them, higher order functions are indispensable. They''re a really powerful way of solving problems and thinking about programs.', 'http://learnyouahaskell.com/higher-order-functions', 'Book', '2011-04-01') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (13, 'Learn You a Haskell for Great Good: Modules', 'A Haskell module is a collection of related functions, types and typeclasses. A Haskell program is a collection of modules where the main module loads up the other modules and then uses the functions defined in them to do something. Having code split up into several modules has quite a lot of advantages. If a module is generic enough, the functions it exports can be used in a multitude of different programs. If your own code is separated into self-contained modules which don''t rely on each other too much (we also say they are loosely coupled), you can reuse them later on. It makes the whole deal of writing code more manageable by having it split into several parts, each of which has some sort of purpose.', 'http://learnyouahaskell.com/modules', 'Book', '2011-04-01') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (14, 'Learn You a Haskell for Great Good: Making Our Own Types and Typeclasses', 'In the previous chapters, we covered some existing Haskell types and typeclasses. In this chapter, we''ll learn how to make our own and how to put them to work!', 'http://learnyouahaskell.com/making-our-own-types-and-typeclasses', 'Book', '2011-04-01') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (15, 'Learn You a Haskell for Great Good: Input and Output', 'We''ve mentioned that Haskell is a purely functional language. Whereas in imperative languages you usually get things done by giving the computer a series of steps to execute, functional programming is more of defining what stuff is. In Haskell, a function can''t change some state, like changing the contents of a variable (when a function changes state, we say that the function has side-effects). The only thing a function can do in Haskell is give us back some result based on the parameters we gave it. If a function is called two times with the same parameters, it has to return the same result.', 'http://learnyouahaskell.com/input-and-output', 'Book', '2011-04-01') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (16, 'Learn You a Haskell for Great Good: Functors, Applicative Functors and Monoids', 'Haskell''s combination of purity, higher order functions, parameterized algebraic data types, and typeclasses allows us to implement polymorphism on a much higher level than possible in other languages. We don''t have to think about types belonging to a big hierarchy of types. Instead, we think about what the types can act like and then connect them with the appropriate typeclasses. An Int can act like a lot of things. It can act like an equatable thing, like an ordered thing, like an enumerable thing, etc.', 'http://learnyouahaskell.com/functors-applicative-functors-and-monoids', 'Book', '2011-04-01') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (17, 'Learn You a Haskell for Great Good: A fistful of Monads', 'In this chapter, we''ll learn about monads, which are just beefed up applicative functors, much like applicative functors are only beefed up functors.', 'http://learnyouahaskell.com/a-fistful-of-monads', 'Book', '2011-04-01') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (18, 'Learn You a Haskell for Great Good: For a few Monads more', 'In this chapter, we''re going to learn about a few other monads. We''ll see how they can make our programs clearer by letting us treat all sorts of values as monadic ones. Exploring a few monads more will also solidify our intuition for monads.', 'http://learnyouahaskell.com/for-a-few-monads-more', 'Book', '2011-04-01') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (19, 'Learn You a Haskell for Great Good: Syntax in Functions', 'This chapter will cover some of Haskell''s cool syntactic constructs and we''ll start with pattern matching. Pattern matching consists of specifying patterns to which some data should conform and then checking to see if it does and deconstructing the data according to those patterns.', 'http://learnyouahaskell.com/syntax-in-functions', 'Book', '2011-04-01') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (20, 'Recursion', 'Recursive functions play a central role in Haskell, and are used throughout computer science and mathematics generally. Recursion is basically a form of repetition, and we can understand it by making distinct what it means for a function to be recursive, as compared to how it behaves.\nA recursive function simply means this: a function that has the ability to invoke itself.', 'https://en.wikibooks.org/wiki/Haskell/Recursion', 'Book', '2018-07-14') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (21, 'Pattern Matching', 'In pattern matching, we attempt to match values against patterns and, if so desired, bind variables to successful matches.', 'https://en.wikibooks.org/wiki/Haskell/Pattern_matching', 'Book', '2018-08-14') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (22, 'Monoids', 'The operation of adding numbers has a handful of properties which are so elementary we don''t even think about them when summing numbers up. One of them is associativity: when adding three or more numbers it doesn''t matter how we group the terms.', 'https://en.wikibooks.org/wiki/Haskell/Monoids', 'Book', '2018-09-24') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (23, 'Applicative Functors', 'When covering the vital Functor and Monad type classes, we glossed over a third type class: Applicative, the class for applicative functors. Like monads, applicative functors are functors with extra laws and operations; in fact, Applicative is an intermediate class between Functor and Monad. Applicative is a widely used class with a wealth of applications. It enables the eponymous applicative style, a convenient way of structuring functorial computations, and also provides means to express a number of important patterns.', 'https://en.wikibooks.org/wiki/Haskell/Applicative_functors', 'Book', '2018-09-24') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (24, 'Foldable', 'The Foldable type class provides a generalisation of list folding (foldr and friends) and operations derived from it to arbitrary data structures. Besides being extremely useful, Foldable is a great example of how monoids can help formulating good abstractions.', 'https://en.wikibooks.org/wiki/Haskell/Foldable', 'Book', '2017-04-03') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (25, 'Traversable', 'To traverse means to walk across, and that is exactly what Traversable generalises: walking across a structure, collecting results at each stop.', 'https://en.wikibooks.org/wiki/Haskell/Traversable', 'Book', '2016-11-26') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (26, 'Advanced type classes', 'Type classes may seem innocuous, but research on the subject has resulted in several advancements and generalisations which make them a very powerful tool.', 'https://en.wikibooks.org/wiki/Haskell/Advanced_type_classes', 'Book', '2018-09-18') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (27, 'Arrow Tutorial', 'Arrows provide an alternative to the usual way of structuring computations with the basic functor classes. This chapter provides a hands-on tutorial about them, while the next one, Understanding arrows, complements it with a conceptual overview. We recommend you to start with the tutorial, so that you get to taste what programming with arrows feels like. You can of course switch back and forth between the tutorial and the first part of Understanding arrows if you prefer going at a slower pace. Be sure to follow along every step of the tutorial on GHC(i).', 'https://en.wikibooks.org/wiki/Haskell/Arrow_tutorial', 'Book', '2018-09-19') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (28, 'Understanding arrows', 'Arrows, like monads, express computations that happen within a context. However, they are a more general abstraction than monads, and thus allow for contexts beyond what the Monad class makes possible.', 'https://en.wikibooks.org/wiki/Haskell/Understanding_arrows', 'Book', '2018-06-18') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (29, 'Fix and Recursion', 'The fix function is a particularly weird-looking function when you first see it. However, it is useful for one main theoretical reason: introducing it into the (typed) lambda calculus as a primitive allows you to define recursive functions.', 'https://en.wikibooks.org/wiki/Haskell/Fix_and_recursion', 'Book', '2017-05-26') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (30, 'Category Theory', 'This article attempts to give an overview of category theory, in so far as it applies to Haskell. To this end, Haskell code will be given alongside the mathematical definitions. Absolute rigour is not followed; in its place, we seek to give the reader an intuitive feel for what the concepts of category theory are and how they relate to Haskell.', 'https://en.wikibooks.org/wiki/Haskell/Category_theory', 'Book', '2018-10-02') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (31, 'Laziness', 'You need to understand two principles to see how programs execute in Haskell. First, we have the property of nonstrictness: we evaluate as little as possible and delay evaluation as long as possible. Second, Haskell values are highly layered; and ''evaluating'' a Haskell value could mean evaluating down to any one of these layers. Let''s walk through a few examples using a pair.', 'https://en.wikibooks.org/wiki/Haskell/Laziness', 'Book', '2017-03-30') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (32, 'Generalized Algebraic Datatypes (GADT)', 'Generalized algebraic datatypes, or simply GADTs, are a generalization of the algebraic data types that you are familiar with. Basically, they allow you to explicitly write down the types of the constructors. In this chapter, you''ll learn why this is useful and how to declare your own.', 'https://en.wikibooks.org/wiki/Haskell/GADT', 'Book', '2018-06-26') ON CONFLICT DO NOTHING;
+-- INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (12, 'Learn You a Haskell for Great Good: Modules', '', 'http://learnyouahaskell.com/modules', 'Book', '2011-04-01') ON CONFLICT DO NOTHING;
 
-INSERT INTO "tag" (id, name) VALUES
-    (1, 'type class')
-  , (2, 'functor')
-  , (3, 'applicative')
-  , (4, 'monad')
-  , (5, 'category theory')
-  , (6, 'type inference')
-  , (7, 'free monad')
-  , (8, 'effect')
-  , (9, 'extensible effect')
-  , (10, 'quickcheck')
-  , (11, 'testing')
-  , (12, 'property based testing')
-  , (13, 'design pattern')
-  , (14, 'dependency injection')
-  , (15, 'lens')
-  , (16, 'traversal')
-  , (17, 'json')
-  , (18, 'aeson')
-  ON CONFLICT DO NOTHING;
-  ;
+INSERT INTO "tag" (id, name) VALUES (1, 'typeclass') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (2, 'functor') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (3, 'applicative') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (4, 'monad') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (5, 'category theory') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (6, 'type inference') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (7, 'free monad') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (8, 'effect') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (9, 'extensible effect') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (10, 'quickcheck') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (11, 'testing') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (12, 'property based testing') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (13, 'design pattern') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (14, 'dependency injection') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (15, 'lens') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (16, 'traversal') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (17, 'json') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (18, 'aeson') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (19, 'type') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (20, 'lyah') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (21, 'pattern matching') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (22, 'recursion') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (23, 'module') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (24, 'io') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (25, 'zipper') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (26, 'lambda') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (27, 'function') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (28, 'curry') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (29, 'adt') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (30, 'algebraic data type') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (31, 'monoid') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (32, 'mtl') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (33, 'reader') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (34, 'writer') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (35, 'state') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (36, 'list') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (37, 'do notation') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (38, 'foldable') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (39, 'traversable') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (40, 'multi parameter type class') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (41, 'functional dependency') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (42, 'arrow') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (43, 'polymorphism') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (44, 'higher rank type') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (45, 'phantom type') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (46, 'gadt') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (48, 'kind') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (49, 'hask') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (50, 'laziness') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (51, 'thunk') ON CONFLICT DO NOTHING;
 
 -- TODO: add a nickname or handle?
 -- , (10, 'jaspervdj')
@@ -59,39 +98,112 @@ INSERT INTO "author" (id, first_name, last_name) VALUES (5, 'Gabriel', 'Gonzales
 INSERT INTO "author" (id, first_name, last_name) VALUES (6, 'Artyom', 'Kazak') ON CONFLICT DO NOTHING;
 INSERT INTO "author" (id, first_name, last_name) VALUES (7, 'Aditya', 'Bhargava') ON CONFLICT DO NOTHING;
 INSERT INTO "author" (id, first_name, last_name) VALUES (8, 'Haskell', 'WikiBook') ON CONFLICT DO NOTHING;
+INSERT INTO "author" (id, first_name, last_name) VALUES (9, 'Miran', 'Lipovača') ON CONFLICT DO NOTHING;
 
-INSERT INTO "item_author" (id, item_id, author_id) VALUES
-    (1, 1, 1)
-  , (2, 2, 1)
-  , (3, 3, 3)
-  , (4, 4, 4)
-  , (5, 5, 5)
-  , (6, 6, 6)
-  , (7, 7, 8)
-  , (8, 8, 7)
-  , (9, 9, 6)
-  ON CONFLICT DO NOTHING;
-  ;
 
-INSERT INTO "item_tag" (id, item_id, tag_id) VALUES
-    (1, 1, 1)
-  , (2, 1, 4)
-  , (3, 2, 6)
-  , (4, 3, 13)
-  , (5, 3, 14)
-  , (6, 4, 10)
-  , (7, 4, 11)
-  , (8, 4, 12)
-  , (9, 5, 15)
-  , (10, 6, 15)
-  , (11, 7, 15)
-  , (12, 7, 16)
-  , (13, 8, 2)
-  , (14, 8, 3)
-  , (15, 8, 4)
-  , (16, 9, 17)
-  , (17, 9, 18)
-  ON CONFLICT DO NOTHING;
-  ;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (1, 1, 1) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (2, 2, 1) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (3, 3, 3) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (4, 4, 4) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (5, 5, 5) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (6, 6, 6) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (7, 7, 8) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (8, 8, 7) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (9, 9, 6) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (10, 10, 9) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (11, 11, 9) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (12, 12, 9) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (13, 13, 9) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (14, 14, 9) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (15, 15, 9) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (16, 16, 9) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (17, 17, 9) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (18, 18, 9) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (19, 19, 9) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (20, 20, 8) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (21, 21, 8) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (22, 22, 8) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (23, 23, 8) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (24, 24, 8) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (25, 25, 8) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (26, 26, 8) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (27, 27, 8) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (28, 28, 8) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (29, 29, 8) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (30, 30, 8) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (31, 31, 8) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (32, 32, 8) ON CONFLICT DO NOTHING;
+
+
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (1, 1, 1) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (2, 1, 4) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (3, 2, 6) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (4, 3, 13) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (5, 3, 14) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (6, 4, 10) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (7, 4, 11) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (8, 4, 12) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (9, 5, 15) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (10, 6, 15) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (11, 7, 15) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (12, 7, 16) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (13, 8, 2) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (14, 8, 3) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (15, 8, 4) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (16, 9, 17) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (17, 9, 18) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (18, 10, 1) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (19, 10, 19) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (20, 10, 20) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (21, 11, 20) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (22, 11, 22) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (23, 12, 20) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (24, 12, 26) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (25, 12, 27) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (26, 12, 28) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (27, 13, 20) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (28, 13, 23) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (29, 14, 20) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (30, 14, 1) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (31, 14, 19) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (32, 14, 29) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (32, 14, 30) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (34, 15, 20) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (35, 15, 24) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (36, 16, 20) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (37, 16, 2) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (38, 16, 3) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (39, 16, 31) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (40, 17, 20) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (41, 17, 4) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (42, 17, 36) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (43, 17, 37) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (44, 18, 20) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (45, 18, 4) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (46, 18, 33) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (47, 18, 34) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (48, 18, 35) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (49, 19, 20) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (50, 19, 21) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (51, 19, 27) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (52, 20, 22) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (53, 20, 27) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (54, 21, 21) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (55, 22, 31) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (56, 23, 3) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (57, 23, 2) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (58, 24, 38) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (59, 25, 39) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (60, 26, 1) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (61, 26, 40) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (62, 26, 41) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (63, 27, 42) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (64, 28, 42) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (65, 29, 22) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (66, 30, 5) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (67, 30, 49) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (68, 31, 50) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (69, 31, 51) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (70, 32, 46) ON CONFLICT DO NOTHING;
 
 COMMIT;

@@ -177,6 +177,7 @@
               :placeholder "Eg. Monad, Applicative, Lens, Category Theory"
               :showNoResults false
               :onResultSelect onResultSelect
+              :minCharacters 2
               :onSearchChange onSearchChange})]]))}))
 
 (defn footer []
