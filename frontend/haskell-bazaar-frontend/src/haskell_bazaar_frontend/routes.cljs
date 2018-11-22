@@ -15,6 +15,7 @@
   (secretary/set-config! :prefix "#"))
 
 (defroute "/" [_]
+  (re-frame/dispatch [:set-search-query nil])
   (re-frame/dispatch [:tab :landing-page]))
 
 (defroute "/search" [query-params]
@@ -23,7 +24,7 @@
     (when-not (string/blank? q)
       (re-frame/dispatch [:set-search-query q])
       (re-frame/dispatch [:tab :search])
-      (re-frame/dispatch [:datascript/search-later {:q q :ms 200}]))))
+      (re-frame/dispatch [:datascript/search-later {:q q :ms 400}]))))
 
 (defn make-history!
   "Returns a Goog.History object"

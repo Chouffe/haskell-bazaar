@@ -145,8 +145,7 @@
       [:li "Try fewer keywords"]]]))
 
 (defn see-also-item [s]
-  ;; TODO: add a scroll to top
-  [:div.item [:a {:on-click #(re-frame/dispatch [:navigate-search s])} s]])
+  [:div.item [:a {:href (str "/#/search?q=" s)} s]])
 
 (defn see-also []
   (let [search-query (re-frame/subscribe [:search-query])

@@ -155,7 +155,8 @@
   :datascript/search-later
   [interceptors]
   (fn [_ [_ {:keys [q ms]}]]
-    {:dispatch-later [{:ms ms :dispatch [:datascript/search q]}]}))
+    {:scroll-to [0 0]
+     :dispatch-later [{:ms ms :dispatch [:datascript/search q]}]}))
 
 ;; TODO: define higher order functions for handling the caching
 (re-frame/reg-event-fx

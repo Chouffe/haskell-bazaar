@@ -87,3 +87,8 @@
   :gtag/event-n
   (fn [xs-params]
     (run! analytics/event! xs-params)))
+
+(re-frame/reg-fx
+  :scroll-to
+  (fn [[x y]]
+    (.scrollTo js/window x y)))
