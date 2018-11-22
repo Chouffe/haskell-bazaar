@@ -215,6 +215,8 @@
            (merge
              (when-not (string/blank? @search-query)
                {:defaultValue @search-query})
+             (when-not (nil? @search-query)
+              {:value @search-query})
              {:results filtered-source
               ; TODO: should we add categories?
               ; :category true

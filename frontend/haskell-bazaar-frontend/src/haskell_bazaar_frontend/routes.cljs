@@ -15,8 +15,8 @@
   (secretary/set-config! :prefix "#"))
 
 (defroute "/" [_]
-  (re-frame/dispatch [:set-search-query nil])
-  (re-frame/dispatch [:tab :landing-page]))
+  (re-frame/dispatch [:tab :landing-page])
+  (re-frame/dispatch [:set-search-query nil]))
 
 (defroute "/search" [query-params]
   (let [{:keys [q tab]} query-params]
