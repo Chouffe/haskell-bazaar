@@ -225,7 +225,7 @@
      [:div.header
       [:> ui/container
        [:img.ui.small.circular.centered.image
-        {:src "images/haskell-bazaar-logo.png"
+        {:src "images/haskell-bazaar-logo.svg"
          :alt "Haskell Bazaar Logo"}]
        [:form
         {:on-submit

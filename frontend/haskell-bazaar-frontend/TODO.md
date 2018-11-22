@@ -11,3 +11,5 @@
 * Limit to n elements
 * Better sort function for displaying search results
   * Add a score for each
+* Change haskell logo to have colors
+  * Ask David to design something

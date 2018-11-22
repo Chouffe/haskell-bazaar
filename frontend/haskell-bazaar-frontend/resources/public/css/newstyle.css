@@ -12,6 +12,10 @@ html {
   min-height: 400px;
 }
 
+#landing-page .header img {
+  padding-bottom: 2em;
+}
+
 #landing-page .header .tag-line {
   font-size: 1.2em;
   font-weight:500;
@@ -173,5 +177,5 @@ html {
 }
 
 .footer i.heart {
-  color: #DE5833;
+  color: #8E508A;
 }
