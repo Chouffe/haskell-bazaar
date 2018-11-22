@@ -34,6 +34,26 @@ INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (
 INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (30, 'Category Theory', 'This article attempts to give an overview of category theory, in so far as it applies to Haskell. To this end, Haskell code will be given alongside the mathematical definitions. Absolute rigour is not followed; in its place, we seek to give the reader an intuitive feel for what the concepts of category theory are and how they relate to Haskell.', 'https://en.wikibooks.org/wiki/Haskell/Category_theory', 'Book', '2018-10-02') ON CONFLICT DO NOTHING;
 INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (31, 'Laziness', 'You need to understand two principles to see how programs execute in Haskell. First, we have the property of nonstrictness: we evaluate as little as possible and delay evaluation as long as possible. Second, Haskell values are highly layered; and ''evaluating'' a Haskell value could mean evaluating down to any one of these layers. Let''s walk through a few examples using a pair.', 'https://en.wikibooks.org/wiki/Haskell/Laziness', 'Book', '2017-03-30') ON CONFLICT DO NOTHING;
 INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (32, 'Generalized Algebraic Datatypes (GADT)', 'Generalized algebraic datatypes, or simply GADTs, are a generalization of the algebraic data types that you are familiar with. Basically, they allow you to explicitly write down the types of the constructors. In this chapter, you''ll learn why this is useful and how to declare your own.', 'https://en.wikibooks.org/wiki/Haskell/GADT', 'Book', '2018-06-26') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (33, '24 Days of Hackage: QuickCheck', 'As I mentioned in the article on errors, the Haskell programmer takes error handling and edge cases very seriously. While we try and constrain our types as much as possible, there is always a trade off between exact types and pragmatism, not to mention that there are some invariants that are very difficult to encode in the Haskell type system. As such, without rigorous testing, there is still a risk of exceptions or unexpected behaviors at runtime.', 'https://ocharles.org.uk/posts/2012-12-08-24-days-of-hackage.html', 'Tutorial', '2012-12-08') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (34, '24 Days of Hackage: aeson', 'Aeson is a small library, offering not much in way of an API - something I regard as a feature. Essentially, aeson consists of a parser, and a pair of To/From JSON classes to convert between JSON and richer Haskell structures.', 'https://ocharles.org.uk/posts/2012-12-07-24-days-of-hackage-aeson.html', 'Tutorial', '2012-12-07') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (35, '24 Days of Hackage: lens', 'Edward Kmett''s lens package aims to solve this problem. lens provides "families of lenses, isomorphisms, folds, traversals, getters and setters".', 'https://ocharles.org.uk/posts/2012-12-09-24-days-of-hackage-lens.html', 'Tutorial', '2012-12-09') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (36, '24 Days of Hackage: transformers', 'It''s true, you can''t do much programming in Haskell without dealing with monads, but as we’ll see - this isn’t any reason to be scared of them. Instead, we should embrace them! transformers is built for this. The transformers library provides monad transformers which let you combine the behavior of multiple monads together.', 'https://ocharles.org.uk/posts/2012-12-20-24-days-of-hackage-transformers.html', 'Tutorial', '2012-12-20') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (37, 'Real World Haskell: Type and Functions', 'A type adds meaning to plain bytes: it lets us say “these bytes are text”, “those bytes are an airline reservation”, and so on. Usually, a type system goes beyond this to prevent us from accidentally mixing types up: for example, a type system usually won''t let us treat a hotel reservation as a car rental receipt.', 'http://book.realworldhaskell.org/read/types-and-functions.html', 'Book', '2008-01-01') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (38, 'Real World Haskell: Defining Types, Streamlining Functions', 'Although lists and tuples are useful, we''ll often want to construct new data types of our own. This allows us to add structure to the values in our programs. Instead of using an anonymous tuple, we can give a collection of related values a name and a distinct type. Defining our own types also improves the type safety of our code: Haskell will not allow us to accidentally mix values of two types that are structurally similar but have different names.', 'http://book.realworldhaskell.org/read/defining-types-streamlining-functions.html', 'Book', '2008-01-01') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (39, 'Real World Haskell: Using Typeclasses', 'Typeclasses are among the most powerful features in Haskell. They allow you to define generic interfaces that provide a common feature set over a wide variety of types. Typeclasses are at the heart of some basic language features such as equality testing and numeric operators. Before we talk about what exactly typeclasses are, though, we''d like to explain the need for them.', 'http://book.realworldhaskell.org/read/using-typeclasses.html', 'Book', '2008-01-01') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (40, 'Real World Haskell: Input Output', 'Haskell''s I/O system is powerful and expressive. It is easy to work with and important to understand. Haskell strictly separates pure code from code that could cause things to occur in the world. That is, it provides a complete isolation from side-effects in pure code. Besides helping programmers to reason about the correctness of their code, it also permits compilers to automatically introduce optimizations and parallelism.', 'http://book.realworldhaskell.org/read/io.html', 'Book', '2008-01-01') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (41, 'Real World Haskell: Testing and quality assurance', 'In this chapter we''ll look at how to use QuickCheck to establish invariants in code and then re-examine the pretty printer developed in previous chapters, testing it with QuickCheck.', 'http://book.realworldhaskell.org/read/testing-and-quality-assurance.html', 'Book', '2008-01-01') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (42, 'Real World Haskell: Monads', 'We aim to show you that a monad is often an obvious and useful tool to help solve a problem. We''ll define a few monads in this chapter, to show how easy it is.', 'http://book.realworldhaskell.org/read/monads.html', 'Book', '2008-01-01') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (43, 'Real World Haskell: Working with Monads', 'The State monad lets us plumb a piece of mutable state through our code. Sometimes, we would like to be able to pass some immutable state around, such as a program''s configuration data. We could use the State monad for this purpose, but we could then find ourselves accidentally modifying data that should remain unchanged', 'http://book.realworldhaskell.org/read/programming-with-monads.html', 'Book', '2008-01-01') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (44, 'Real World Haskell: Monad transformers', 'Monads provide a powerful way to build computations with effects. Each of the standard monads is specialised to do exactly one thing. In real code, we often need to be able to use several effects at once.', 'http://book.realworldhaskell.org/read/monad-transformers.html', 'Book', '2008-01-01') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (45, 'Typeclassopedia', 'The goal of this document is to serve as a starting point for the student of Haskell wishing to gain a firm grasp of its standard type classes. The essentials of each type class are introduced, with examples, commentary, and extensive references for further reading.', 'https://wiki.haskell.org/Typeclassopedia', 'Book', '2009-03-12') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (46, 'What I Wish I Knew When Learning Haskell: Monads', 'The only path to understanding monads is to read the fine source, fire up GHC, and write some code. Analogies and metaphors will not lead to understanding.', 'http://dev.stephendiehl.com/hask/#monads', 'Book', '2017-01-01') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (47, 'What I Wish I Knew When Learning Haskell: Monad Transformers', 'Modern Haskell monad libraries typically use a more general form of these, written in terms of monad transformers which allow us to compose monads together to form composite monads. The monads mentioned previously are subsumed by the special case of the transformer form composed with the Identity monad.', 'http://dev.stephendiehl.com/hask/#monad-transformers', 'Book', '2017-01-01') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (48, 'What I Wish I Knew When Learning Haskell: Laziness', 'Again, a subject on which much ink has been spilled. There is an ongoing discussion in the land of Haskell about the compromises between lazy and strict evaluation, and there are nuanced arguments for having either paradigm be the default. Haskell takes a hybrid approach and allows strict evaluation when needed and uses laziness by default. Needless to say, we can always find examples where strict evaluation exhibits worse behavior than lazy evaluation and vice versa.', 'http://dev.stephendiehl.com/hask/#laziness', 'Book', '2017-01-01') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (49, 'What I Wish I Knew When Learning Haskell: Testing', 'Contrary to a lot of misinformation, unit testing in Haskell is quite common and robust. Although generally speaking unit tests tend to be of less importance in Haskell since the type system makes an enormous amount of invalid programs completely inexpressible by construction. Unit tests tend to be written later in the development lifecycle and generally tend to be about the core logic of the program and not the intermediate plumbing.', 'http://dev.stephendiehl.com/hask/#testing', 'Book', '2017-01-01') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (50, 'What I Wish I Knew When Learning Haskell: Categories', 'Alas we come to the topic of category theory. Some might say all discussion of Haskell eventually leads here at one point or another. Nevertheless the overall importance of category theory in the context of Haskell has been somewhat overstated and unfortunately mystified to some extent.', 'http://dev.stephendiehl.com/hask/#testing', 'Book', '2017-01-01') ON CONFLICT DO NOTHING;
+-- INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (33, '', '', '', 'Tutorial', '2012-12-08') ON CONFLICT DO NOTHING; */
+
 -- INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (12, 'Learn You a Haskell for Great Good: Modules', '', 'http://learnyouahaskell.com/modules', 'Book', '2011-04-01') ON CONFLICT DO NOTHING;
 
 INSERT INTO "tag" (id, name) VALUES (1, 'typeclass') ON CONFLICT DO NOTHING;
@@ -86,6 +106,9 @@ INSERT INTO "tag" (id, name) VALUES (48, 'kind') ON CONFLICT DO NOTHING;
 INSERT INTO "tag" (id, name) VALUES (49, 'hask') ON CONFLICT DO NOTHING;
 INSERT INTO "tag" (id, name) VALUES (50, 'laziness') ON CONFLICT DO NOTHING;
 INSERT INTO "tag" (id, name) VALUES (51, 'thunk') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (52, 'monad transformers') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (53, 'type system') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (54, 'real world haskell') ON CONFLICT DO NOTHING;
 
 -- TODO: add a nickname or handle?
 -- , (10, 'jaspervdj')
@@ -99,6 +122,12 @@ INSERT INTO "author" (id, first_name, last_name) VALUES (6, 'Artyom', 'Kazak') O
 INSERT INTO "author" (id, first_name, last_name) VALUES (7, 'Aditya', 'Bhargava') ON CONFLICT DO NOTHING;
 INSERT INTO "author" (id, first_name, last_name) VALUES (8, 'Haskell', 'WikiBook') ON CONFLICT DO NOTHING;
 INSERT INTO "author" (id, first_name, last_name) VALUES (9, 'Miran', 'Lipovača') ON CONFLICT DO NOTHING;
+INSERT INTO "author" (id, first_name, last_name) VALUES (10, 'Oliver', 'Charles') ON CONFLICT DO NOTHING;
+INSERT INTO "author" (id, first_name, last_name) VALUES (11, 'Bryan', 'O''Sullivan') ON CONFLICT DO NOTHING;
+INSERT INTO "author" (id, first_name, last_name) VALUES (12, 'Don', 'Stewart') ON CONFLICT DO NOTHING;
+INSERT INTO "author" (id, first_name, last_name) VALUES (13, 'John', 'Goerzen') ON CONFLICT DO NOTHING;
+INSERT INTO "author" (id, first_name, last_name) VALUES (14, 'Stephen', 'Diehl') ON CONFLICT DO NOTHING;
+INSERT INTO "author" (id, first_name, last_name) VALUES (15, 'Brent', 'Yorgey') ON CONFLICT DO NOTHING;
 
 
 INSERT INTO "item_author" (id, item_id, author_id) VALUES (1, 1, 1) ON CONFLICT DO NOTHING;
@@ -133,6 +162,24 @@ INSERT INTO "item_author" (id, item_id, author_id) VALUES (29, 29, 8) ON CONFLIC
 INSERT INTO "item_author" (id, item_id, author_id) VALUES (30, 30, 8) ON CONFLICT DO NOTHING;
 INSERT INTO "item_author" (id, item_id, author_id) VALUES (31, 31, 8) ON CONFLICT DO NOTHING;
 INSERT INTO "item_author" (id, item_id, author_id) VALUES (32, 32, 8) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (33, 33, 10) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (34, 34, 10) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (35, 35, 10) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (36, 36, 10) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (37, 37, 11) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (38, 38, 11) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (39, 39, 11) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (40, 40, 11) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (41, 41, 11) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (42, 42, 11) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (43, 43, 11) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (44, 44, 11) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (45, 45, 15) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (46, 46, 14) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (47, 47, 14) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (48, 48, 14) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (49, 49, 14) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (50, 50, 14) ON CONFLICT DO NOTHING;
 
 
 INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (1, 1, 1) ON CONFLICT DO NOTHING;
@@ -205,5 +252,63 @@ INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (67, 30, 49) ON CONFLICT DO 
 INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (68, 31, 50) ON CONFLICT DO NOTHING;
 INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (69, 31, 51) ON CONFLICT DO NOTHING;
 INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (70, 32, 46) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (71, 33, 10) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (72, 33, 11) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (73, 34, 18) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (74, 34, 19) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (75, 35, 15) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (76, 36, 32) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (77, 36, 52) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (78, 36, 4) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (79, 37, 19) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (80, 37, 27) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (81, 37, 53) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (82, 37, 54) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (83, 38, 19) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (84, 38, 29) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (85, 38, 30) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (86, 38, 27) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (87, 38, 54) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (88, 39, 1) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (89, 39, 54) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (90, 40, 24) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (91, 40, 54) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (92, 41, 10) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (93, 41, 11) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (94, 41, 12) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (95, 41, 54) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (96, 42, 37) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (97, 42, 35) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (98, 42, 54) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (99, 42, 4) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (100, 43, 4) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (101, 43, 33) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (102, 43, 54) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (103, 44, 52) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (104, 44, 32) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (105, 44, 54) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (106, 45, 1) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (107, 45, 2) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (108, 45, 3) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (109, 45, 4) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (110, 45, 52) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (111, 45, 38) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (112, 45, 39) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (113, 45, 42) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (114, 46, 4) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (115, 46, 37) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (116, 46, 33) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (117, 46, 34) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (118, 46, 35) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (119, 46, 36) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (120, 47, 52) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (121, 47, 32) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (122, 48, 50) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (123, 48, 51) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (124, 49, 10) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (125, 49, 11) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (126, 49, 12) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (127, 50, 5) ON CONFLICT DO NOTHING;
+
 
 COMMIT;
