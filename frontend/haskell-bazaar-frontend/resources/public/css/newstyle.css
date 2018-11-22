@@ -42,6 +42,10 @@ html {
   font-size: 0.9em;
 }
 
+#no-results-found {
+  padding-top: 2em;
+}
+
 #landing-page .header .search .results {
   border-radius: 0 0 3.4px 3.4px;
   margin-top: -2px;
@@ -111,13 +115,13 @@ html {
   min-height: 75vh;
 }
 
-.search-results ul {
+.search-results .found-results ul {
   list-style: none;
   overflow: hidden;
   padding:0;
 }
 
-.search-results ul li {
+.search-results .found-results ul li {
   display: block;
   max-width: 590px;
   padding: 0.5em 0;

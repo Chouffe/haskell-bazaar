@@ -132,13 +132,28 @@
              (fn [{:keys [type]}] (= (string/lower-case (name (:item-type type)))
                                      (name showing-kw))))))
 
+(defn search-results-nothing-found
+  []
+  (let [search-query (re-frame/subscribe [:search-query])]
+    [:div#no-results-found
+     [:p "No results were found for "
+      [:strong @search-query]]
+     "Suggestions:"
+     [:ul.ui.list
+      [:li "Make sure all words are spelled correctly"]
+      [:li "Try different keywords"]
+      [:li "Try fewer keywords"]]]))
+
 (defn search-results-list
   [base-url]
   (let [items (re-frame/subscribe [:search-items])]
-    (->> @items
-         vals
-         (mapv (fn [item] [search-result-item base-url item]))
-         (into [:ul.search-items]))))
+    (if-not (seq @items)
+      [search-results-nothing-found]
+      [:div.found-results
+       (->> @items
+            vals
+            (mapv (fn [item] [search-result-item base-url item]))
+            (into [:ul.search-items]))])))
 
 (defn enriched-result [{:keys [title body]}]
   [:div.results-definition

@@ -1,6 +1,6 @@
 # TODO
 
-* Clenanup app db
+* Clean up app db
 * refactor keywords to namespaced keywords in db.cljs
 * Add definitions in datascript instead of hardcoded map
 * Add integration tests for frontend
@@ -9,3 +9,5 @@
 * Paginate results
 * Add a `No results found`
 * Limit to n elements
+* Better sort function for displaying search results
+  * Add a score for each
