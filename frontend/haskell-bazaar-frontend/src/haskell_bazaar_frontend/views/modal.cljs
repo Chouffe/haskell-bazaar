@@ -66,9 +66,15 @@
               "Submit"])]])})))
 
 ;; Modals
-(defmulti modal identity)
+(defn modal []
+  (let [modal-kw (re-frame/subscribe [:modal])]
+    (if-not @modal-kw
+      [:div]
+      [modal-impl @modal-kw])))
 
-(defmethod modal :mailing-list [_]
+(defmulti modal-impl identity)
+
+(defmethod modal-impl :mailing-list [_]
   [:> ui/modal {:open true :onClose #(re-frame/dispatch [:modal/close])}
    [:> ui/modal-header "Subscription"]
    [:> ui/modal-content
@@ -76,7 +82,7 @@
      [mailing-list-form]]]])
 
 
-(defmethod modal :feedback [_]
+(defmethod modal-impl :feedback [_]
   [:> ui/modal {:open true :onClose #(re-frame/dispatch [:modal/close])}
    [:> ui/modal-header "Contact / Feedback"]
    [:> ui/modal-content

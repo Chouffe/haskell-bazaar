@@ -317,7 +317,6 @@
   (let [tab (re-frame/subscribe [:tab])
         modal-kw (re-frame/subscribe [:modal])]
     [:div
-     (when @modal-kw
-       [modal/modal @modal-kw])
+     [modal/modal]
      [tab-pannel {:dispatchers dispatchers :base-url base-url :tab @tab}]
      [footer]]))
