@@ -19,6 +19,4 @@
   * Concurrency and Parallelism Simon Marlow
 * Setup automated psql database backup to S3
 * Post to r/haskell to get some initial datapoints and feedback
-* Features
-  * See Also: Authors and Tag
 * Gzip data sent to client

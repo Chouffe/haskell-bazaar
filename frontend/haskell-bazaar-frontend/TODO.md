@@ -7,7 +7,6 @@
 * Download assets and not rely on external CDN so that it works without internet connection
 * CSS minification pipeline
 * Paginate results
-* Add a `No results found`
 * Limit to n elements
 * Better sort function for displaying search results
   * Add a score for each
