@@ -254,8 +254,8 @@
       "Contact"]
      (let [event-params {:action "donate"
                          :category "ui"
-                         :label s
-                         :value s}]
+                         :label "click"
+                         :value "click"}]
        [:a.item {:style {:cursor "pointer"}
                  :on-click #(re-frame/dispatch [:analytics/event event-params])}
         "Donate"])]]])
