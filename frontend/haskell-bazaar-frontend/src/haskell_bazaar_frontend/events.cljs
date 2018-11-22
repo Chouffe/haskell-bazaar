@@ -142,7 +142,8 @@
   :datascript/search
   [(re-frame/inject-cofx :datascript) interceptors]
   (fn [{:keys [datascript db]} [_ search-query]]
-    (when-not (string/blank? search-query)
+    (when-not (or (string/blank? search-query)
+                  (< (count search-query) 2))
       (let [search-item-results (->> search-query
                                      (ds/search datascript)
                                      utils/uuid-coll->hashmap)]
