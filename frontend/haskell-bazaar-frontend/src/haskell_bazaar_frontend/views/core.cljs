@@ -144,8 +144,14 @@
       [:li "Try different keywords"]
       [:li "Try fewer keywords"]]]))
 
-(defn see-also-item [s]
-  [:div.item [:a {:href (str "/#/search?q=" s)} s]])
+(defn see-also-item
+  [s]
+  (let [event-params {:action "see-also"
+                      :category "ui"
+                      :label s
+                      :value s}]
+    [:div.item [:a {:href (str "/#/search?q=" s)
+                    :on-click #(re-frame/dispatch [:analytics/event event-params])} s]]))
 
 (defn see-also []
   (let [search-query (re-frame/subscribe [:search-query])
