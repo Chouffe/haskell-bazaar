@@ -144,6 +144,38 @@
       [:li "Try different keywords"]
       [:li "Try fewer keywords"]]]))
 
+(defn see-also-item [s]
+  ;; TODO: add a scroll to top
+  [:div.item [:a {:on-click #(re-frame/dispatch [:navigate-search s])} s]])
+
+(defn see-also []
+  (let [search-query (re-frame/subscribe [:search-query])
+        items (re-frame/subscribe [:search-items])]
+    [:div#see-also
+     [:div "See also:"]
+     (let [authors (->> @items
+                        vals
+                        (mapcat :authors)
+                        (map #(str (:firstName %) " " (:lastName %)))
+                        (remove nil?)
+                        (remove (partial = @search-query))
+                        frequencies
+                        (sort-by second >)
+                        (take 2))
+           tags (->> @items
+                     vals
+                     (mapcat :tags)
+                     (map :name)
+                     (remove nil?)
+                     (remove (partial = @search-query))
+                     frequencies
+                     (sort-by second >)
+                     (take 3))]
+       (->> [tags authors]
+            (reduce concat)
+            (mapv (fn [[s n]] [see-also-item s]))
+            (into [:div.ui.horizontal.list])))]))
+
 (defn search-results-list
   [base-url]
   (let [items (re-frame/subscribe [:search-items])]
@@ -153,7 +185,8 @@
        (->> @items
             vals
             (mapv (fn [item] [search-result-item base-url item]))
-            (into [:ul.search-items]))])))
+            (into [:ul.search-items]))
+       [see-also]])))
 
 (defn enriched-result [{:keys [title body]}]
   [:div.results-definition
@@ -240,6 +273,8 @@
         [:strong "Haskell"]
         " resources!"]]]
      #_[:div#page-1 "TODO"]]))
+
+
 
 (defmethod tab-pannel :search
   [{:keys [dispatchers base-url]}]
