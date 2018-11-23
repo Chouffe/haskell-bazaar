@@ -69,7 +69,7 @@
                    ::description]
           :opt [::tags ::authors]))
 (s/def ::search-items (s/map-of ::uuid ::search-item))
-(s/def ::modal #{:feedback :mailing-list})
+(s/def ::modal #{:feedback :mailing-list :donate})
 (s/def ::tab #{:search :landing-page})
 
 ;; App-state

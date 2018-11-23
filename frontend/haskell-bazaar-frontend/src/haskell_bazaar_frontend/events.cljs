@@ -48,6 +48,7 @@
 (defn modal->path [modal]
   (get {:feedback "/modal-feedback"
         :mailing-list "/modal-mailing-list"
+        :donate "/modal-donate"
         } modal "/"))
 
 (defn coeffects->gtag [{:keys [event] :as coeffects}]

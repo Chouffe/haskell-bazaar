@@ -252,13 +252,9 @@
      [:a.item {:style {:cursor "pointer"}
           :on-click #(re-frame/dispatch [:modal/open :feedback])}
       "Contact"]
-     (let [event-params {:action "donate"
-                         :category "ui"
-                         :label "click"
-                         :value "click"}]
-       [:a.item {:style {:cursor "pointer"}
-                 :on-click #(re-frame/dispatch [:analytics/event event-params])}
-        "Donate"])]]])
+     [:a.item {:style {:cursor "pointer"}
+               :on-click #(re-frame/dispatch [:modal/open :donate])}
+      "Donate"]]]])
 
 (defmulti tab-pannel (fn [params] (:tab params)))
 

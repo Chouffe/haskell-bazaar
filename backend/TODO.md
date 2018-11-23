@@ -20,7 +20,6 @@
   * FP complete blog posts
   * Influential papers
     * Banana wired
-* Use a CDN to serve static assets
 * Setup automated psql database backup to S3
 * Post to r/haskell to get some initial datapoints and feedback
 * Gzip data sent to client
