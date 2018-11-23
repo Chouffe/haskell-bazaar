@@ -1,3 +1,12 @@
+-- Deleting all tables
+-- DROP TABLE item_click;
+-- DROP TABLE item_author;
+-- DROP TABLE item_tag;
+-- DROP TABLE author;
+-- DROP TABLE feedback;
+-- DROP TABLE tag;
+-- DROP TABLE item;
+
 BEGIN TRANSACTION;
 
 -- Enable UUID plugin
