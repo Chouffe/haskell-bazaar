@@ -9,6 +9,7 @@ data Type
   | Video
   | Tutorial
   | Book
+  | Paper
   deriving (Show, Read, Eq)
 
 derivePersistField "Type"

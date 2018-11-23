@@ -65,6 +65,15 @@ INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (
 INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (61, 'CIS 194: Applicative Functors (Part I)', 'Functors for which this sort of “contextual application” is possible are called applicative, and the Applicative class captures this pattern.', 'https://www.seas.upenn.edu/~cis194/spring13/lectures/10-applicative.html', 'Tutorial', '2013-03-25') ON CONFLICT DO NOTHING;
 INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (62, 'CIS 194: Applicative Functors (Part II)', 'Functor is a nifty tool but relatively straightforward. At first glance it seems like Applicative doesn''t add that much beyond what Functor already provides, but it turns out that it’s a small addition with a huge impact. Applicative (and as we will see next week, Monad) deserves to be called a “model of computation”, while Functor doesn''t.', 'https://www.seas.upenn.edu/~cis194/spring13/lectures/11-applicative2.html', 'Tutorial', '2013-04-01') ON CONFLICT DO NOTHING;
 INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (63, 'CIS 194: Monads', 'We have only seen computations with a fixed structure, such as applying a data constructor to a fixed set of arguments. What if we don''t know the structure of the computation in advance – that is, we want to be able to decide what to do based on some intermediate results?', 'https://www.seas.upenn.edu/~cis194/spring13/lectures/12-monads.html', 'Tutorial', '2013-04-01') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (64, 'Reasonning about Laziness', 'Haskell is a lazy language Functions and data constructors don''t evaluate their arguments until they need them.', 'https://www.slideshare.net/tibbe/reasoning-about-laziness', 'Tutorial', '2011-02-12') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (65, 'Monad Transformers Step by Step', 'In this tutorial, we describe how to use monad transformers in order to incrementally add functionality to Haskell programs. It is not a paper about implementing transformers, but about using them to write elegant, clean and powerful programs in Haskell.', 'https://page.mi.fu-berlin.de/scravy/realworldhaskell/materialien/monad-transformers-step-by-step.pdf', 'Paper', '2006-10-06') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (66, 'A Gentle Introduction to Monad Transformers', 'Before we break into the mysterious world of monad transformers, I want to start with reviewing a much simpler concept, namely the Either data type.', 'https://two-wrongs.com/a-gentle-introduction-to-monad-transformers', 'Tutorial', '2018-03-01') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (67, 'A Little Lens Starter Tutorial', 'lens is a package which provides the type synonym Lens which is one of a few implementations of the concept of lenses, or functional references. lens also provides a number of generalizations of lenses including Prisms, Traversals, Isos, and Folds.', 'https://www.schoolofhaskell.com/school/to-infinity-and-beyond/pick-of-the-week/a-little-lens-starter-tutorial', 'Tutorial', '2018-07-28') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (68, 'Lens Over Tea #2: composition, laws, getters/actions/setters', '2 obligatory topics of every lens tutorial seem to be “wow, look how lenses compose, it''s just like OOP” and “wow, look how lenses make working with records easy”.', 'https://artyom.me/lens-over-tea-2', 'Tutorial', '2017-01-01') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (69, 'Lens Over Tea #3: folds', 'Okay, the exploration of lens continues. This post is a bit boring because folds are much less interesting than, say, prisms, but hey, I promised shorter posts.', 'https://artyom.me/lens-over-tea-3', 'Tutorial', '2017-01-01') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (70, 'Lens Over Tea #4: isomorphisms, some profunctors, lens families', '...as well as human sacrifice, dogs and cats living together, mass hysteria— ahem. There''ll be prisms in the next post, but first we''ll have to understand isomorphisms, because isomorphisms are easier and prisms kinda follow from isomorphisms.', 'https://artyom.me/lens-over-tea-4', 'Tutorial', '2017-01-01') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (71, 'Lens Over Tea #5: prisms', 'The exploration of lenses continues! Today we''ll finally figure out how prisms are implemented and what they are for. Also there are more exercises than in the previous posts, so perhaps you should read it with GHCi running.', 'https://artyom.me/lens-over-tea-5', 'Tutorial', '2017-01-01') ON CONFLICT DO NOTHING;
+INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (72, 'Lens Over Tea #6: Template Haskell', 'Let''s take a break from weird typeclasses and delve into Template Haskell that lens uses fairly extensively; in the end we''ll have a simple implementation of makeLenses', 'https://artyom.me/lens-over-tea-6', 'Tutorial', '2017-01-01') ON CONFLICT DO NOTHING;
 
 -- INSERT INTO "item" (id, title, description, url, item_type, created_at) VALUES (33, '', '', '', 'Tutorial', '2012-12-08') ON CONFLICT DO NOTHING; */
 
@@ -125,6 +134,10 @@ INSERT INTO "tag" (id, name) VALUES (53, 'type system') ON CONFLICT DO NOTHING;
 INSERT INTO "tag" (id, name) VALUES (54, 'real world haskell') ON CONFLICT DO NOTHING;
 INSERT INTO "tag" (id, name) VALUES (55, 'prelude') ON CONFLICT DO NOTHING;
 INSERT INTO "tag" (id, name) VALUES (56, 'folds') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (57, 'iso') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (58, 'profunctor') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (59, 'prism') ON CONFLICT DO NOTHING;
+INSERT INTO "tag" (id, name) VALUES (60, 'template haskell') ON CONFLICT DO NOTHING;
 
 -- TODO: add a nickname or handle?
 -- , (10, 'jaspervdj')
@@ -144,6 +157,10 @@ INSERT INTO "author" (id, first_name, last_name) VALUES (12, 'Don', 'Stewart') O
 INSERT INTO "author" (id, first_name, last_name) VALUES (13, 'John', 'Goerzen') ON CONFLICT DO NOTHING;
 INSERT INTO "author" (id, first_name, last_name) VALUES (14, 'Stephen', 'Diehl') ON CONFLICT DO NOTHING;
 INSERT INTO "author" (id, first_name, last_name) VALUES (15, 'Brent', 'Yorgey') ON CONFLICT DO NOTHING;
+INSERT INTO "author" (id, first_name, last_name) VALUES (16, 'Johan', 'Tibell') ON CONFLICT DO NOTHING;
+INSERT INTO "author" (id, first_name, last_name) VALUES (17, 'Martin', 'Grabmüller') ON CONFLICT DO NOTHING;
+INSERT INTO "author" (id, first_name, last_name) VALUES (18, 'Chris', 'kqr') ON CONFLICT DO NOTHING;
+INSERT INTO "author" (id, first_name, last_name) VALUES (19, 'School', 'of Haskell') ON CONFLICT DO NOTHING;
 
 
 INSERT INTO "item_author" (id, item_id, author_id) VALUES (1, 1, 1) ON CONFLICT DO NOTHING;
@@ -209,7 +226,15 @@ INSERT INTO "item_author" (id, item_id, author_id) VALUES (60, 60, 15) ON CONFLI
 INSERT INTO "item_author" (id, item_id, author_id) VALUES (61, 61, 15) ON CONFLICT DO NOTHING;
 INSERT INTO "item_author" (id, item_id, author_id) VALUES (62, 62, 15) ON CONFLICT DO NOTHING;
 INSERT INTO "item_author" (id, item_id, author_id) VALUES (63, 63, 15) ON CONFLICT DO NOTHING;
-
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (64, 64, 16) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (65, 65, 17) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (66, 66, 18) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (67, 67, 19) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (68, 68, 6) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (69, 69, 6) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (70, 70, 6) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (71, 71, 6) ON CONFLICT DO NOTHING;
+INSERT INTO "item_author" (id, item_id, author_id) VALUES (72, 72, 6) ON CONFLICT DO NOTHING;
 
 INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (1, 1, 1) ON CONFLICT DO NOTHING;
 INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (2, 1, 4) ON CONFLICT DO NOTHING;
@@ -343,39 +368,47 @@ INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (129, 52, 33) ON CONFLICT DO
 INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (130, 52, 34) ON CONFLICT DO NOTHING;
 INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (131, 52, 35) ON CONFLICT DO NOTHING;
 INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (132, 52, 4) ON CONFLICT DO NOTHING;
-
 INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (133, 53, 29) ON CONFLICT DO NOTHING;
 INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (134, 53, 30) ON CONFLICT DO NOTHING;
 INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (135, 53, 21) ON CONFLICT DO NOTHING;
-
 INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (136, 54, 22) ON CONFLICT DO NOTHING;
 INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (137, 54, 43) ON CONFLICT DO NOTHING;
 INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (138, 54, 55) ON CONFLICT DO NOTHING;
-
 INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (139, 55, 28) ON CONFLICT DO NOTHING;
 INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (140, 55, 27) ON CONFLICT DO NOTHING;
 INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (141, 55, 56) ON CONFLICT DO NOTHING;
 INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (142, 55, 6) ON CONFLICT DO NOTHING;
-
 INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (143, 56, 43) ON CONFLICT DO NOTHING;
 INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (144, 56, 1) ON CONFLICT DO NOTHING;
 INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (145, 56, 1) ON CONFLICT DO NOTHING;
-
 INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (146, 57, 50) ON CONFLICT DO NOTHING;
 INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (147, 57, 51) ON CONFLICT DO NOTHING;
-
 INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (148, 58, 56) ON CONFLICT DO NOTHING;
 INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (149, 58, 31) ON CONFLICT DO NOTHING;
-
 INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (150, 59, 24) ON CONFLICT DO NOTHING;
-
 INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (151, 60, 2) ON CONFLICT DO NOTHING;
 INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (152, 60, 47) ON CONFLICT DO NOTHING;
-
 INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (153, 61, 3) ON CONFLICT DO NOTHING;
-
 INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (154, 62, 3) ON CONFLICT DO NOTHING;
-
 INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (155, 63, 4) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (156, 64, 50) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (157, 64, 51) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (158, 65, 32) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (159, 65, 52) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (160, 66, 52) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (161, 66, 32) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (162, 67, 15) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (163, 67, 16) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (164, 67, 57) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (165, 68, 15) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (166, 69, 15) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (167, 69, 56) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (168, 70, 58) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (169, 70, 15) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (170, 70, 57) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (171, 71, 59) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (172, 71, 15) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (173, 72, 60) ON CONFLICT DO NOTHING;
+INSERT INTO "item_tag" (id, item_id, tag_id) VALUES (174, 72, 15) ON CONFLICT DO NOTHING;
 
 COMMIT;

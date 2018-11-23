@@ -10,16 +10,14 @@
 * SQL seed: add on conflict do nothing for each entry
   * Idempotence
   * Remove the table deletions
-* Data: add > 100 entries before posting to external websites
+* Data: add > 100 entries
   * Real World Haskell
   * 24 days of haskell libraries
   * Haskell classes
   * Stephen Diel
   * Category Theory youtube Bartosz
+  * Gabriel Gonzales posts
   * Concurrency and Parallelism Simon Marlow
-  * FP complete blog posts
-  * Influential papers
-    * Banana wired
+  * https://github.com/bitemyapp/learnhaskell/blob/master/specific_topics.md
 * Setup automated psql database backup to S3
 * Post to r/haskell to get some initial datapoints and feedback
-* Gzip data sent to client
