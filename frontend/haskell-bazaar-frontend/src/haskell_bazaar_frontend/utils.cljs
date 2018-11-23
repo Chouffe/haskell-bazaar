@@ -103,3 +103,11 @@
   "validate `email` address using regex"
   [email]
   (re-matches #".+\@.+\..+" email))
+
+(defn wrap-stop-typing
+  [{:keys [timeout onStoppedTyping onSearchChange ms]}]
+  (fn [e]
+    (onSearchChange e)
+    (.clearTimeout js/window @timeout)
+    (let [value (target-value e)]
+      (swap! timeout (fn [_] (.setTimeout js/window #(onStoppedTyping value) ms))))))

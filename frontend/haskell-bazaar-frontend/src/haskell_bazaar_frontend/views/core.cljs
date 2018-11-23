@@ -11,29 +11,6 @@
     [haskell-bazaar-frontend.ui :as ui]
     [haskell-bazaar-frontend.views.modal :as modal]))
 
-(defn search-box-button [on-click]
-  (let [search-loading (re-frame/subscribe [:search-loading])]
-    [:button.search-box-button
-     {:type "button"
-      :on-click on-click
-      :disabled @search-loading}
-     (if @search-loading
-       [:i.fa.fa-spinner]
-       [:i.fa.fa-search])]))
-
-(defn search-box
-  [{:keys [on-click-factory on-change on-key-up]}]
-  (let [search-query (re-frame/subscribe [:search-query])]
-    [:div.search-box
-     [:input.search-box-input
-      {:type "text"
-       :autoComplete "off"
-       :name "search-box"
-       :value @search-query
-       :on-change on-change
-       :on-key-up on-key-up}]
-
-     [search-box-button (on-click-factory @search-query)]]))
 
 ;; TODO: have different dispatchers for test environment for instance
 (def dispatchers
@@ -56,10 +33,11 @@
       (let [selected-result (get-in (js->clj data) ["result" "title"])]
         (re-frame/dispatch [:navigate-search selected-result])))
 
+    ; :onStoppedTyping
+    ; #(re-frame/dispatch [:datascript/search %])
+
     :onSearchChange
-    (fn [e]
-      (re-frame/dispatch [:set-search-query (utils/target-value e)])
-      (re-frame/dispatch [:datascript/search (utils/target-value e)]))}
+    #(re-frame/dispatch [:set-search-query (utils/target-value %)])}
 
    :search
    {:onResultSelect
@@ -68,10 +46,11 @@
         (re-frame/dispatch [:datascript/search selected-result])
         (re-frame/dispatch [:set-search-query selected-result])))
 
+    :onStoppedTyping
+    #(re-frame/dispatch [:datascript/search %])
+
     :onSearchChange
-    (fn [e]
-      (re-frame/dispatch [:set-search-query (utils/target-value e)])
-      (re-frame/dispatch [:datascript/search (utils/target-value e)]))
+    #(re-frame/dispatch [:set-search-query (utils/target-value %)])
     }})
 
 (defn item-tag [{:keys [name]}]
@@ -205,35 +184,42 @@
        (into [])))
 
 (defn search [{:keys [autofocus? id]}]
-  (reagent/create-class
-    {:component-did-mount
-     (fn [e]
-       (when autofocus?
-         (re-frame/dispatch [:ui/focus (str "#" id " input")])))
+  (let [timeout (atom nil)]
+    (reagent/create-class
+      {:component-did-mount
+       (fn [e]
+         (when autofocus?
+           (re-frame/dispatch [:ui/focus (str "#" id " input")])))
 
-     :reagent-render
-     (fn [{:keys [source onResultSelect onSearchChange]}]
-       (let [search-query (re-frame/subscribe [:search-query])
-             filtered-source (if-not (string/blank? @search-query)
-                               (filter-results @search-query source) source)]
-         [:div {:id id}
-          [:> ui/search
-           (merge
-             (when-not (string/blank? @search-query)
-               {:defaultValue @search-query})
-             (when-not (nil? @search-query)
-              {:value @search-query})
-             {:results filtered-source
-              ; TODO: should we add categories?
-              ; :category true
-              :name "fluid"
-              :selectFirstResult true
-              :fluid true
-              :placeholder "Eg. Monad, Applicative, Lens, Category Theory"
-              :showNoResults false
-              :onResultSelect onResultSelect
-              :minCharacters 2
-              :onSearchChange onSearchChange})]]))}))
+       :reagent-render
+       (fn [{:keys [source onResultSelect onSearchChange onStoppedTyping]}]
+         (let [search-query (re-frame/subscribe [:search-query])
+               filtered-source (if-not (string/blank? @search-query)
+                                 (filter-results @search-query source) source)]
+           [:div {:id id}
+            [:> ui/search
+             (merge
+               (when-not (string/blank? @search-query)
+                 {:defaultValue @search-query})
+               (when-not (nil? @search-query)
+                 {:value @search-query})
+               {:results filtered-source
+                ; TODO: should we add categories?
+                ; :category true
+                :name "fluid"
+                :selectFirstResult true
+                :fluid true
+                :placeholder "Eg. Monad, Applicative, Lens, Category Theory"
+                :showNoResults false
+                :onResultSelect onResultSelect
+                :minCharacters 2
+                :onSearchChange onSearchChange}
+               (when-not (nil? onStoppedTyping)
+                 {:onSearchChange
+                  (utils/wrap-stop-typing {:timeout timeout
+                                           :ms 500
+                                           :onStoppedTyping onStoppedTyping
+                                           :onSearchChange onSearchChange})}))]]))})))
 
 (defn footer []
   [:div.ui.vertical.footer.segment.centerd

@@ -12,3 +12,6 @@
   * Add a score for each
 * Change haskell logo to have colors
   * Ask David to design something
+* Perform a search only when user stops typing or press enter
+  * https://gist.github.com/krambertech/76afec49d7508e89e028fce14894724c
+  * https://schier.co/blog/2014/12/08/wait-for-user-to-stop-typing-using-javascript.html
