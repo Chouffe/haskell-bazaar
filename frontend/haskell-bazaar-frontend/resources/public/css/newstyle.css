@@ -16,6 +16,17 @@ html {
   padding-bottom: 2em;
 }
 
+.tag-line {
+  font-size: 1.2em;
+  font-weight:500;
+  color: #333;
+  text-align: center;
+  border: 0;
+  height: 1em;
+  padding:0;
+  min-height: 0;
+}
+
 #landing-page .header .tag-line {
   font-size: 1.2em;
   font-weight:500;

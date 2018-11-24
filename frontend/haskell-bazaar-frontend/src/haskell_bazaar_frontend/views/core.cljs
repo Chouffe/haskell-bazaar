@@ -267,7 +267,7 @@
        [:h1.center.aligned.header.tag-line
         "The search engine for "
         [:strong "Haskell"]
-        " resources!"]]]
+        " resources"]]]
      #_[:div#page-1 "TODO"]]))
 
 

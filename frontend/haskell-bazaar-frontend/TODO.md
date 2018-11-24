@@ -14,3 +14,5 @@
   * Ask David to design something
 * Make authors clickable
 * Hide search tags
+* SEO: improve
+  * OG (Open Graph) tags
