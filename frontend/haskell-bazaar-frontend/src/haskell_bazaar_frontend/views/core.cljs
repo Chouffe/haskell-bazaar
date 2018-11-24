@@ -101,8 +101,10 @@
         [item-authors authors]])
      [:br]
      [item-description description]
-     [:br]
-     [item-tags tags]]))
+     (when ^boolean goog.DEBUG
+       [:span
+        [:br]
+        [item-tags tags]])]))
 
 (defn- filter-items [showing-kw]
   (if (= showing-kw :all)
