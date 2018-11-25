@@ -51,10 +51,22 @@ docker-deploy:
 		DEPLOY_GIT_SHA="$(shell git rev-parse HEAD)" \
 		'bash -s' < scripts/deploy.sh
 
+db-backup:
+	docker exec \
+		-it haskell-bazaar-postgres \
+		pg_dump -U haskellbazaar > ./backups/$(shell date +%Y_%m_%d).backup.sql
+
+db-restore:
+	docker exec \
+		-i haskell-bazaar-postgres psql \
+		-U haskellbazaar \
+		< ./backups/$(shell date +%Y_%m_%d).backup.sql
+
 db-seed:
 	docker exec \
 		-i haskell-bazaar-postgres psql \
 		-U haskellbazaar \
 		< scripts/db/seed.sql
+
 
 .PHONY: build run test clean lint ghcid-devel docker-build-dev docker-build docker-prod-run docker-build-save docker-deploy source-env

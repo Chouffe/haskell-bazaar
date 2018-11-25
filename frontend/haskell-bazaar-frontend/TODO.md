@@ -6,6 +6,7 @@
 * Add integration tests for frontend
 * Download assets and not rely on external CDN so that it works without internet connection
 * CSS minification pipeline
+  * yui-compressor?
 * Paginate results
 * Limit to n elements
 * Better sort function for displaying search results
@@ -13,6 +14,5 @@
 * Change haskell logo to have colors
   * Ask David to design something
 * Make authors clickable
-* Hide search tags
 * SEO: improve
   * OG (Open Graph) tags
