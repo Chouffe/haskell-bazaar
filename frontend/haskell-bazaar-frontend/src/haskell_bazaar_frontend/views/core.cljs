@@ -267,9 +267,7 @@
                         :source       @search-source
                         :search-query @search-query})]]
        [:h1.center.aligned.header.tag-line
-        "The search engine for "
-        [:strong "Haskell"]
-        " resources"]]]
+        "Explore " [:strong "Haskell"] " and " [:strong "Functional Programming"] " concepts"]]]
      #_[:div#page-1 "TODO"]]))
 
 
