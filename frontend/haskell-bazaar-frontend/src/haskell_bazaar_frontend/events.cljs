@@ -148,9 +148,28 @@
       (let [search-item-results (->> search-query
                                      (ds/search datascript)
                                      utils/uuid-coll->hashmap)]
-        {:db (assoc db
+        {:http-xhrio
+         {:method :post
+          :uri (api/search (api/base-url (:environment db)) search-query)
+          :format (ajax/json-request-format)
+          :response-format api/response-format
+          :on-success [:datascript-search-success]
+          :on-failure [:datascript-search-failure]}
+         :db (assoc db
                     :search-items search-item-results
                     :search-loading false)}))))
+
+(re-frame/reg-event-fx
+  :datascript-search-success
+  [interceptors]
+  (fn [_ _]
+    {}))
+
+(re-frame/reg-event-fx
+  :datascript-search-failure
+  [interceptors]
+  (fn [_ _]
+    {}))
 
 (re-frame/reg-event-fx
   :datascript/search-later
