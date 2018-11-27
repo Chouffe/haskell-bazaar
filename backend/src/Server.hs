@@ -33,8 +33,20 @@ middleware
 middleware env =
   case env of
     Environment.Test -> simpleCors
-    Environment.Dev  -> simpleCors . logStdoutDev
+    Environment.Dev  -> apiDevCors . logStdoutDev
     Environment.Prod -> apiCors . logStdout
+
+apiDevResourcePolicy :: CorsResourcePolicy
+apiDevResourcePolicy = CorsResourcePolicy
+  { corsOrigins        = Nothing
+  , corsMethods        = simpleMethods ++ ["OPTIONS"]
+  , corsRequestHeaders = ["Authorization", "Content-Type"]
+  , corsExposedHeaders = Nothing
+  , corsMaxAge         = Nothing
+  , corsVaryOrigin     = False
+  , corsRequireOrigin  = False
+  , corsIgnoreFailures = False
+  }
 
 apiResourcePolicy :: CorsResourcePolicy
 apiResourcePolicy = CorsResourcePolicy
@@ -50,6 +62,9 @@ apiResourcePolicy = CorsResourcePolicy
 
 apiCors :: Middleware
 apiCors  = cors $ const (Just apiResourcePolicy)
+
+apiDevCors :: Middleware
+apiDevCors = cors $ const (Just apiDevResourcePolicy)
 
 run
   :: Server.Config.Config
