@@ -20,6 +20,7 @@ module Database
   , keywords
   , searchByAuthor
   , searchByTagName
+  , searchEvent
   , feedback
   )
   where
@@ -256,6 +257,15 @@ feedback
 feedback (PublicFeedback msg) = do
   currentTime <- liftIO getCurrentTime
   insert_ (Feedback msg currentTime)
+
+searchEvent
+  :: MonadIO m
+  => SockAddr
+  -> T.Text
+  -> (SqlPersistT m) ()
+searchEvent sockAddr searchQuery = do
+  currentTime <- liftIO getCurrentTime
+  insert_ (SearchEvent searchQuery (show sockAddr) currentTime)
 
 itemClick
   :: MonadIO m

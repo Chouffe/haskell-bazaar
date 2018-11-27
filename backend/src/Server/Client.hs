@@ -4,6 +4,7 @@ module Server.Client
   , allItems
   , feedback
   , search
+  , searchTracking
   , keywords
   , subscribe
   )
@@ -23,13 +24,15 @@ health    :: ClientM T.Text
 itemUrl   :: UUID -> Maybe T.Text -> ClientM T.Text
 allItems  :: ClientM [PublicItem]
 search    :: Maybe T.Text -> ClientM [PublicItem]
+searchTracking    :: SearchTracking -> ClientM ()
 keywords  :: ClientM [PublicKeyword]
 feedback  :: PublicFeedback -> ClientM T.Text
 subscribe :: EmailAddress -> ClientM ()
-( health   :<|>
-  search   :<|>
-  keywords :<|>
-  itemUrl  :<|>
-  allItems :<|>
-  feedback :<|>
-  subscribe ) = client bazaarAPI
+( health           :<|>
+  search           :<|>
+  searchTracking   :<|>
+  keywords         :<|>
+  itemUrl          :<|>
+  allItems         :<|>
+  feedback         :<|>
+  subscribe        ) = client bazaarAPI

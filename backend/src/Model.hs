@@ -66,10 +66,16 @@ Feedback
     deriving Show
 
 ItemClick
-  itemId ItemId
-  createdAt UTCTime
-  sockAddr  String
+  itemId      ItemId
+  createdAt   UTCTime
+  sockAddr    String
   searchQuery T.Text Maybe
+  deriving Show
+
+SearchEvent
+  searchQuery T.Text
+  sockAddr    String
+  createdAt   UTCTime
   deriving Show
 |]
 

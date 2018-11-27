@@ -37,6 +37,13 @@ CREATE TABLE IF NOT EXISTS "item_click" (
   , "search_query" VARCHAR   NULL
 );
 
+CREATE TABLE IF NOT EXISTS "search_event" (
+    "id"           SERIAL8   PRIMARY KEY
+  , "search_query" VARCHAR   NULL
+  , "sock_addr"    VARCHAR   NOT NULL
+  , "created_at"   DATE      NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS "author" (
     "id"         SERIAL8 PRIMARY KEY
   , "first_name" VARCHAR NOT NULL

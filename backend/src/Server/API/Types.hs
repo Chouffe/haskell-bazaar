@@ -5,6 +5,7 @@ module Server.API.Types
   , PublicKeyword (..)
   , PublicFeedback (..)
   , EmailAddress(..)
+  , SearchTracking(..)
   )
   where
 
@@ -12,6 +13,16 @@ import           Data.Aeson
 import qualified Data.Text      as T
 
 import           Model
+
+newtype SearchTracking = SearchTracking { stSearchQuery :: T.Text }
+  deriving (Show)
+
+instance FromJSON SearchTracking  where
+  parseJSON = withObject "SearchTracking" $ \o ->
+    SearchTracking <$> o .: "search_query"
+
+instance ToJSON SearchTracking where
+  toJSON (SearchTracking searchQuery) = object [ "search_query"     .= searchQuery ]
 
 newtype PublicFeedback = PublicFeedback
   { fdbMessage :: T.Text }

@@ -31,6 +31,7 @@ import qualified Server.Monad
 type BazaarAPI
   = "health" :> Get '[JSON] T.Text
   :<|> "api" :> "v0" :> "search" :> QueryParam "q" T.Text :> Get '[JSON] [PublicItem]
+  :<|> "api" :> "v0" :> "search" :> RemoteHost :> ReqBody '[JSON] SearchTracking :> Post '[JSON] ()
   :<|> "api" :> "v0" :> "keywords" :> Get '[JSON] [PublicKeyword]
   :<|> "api" :> "v0" :> "item-url" :> RemoteHost :> Capture "uuid" UUID :> QueryParam "q" T.Text :> Get '[JSON] T.Text
   :<|> "api" :> "v0" :> "items" :> Get '[JSON] [PublicItem]
@@ -60,6 +61,7 @@ serverAPI
 serverAPI nt = enter nt
   $ Server.Handler.health
   :<|> Server.Handler.search
+  :<|> Server.Handler.searchTrack
   :<|> Server.Handler.keywords
   :<|> Server.Handler.itemUrl
   :<|> Server.Handler.allItems

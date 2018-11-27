@@ -10,6 +10,7 @@ module Server.Handler
   , feedback
   , keywords
   , search
+  , searchTrack
   , root
   , subscribe
   )
@@ -110,6 +111,24 @@ allItems = do
   liftIO $ Logger.info loggerHandle ("Getting all the items in the Database" :: T.Text)
   items <- liftIO $ Database.runDatabase databaseHandle Database.allItems
   pure items
+
+-- TODO
+searchTrack
+  :: ( MonadIO m
+     , MonadReader Server.Config.Handle m
+     )
+  => SockAddr
+  -> SearchTracking
+  -> m ()
+searchTrack sockAddr (SearchTracking searchQuery) = do
+
+  loggerHandle   <- asks Server.Config.hLogger
+  databaseHandle <- asks Server.Config.hDB
+
+  liftIO $ Logger.info loggerHandle ("Tracking search query: " <> searchQuery :: T.Text)
+  liftIO $ Database.runDatabase databaseHandle (Database.searchEvent sockAddr searchQuery)
+
+  pure ()
 
 search
   :: ( MonadReader Server.Config.Handle m
