@@ -118,17 +118,19 @@ searchTrack
      , MonadReader Server.Config.Handle m
      )
   => SockAddr
-  -> SearchTracking
+  -> Maybe T.Text
   -> m ()
-searchTrack sockAddr (SearchTracking searchQuery) = do
+searchTrack sockAddr mSearchQuery = do
 
   loggerHandle   <- asks Server.Config.hLogger
   databaseHandle <- asks Server.Config.hDB
 
-  liftIO $ Logger.info loggerHandle ("Tracking search query: " <> searchQuery :: T.Text)
-  liftIO $ Database.runDatabase databaseHandle (Database.searchEvent sockAddr searchQuery)
-
-  pure ()
+  case mSearchQuery of
+    Nothing -> return ()
+    Just searchQuery -> do
+      liftIO $ Logger.info loggerHandle ("Tracking search query: " <> searchQuery :: T.Text)
+      liftIO $ Database.runDatabase databaseHandle (Database.searchEvent sockAddr searchQuery)
+      return ()
 
 search
   :: ( MonadReader Server.Config.Handle m
