@@ -214,7 +214,7 @@
                 :placeholder "Eg. Monad, Applicative, Lens, Category Theory"
                 :showNoResults false
                 :onResultSelect onResultSelect
-                :minCharacters 2
+                :minCharacters 1
                 :onSearchChange onSearchChange}
                (when-not (nil? onStoppedTyping)
                  {:onSearchChange

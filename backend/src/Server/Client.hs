@@ -24,7 +24,7 @@ health            :: ClientM T.Text
 itemUrl           :: UUID -> Maybe T.Text -> ClientM T.Text
 allItems          :: ClientM [PublicItem]
 search            :: Maybe T.Text -> ClientM [PublicItem]
-searchTracking    :: Maybe T.Text -> ClientM ()
+searchTracking    :: SearchTracking -> ClientM ()
 keywords          :: ClientM [PublicKeyword]
 feedback          :: PublicFeedback -> ClientM T.Text
 subscribe         :: EmailAddress -> ClientM ()

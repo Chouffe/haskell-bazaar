@@ -31,7 +31,9 @@ import qualified Server.Monad
 type BazaarAPI
   = "health" :> Get '[JSON] T.Text
   :<|> "api" :> "v0" :> "search" :> QueryParam "q" T.Text :> Get '[JSON] [PublicItem]
-  :<|> "api" :> "v0" :> "search" :> RemoteHost :> QueryParam "q" T.Text :> Post '[JSON] ()
+  -- TODO: use JSON param instead of query param because some browsers will convert to GET instead
+  :<|> "api" :> "v0" :> "search" :> RemoteHost :> ReqBody '[JSON] SearchTracking :> Post '[JSON] ()
+  -- :<|> "api" :> "v0" :> "search" :> RemoteHost :> QueryParam "q" T.Text :> Post '[JSON] ()
   :<|> "api" :> "v0" :> "keywords" :> Get '[JSON] [PublicKeyword]
   :<|> "api" :> "v0" :> "item-url" :> RemoteHost :> Capture "uuid" UUID :> QueryParam "q" T.Text :> Get '[JSON] T.Text
   :<|> "api" :> "v0" :> "items" :> Get '[JSON] [PublicItem]
