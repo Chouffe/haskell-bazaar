@@ -10,7 +10,6 @@ module Server.Handler
   , feedback
   , keywords
   , search
-  , searchTrack
   , root
   , subscribe
   )
@@ -112,44 +111,25 @@ allItems = do
   items <- liftIO $ Database.runDatabase databaseHandle Database.allItems
   pure items
 
--- TODO
-searchTrack
-  :: ( MonadIO m
-     , MonadReader Server.Config.Handle m
-     )
-  => SockAddr
-  -> SearchTracking
-  -> m ()
-searchTrack sockAddr (SearchTracking searchQuery)= do
-
-  loggerHandle   <- asks Server.Config.hLogger
-  databaseHandle <- asks Server.Config.hDB
-
-  liftIO $ Logger.info loggerHandle ("Tracking search query: " <> searchQuery :: T.Text)
-  liftIO $ Database.runDatabase databaseHandle (Database.searchEvent sockAddr searchQuery)
-
-  return ()
-
 search
   :: ( MonadReader Server.Config.Handle m
      , MonadIO m
      )
-  => Maybe T.Text  -- ^ Optional Search query
-  -> m [PublicItem]
-search mQuery = do
+  => SockAddr      -- ^ IP Addr
+  -> Maybe T.Text  -- ^ Optional Search query
+  -> m ()
+search sockAddr mSearchQuery = do
+
   loggerHandle   <- asks Server.Config.hLogger
   databaseHandle <- asks Server.Config.hDB
 
-  case mQuery of
-    Nothing    -> do
-      liftIO $ Logger.info loggerHandle ("No search query provided" :: T.Text)
-      pure []
+  case mSearchQuery of
+    Nothing -> return ()
+    Just searchQuery -> do
+      liftIO $ Logger.info loggerHandle ("Tracking search query: " <> searchQuery :: T.Text)
+      liftIO $ Database.runDatabase databaseHandle (Database.searchEvent sockAddr searchQuery)
 
-    Just query -> do
-      liftIO $ Logger.info loggerHandle $ "Search query provided " <> query
-      itemsByTags <- liftIO $ Database.runDatabase databaseHandle (Database.searchByTagName query)
-      itemsByAuthors <- liftIO $ Database.runDatabase databaseHandle (Database.searchByAuthor query)
-      pure $ itemsByTags <> itemsByAuthors
+  return ()
 
 root :: MonadIO m => m RawHtml
 root = do
