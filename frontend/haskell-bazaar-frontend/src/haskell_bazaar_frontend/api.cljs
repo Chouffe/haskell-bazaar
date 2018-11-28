@@ -21,8 +21,8 @@
     :prod (str "/api/v0/")
     (str (host environment) ":" (port environment) "/api/v0/" )))
 
-(defn search [url]
-  (str url "search"))
+(defn search [url search-query]
+  (str url "search?q=" search-query))
 
 (defn items [url]
   (str url "items"))
