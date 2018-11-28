@@ -51,7 +51,10 @@ apiDevResourcePolicy = CorsResourcePolicy
 apiResourcePolicy :: CorsResourcePolicy
 apiResourcePolicy = CorsResourcePolicy
   { corsOrigins        = Just ([ "https://s3.amazonaws.com/haskell-bazaar/"
-                               , "http://s3.amazonaws.com/haskell-bazaar/"], True)
+                               , "http://s3.amazonaws.com/haskell-bazaar/"
+                               , "https://haskellbazaar.com/"
+                               , "https://www.haskellbazaar.com/"
+                               ], True)
   , corsMethods        = simpleMethods
   , corsRequestHeaders = []
   , corsExposedHeaders = Nothing

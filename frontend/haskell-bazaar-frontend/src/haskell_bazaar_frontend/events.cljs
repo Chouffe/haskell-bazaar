@@ -151,7 +151,7 @@
         {:http-xhrio
          {:method :post
           :params {:search_query search-query}
-          :uri (api/search (api/base-url (:environment db)) search-query)
+          :uri (api/search (api/base-url (:environment db)))
           :format (ajax/json-request-format)
           :response-format api/response-format
           :on-success [:datascript-search-success]
