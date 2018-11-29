@@ -320,6 +320,12 @@
   (fn [_ [_ query-selector]]
     {:ui/focus query-selector}))
 
+(re-frame/reg-event-fx
+  :ui/blur
+  interceptors
+  (fn [_ [_ query-selector]]
+    {:ui/blur query-selector}))
+
 (re-frame/reg-event-db
   :tab
   interceptors

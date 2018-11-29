@@ -9,14 +9,6 @@
     [haskell-bazaar-frontend.environment :as env]
     [haskell-bazaar-frontend.stubs :as stubs]))
 
-;; TODO: move to a util namespace
-(def showing->title
-  {:all "all"
-   :videos "videos"
-   :papers "papers"
-   :blog-posts "blog posts"
-   :tutorials "tutorials"})
-
 ;; Clojure.Spec
 ;; ------------
 
@@ -27,7 +19,6 @@
 (s/def ::search-query (s/nilable string?))
 (s/def ::search-error (s/nilable string?))
 (s/def ::search-loading boolean?)
-(s/def ::showing (set (keys showing->title)))
 (s/def ::sorted #{:date})
 
 ;; Keyword
@@ -137,7 +128,3 @@
    :tab            :landing-page
    ; :items          (utils/uuid-coll->hashmap stubs/search-result)
    })
-
-(def title->showing
-  (zipmap (vals showing->title) (keys showing->title)))
-

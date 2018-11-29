@@ -71,6 +71,11 @@
   (fn [query-selector]
     (utils/focus! query-selector)))
 
+(re-frame/reg-fx
+  :ui/blur
+  (fn [query-selector]
+    (utils/blur! query-selector)))
+
 ;; TODO: spec it out
 (re-frame/reg-fx
   :gtag/page-view

@@ -53,6 +53,13 @@
       (.querySelector qs)
       .focus))
 
+(defn blur!
+  "Blur based on a queryselector `qs`"
+  [qs]
+  (-> js/document
+      (.querySelector qs)
+      .blur))
+
 (defn rmatch [search-query s]
   (let [pat (re-pattern (str "(?i)(.*)(" search-query ")(.*)"))]
     (re-matches pat s)))
@@ -105,9 +112,11 @@
   (re-matches #".+\@.+\..+" email))
 
 (defn wrap-stop-typing
-  [{:keys [timeout onStoppedTyping onSearchChange ms]}]
+  [{:keys [local-state onStoppedTyping onSearchChange ms]}]
   (fn [e]
     (onSearchChange e)
-    (.clearTimeout js/window @timeout)
+    (.clearTimeout js/window (:timeout @local-state))
     (let [value (target-value e)]
-      (swap! timeout (fn [_] (.setTimeout js/window #(onStoppedTyping value) ms))))))
+      (swap! local-state
+             assoc
+             :timeout (.setTimeout js/window #(onStoppedTyping value) ms)))))

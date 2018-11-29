@@ -9,7 +9,9 @@
     [haskell-bazaar-frontend.routes :as routes]
     [haskell-bazaar-frontend.utils :as utils]
     [haskell-bazaar-frontend.ui :as ui]
-    [haskell-bazaar-frontend.views.modal :as modal]))
+    [haskell-bazaar-frontend.views.modal :as modal]
+    [haskell-bazaar-frontend.views.search :as search]
+    ))
 
 
 ;; TODO: have different dispatchers for test environment for instance
@@ -22,11 +24,11 @@
 
    :landing-page-search
    {:on-submit
-    (fn [search-query]
+    (fn [_ search-query]
       (fn [e]
         (.preventDefault e)
         (.stopPropagation e)
-        (re-frame/dispatch [:navigate-search @search-query])))
+        (re-frame/dispatch [:navigate-search search-query])))
 
     :onResultSelect
     (fn [event data]
@@ -37,10 +39,19 @@
     ; #(re-frame/dispatch [:datascript/search %])
 
     :onSearchChange
-    #(re-frame/dispatch [:set-search-query (utils/target-value %)])}
+    #(re-frame/dispatch [:set-search-query (utils/target-value %)])
+    }
 
    :search
-   {:onResultSelect
+   {:on-submit
+    (fn [id search-query]
+      (fn [e]
+        (.preventDefault e)
+        (.stopPropagation e)
+        (re-frame/dispatch [:ui/blur (str "#" id " input")])
+        (re-frame/dispatch [:datascript/search search-query])))
+
+    :onResultSelect
     (fn [event data]
       (let [selected-result (get-in (js->clj data) ["result" "title"])]
         (re-frame/dispatch [:datascript/search selected-result])
@@ -180,49 +191,6 @@
     [:h1 title]
     (utils/transform-extended-hiccup body)]])
 
-(defn filter-results [search-query results]
-  (->> results
-       (filter (fn [{:keys [title]}] (utils/re-pattern? search-query title)))
-       (into [])))
-
-(defn search [{:keys [autofocus? id]}]
-  (let [timeout (atom nil)]
-    (reagent/create-class
-      {:component-did-mount
-       (fn [e]
-         (when autofocus?
-           (re-frame/dispatch [:ui/focus (str "#" id " input")])))
-
-       :reagent-render
-       (fn [{:keys [source onResultSelect onSearchChange onStoppedTyping]}]
-         (let [search-query (re-frame/subscribe [:search-query])
-               filtered-source (if-not (string/blank? @search-query)
-                                 (filter-results @search-query source) source)]
-           [:div {:id id}
-            [:> ui/search
-             (merge
-               (when-not (string/blank? @search-query)
-                 {:defaultValue @search-query})
-               (when-not (nil? @search-query)
-                 {:value @search-query})
-               {:results filtered-source
-                ; TODO: should we add categories?
-                ; :category true
-                :name "fluid"
-                :selectFirstResult true
-                :fluid true
-                :placeholder "Eg. Monad, Applicative, Lens, Category Theory"
-                :showNoResults false
-                :onResultSelect onResultSelect
-                :minCharacters 1
-                :onSearchChange onSearchChange}
-               (when-not (nil? onStoppedTyping)
-                 {:onSearchChange
-                  (utils/wrap-stop-typing {:timeout timeout
-                                           :ms 500
-                                           :onStoppedTyping onStoppedTyping
-                                           :onSearchChange onSearchChange})}))]]))})))
-
 (defn footer []
   [:div.ui.vertical.footer.segment.centerd
    [:p {:style {:text-align "center"}} "Built with "
@@ -250,27 +218,17 @@
   [:div [:p [:strong "Error 404: "] "Page Not Found"]])
 
 (defmethod tab-pannel :landing-page [{:keys [dispatchers base-url]}]
-  (let [search-query (re-frame/subscribe [:search-query])
-        search-source (re-frame/subscribe [:search-source])]
-    [:div#landing-page
-     [:div.header
-      [:> ui/container
-       [:img.ui.small.circular.centered.image
-        {:src "images/haskell-bazaar-logo.svg"
-         :alt "Haskell Bazaar Logo"}]
-       [:form
-        {:on-submit
-         ((get-in dispatchers [:landing-page-search :on-submit]) search-query)}
-        [search (merge (:landing-page-search dispatchers)
-                       {:id           "landing-page-search-box"
-                        :autofocus?   true
-                        :source       @search-source
-                        :search-query @search-query})]]
-       [:h1.center.aligned.header.tag-line
-        "Explore " [:strong "Haskell"] " and " [:strong "Functional Programming"] " concepts"]]]
-     #_[:div#page-1 "TODO"]]))
-
-
+  [:div#landing-page
+   [:div.header
+    [:> ui/container
+     [:img.ui.small.circular.centered.image
+      {:src "images/haskell-bazaar-logo.svg"
+       :alt "Haskell Bazaar Logo"}]
+     [search/search-form
+      (merge (:landing-page-search dispatchers)
+             {:id "landing-page-search-box" :autofocus? true})]
+     [:h1.center.aligned.header.tag-line
+      "Explore " [:strong "Haskell"] " and " [:strong "Functional Programming"] " concepts"]]]])
 
 (defmethod tab-pannel :search
   [{:keys [dispatchers base-url]}]
@@ -280,11 +238,9 @@
     [:div
      [:div.topnav
       [:> ui/container
-       [search (merge (:search dispatchers)
-                      {:id           "search-box"
-                       :autofocus?   false
-                       :source       @search-source
-                       :search-query @search-query})]]]
+       [search/search-form
+        (merge (:search dispatchers)
+               {:id "search-box" :autofocus? false})]]]
        (when-let [enriched-result-data
                   (get @search-enriched-results @search-query)]
          [:div.enriched-result

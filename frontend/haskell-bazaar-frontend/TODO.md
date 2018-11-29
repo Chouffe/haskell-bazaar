@@ -16,3 +16,4 @@
 * Make authors clickable
 * SEO: improve
   * OG (Open Graph) tags
+* Fix search input and autocomplete
