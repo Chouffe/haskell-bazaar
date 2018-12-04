@@ -1,7 +1,17 @@
 # Use same lts version as stack.yaml
 FROM fpco/stack-build:lts-9.21
+
 RUN mkdir -p /opt/build
-COPY . /opt/build
+
 WORKDIR /opt/build
-RUN stack build --system-ghc
+
+COPY . .
+
+# Install and build
+RUN stack setup && \
+    stack build && \
+    stack build test --no-run-tests && \
+    stack install ghcid hlint
+
+# Run repl as default command
 CMD ["stack", "repl"]

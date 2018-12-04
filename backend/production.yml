@@ -1,4 +1,4 @@
-version: '3'
+version: '3.2'
 
 services:
   web:
@@ -22,6 +22,15 @@ services:
       - /docker-volumes/data/letsencrypt:/data/letsencrypt
     links:
       - web
+
     ports:
       - "80:80"
       - "443:443"
+
+secrets:
+  psql-user:
+    external: true
+  psql-password:
+    external: true
+  psql-db:
+    external: true

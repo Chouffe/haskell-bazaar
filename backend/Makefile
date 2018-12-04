@@ -1,44 +1,42 @@
-build:
-	stack build
-
-run: build
-	stack exec haskell-bazaar-exe
-
-test:
-	stack test
-
-clean:
-	rm -rf .stack-work
-
-ghcid-devel:
-	ghcid \
-	   --command "stack ghci"
-
-lint:
-	stack exec -- hlint .
-
-docker-build-env:
+build-common:
 	docker build \
 		-t build-env:latest \
 		-f scripts/Dockerfile.build \
 		.
 
-docker-build:
+build:
 	docker build \
 		-t haskell-bazaar-server:latest \
 		-f scripts/Dockerfile \
 		.
 
-docker-dev-run:
-	docker-compose \
-		-f docker-compose.yml \
-		up
+psql:
+	docker container exec -it haskell-bazaar-postgres psql -U haskellbazaar
 
-docker-prod-run:
-	docker-compose \
-		-f docker-compose.yml \
-		-f production.yml \
-		up
+
+test:
+	docker container run -it --rm \
+		-v $(shell pwd):/opt/build/. \
+		--link haskell-bazaar-postgres \
+		--network backend_default \
+	        build-env stack --allow-different-user test
+
+repl:
+	docker container run -it --rm \
+		--link haskell-bazaar-postgres \
+		-p 8002:8002 \
+		--network backend_default \
+		-v $(shell pwd):/opt/build/. \
+	        build-env stack --allow-different-user repl
+
+ghcid:
+	docker container run -it --rm \
+		build-env ghcid --command "stack ghci"
+
+
+lint:
+	docker container run -it --rm \
+		build-env stack exec -- hlint .
 
 docker-build-save:
 	scripts/build.sh
@@ -56,6 +54,7 @@ db-backup:
 		-it haskell-bazaar-postgres \
 		pg_dump -U haskellbazaar > ./backups/$(shell date +%Y_%m_%d).backup.sql
 
+# TODO add date as an argument
 db-restore:
 	docker exec \
 		-i haskell-bazaar-postgres psql \
@@ -69,4 +68,11 @@ db-seed:
 		< scripts/db/seed.sql
 
 
-.PHONY: build run test clean lint ghcid-devel docker-build-dev docker-build docker-prod-run docker-build-save docker-deploy source-env
+.PHONY: build \
+	test \
+	lint \
+	ghcid \
+	db-backup \
+	docker-build \
+	docker-build-save \
+	docker-deploy

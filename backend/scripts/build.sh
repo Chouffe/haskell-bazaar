@@ -18,6 +18,7 @@ docker build \
   -f scripts/Dockerfile \
   .
 
+# TODO: use AWS ECR instead of spitting to S3
 echo "Persisting docker image to disk"
 docker save haskell-bazaar-server:latest \
   | gzip \

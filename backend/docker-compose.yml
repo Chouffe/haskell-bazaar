@@ -1,29 +1,40 @@
-version: '3'
+version: '3.2'
 
 services:
-  # web:
-  #   image: haskell-bazaar-server
-  #   container_name: haskell-bazaar-web
-  #   ports:
-  #   - "8001:8001"
-  #   - "8002:8002"
-  #   - "8003:8003"
-  #   links:
-  #     - postgres
 
   postgres:
     image: postgres:10.5
     container_name: haskell-bazaar-postgres
     volumes:
-      - /data/postgresql:/var/lib/postgresql/data
+      - psql-data:/var/lib/postgresql/data
 
       # Run init.sql and see.sql on startup
       - ./scripts/db/init.sql:/docker-entrypoint-initdb.d/1-init.sql
-      # - ./scripts/db/seed.sql:/docker-entrypoint-initdb.d/2-seed.sql
+      - ./scripts/db/seed.sql:/docker-entrypoint-initdb.d/2-seed.sql
+
     ports:
       - "5432:5432"
+
+    secrets:
+      - psql-user
+      - psql-password
+      - psql-db
+
     environment:
-      - POSTGRES_USER=haskellbazaar
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=haskellbazaar
+      - POSTGRES_USER_FILE=/run/secrets/psql-user
+      - POSTGRES_PASSWORD_FILE=/run/secrets/psql-password
+      - POSTGRES_DB_FILE=/run/secrets/psql-db
       - POSTGRES_PORT=5432
+
+    # TODO: define network?
+
+volumes:
+  psql-data:
+
+secrets:
+  psql-user:
+    file: ./secrets/psql-user
+  psql-password:
+    file: ./secrets/psql-password
+  psql-db:
+    file: ./secrets/psql-db
