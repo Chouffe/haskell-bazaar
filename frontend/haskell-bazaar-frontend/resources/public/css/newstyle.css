@@ -2,17 +2,17 @@ html {
   font-family: "DDG_ProximaNova","DDG_ProximaNova_UI_0","DDG_ProximaNova_UI_1","DDG_ProximaNova_UI_2","DDG_ProximaNova_UI_3","DDG_ProximaNova_UI_4","DDG_ProximaNova_UI_5","DDG_ProximaNova_UI_6","Proxima Nova","Helvetica Neue","Helvetica","Segoe UI","Nimbus Sans L","Liberation Sans","Open Sans",FreeSans,Arial,sans-serif;
 }
 
-#landing-page .header {
+#landing-page .lpheader {
   width: 100%;
   background-color: #F7F7F7;
-  height: 60vh;
+  height: 50vh;
   padding-top: 3em;
-  padding-bottom: 2em;
-  border-bottom: 1px solid #C8C8C8;
-  min-height: 400px;
+  padding-bottom: 1em;
+  /* border-bottom: 1px solid #C8C8C8; */
+  min-height: 340px;
 }
 
-#landing-page .header img {
+#landing-page .lpheader img {
   padding-bottom: 2em;
 }
 
@@ -27,7 +27,7 @@ html {
   min-height: 0;
 }
 
-#landing-page .header .tag-line {
+#landing-page .lpheader .tag-line {
   font-size: 1.2em;
   font-weight:500;
   color: #333;
@@ -61,7 +61,7 @@ html {
   padding-top: 2em;
 }
 
-#landing-page .header .search .results {
+#landing-page .lpheader .search .results {
   border-radius: 0 0 3.4px 3.4px;
   margin-top: -2px;
   font-size: 0.9em;
@@ -189,4 +189,26 @@ html {
 
 .footer i.heart {
   color: #8E508A;
+}
+
+#landing-page #track-level {
+  min-height: 400px;
+  height: 50vh;
+}
+
+#landing-page .step {
+  cursor: pointer;
+}
+
+#landing-page .active.step {
+  background-color: #FDFDFD;
+}
+
+#landing-page .active.step:after {
+  background-color: #FDFDFD;
+}
+
+#landing-page .active.step .title {
+  color: #8E508A;
+  cursor: none;
 }

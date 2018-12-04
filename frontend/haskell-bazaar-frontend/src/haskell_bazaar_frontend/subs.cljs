@@ -54,3 +54,9 @@
   :search-enriched-results
   (fn [db _]
     (:search-enriched-results db)))
+
+;; Tracks
+(re-frame/reg-sub
+  :track-level-selection
+  (fn [db _]
+    (-> db :tracks :level :track-selection)))

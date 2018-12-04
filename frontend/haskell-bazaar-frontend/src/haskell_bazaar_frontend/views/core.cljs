@@ -9,20 +9,14 @@
     [haskell-bazaar-frontend.routes :as routes]
     [haskell-bazaar-frontend.utils :as utils]
     [haskell-bazaar-frontend.ui :as ui]
+
+    [haskell-bazaar-frontend.views.track :as track]
     [haskell-bazaar-frontend.views.modal :as modal]
-    [haskell-bazaar-frontend.views.search :as search]
-    ))
+    [haskell-bazaar-frontend.views.search :as search]))
 
 
-;; TODO: have different dispatchers for test environment for instance
 (def dispatchers
-  {:filters
-   {:on-click-factory
-    (fn [showing-kw]
-      (fn [e]
-        (re-frame/dispatch [:set-showing showing-kw])))}
-
-   :landing-page-search
+  {:landing-page
    {:on-submit
     (fn [_ search-query]
       (fn [e]
@@ -34,9 +28,6 @@
     (fn [event data]
       (let [selected-result (get-in (js->clj data) ["result" "title"])]
         (re-frame/dispatch [:navigate-search selected-result])))
-
-    ; :onStoppedTyping
-    ; #(re-frame/dispatch [:datascript/search %])
 
     :onSearchChange
     #(re-frame/dispatch [:set-search-query (utils/target-value %)])
@@ -219,16 +210,18 @@
 
 (defmethod tab-pannel :landing-page [{:keys [dispatchers base-url]}]
   [:div#landing-page
-   [:div.header
+   [:div.lpheader
     [:> ui/container
      [:img.ui.small.circular.centered.image
       {:src "images/haskell-bazaar-logo.svg"
        :alt "Haskell Bazaar Logo"}]
      [search/search-form
-      (merge (:landing-page-search dispatchers)
+      (merge (:landing-page dispatchers)
              {:id "landing-page-search-box" :autofocus? true})]
      [:h1.center.aligned.header.tag-line
-      "Explore " [:strong "Haskell"] " and " [:strong "Functional Programming"] " concepts"]]]])
+      "Explore " [:strong "Haskell"] " and " [:strong "Functional Programming"] " concepts"]]]
+   [:div.tracks
+    [track/level]]])
 
 (defmethod tab-pannel :search
   [{:keys [dispatchers base-url]}]

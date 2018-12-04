@@ -341,3 +341,10 @@
   :analytics/event
   (fn [db [_ {:keys [action category label value] :as params}]]
     {:gtag/event params}))
+
+;; Tracks
+(re-frame/reg-event-db
+  :track/select
+  interceptors
+  (fn [db [_ track-kw selection-kw]]
+    (assoc-in db [:tracks track-kw :track-selection] selection-kw)))

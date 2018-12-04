@@ -21,6 +21,18 @@
 (s/def ::search-loading boolean?)
 (s/def ::sorted #{:date})
 
+;; Tracks
+(s/def ::track-kw #{:level})
+(s/def ::tack-selection #{:beginner :elementary :intermediate :advanced})
+(s/def ::track-value (s/keys ::req-un [::track-selection]))
+(s/def ::tracks (s/map-of ::track-kw ::track-value))
+(s/def ::tack-selection #{:beginner :elementary :intermediate :advanced})
+
+(def tracks {:level {:track-value :beginner}})
+
+(s/conform ::tracks tracks)
+(s/explain ::tracks tracks)
+
 ;; Keyword
 (s/def ::name string?)
 (s/def ::kind #{"tag", "author"})
@@ -112,6 +124,7 @@
 
 (defn default-db [env]
   {:environment    env
+   :tracks         {:level {:track-selection :beginner}}
    :search-query   nil
    :search-error   nil
    :search-loading false
