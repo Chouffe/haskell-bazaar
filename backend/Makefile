@@ -1,13 +1,13 @@
 build-common:
 	docker build \
 		-t build-env:latest \
-		-f scripts/Dockerfile.build \
+		-f Dockerfile.build \
 		.
 
 build:
 	docker build \
 		-t haskell-bazaar-server:latest \
-		-f scripts/Dockerfile \
+		-f Dockerfile \
 		.
 
 psql:
