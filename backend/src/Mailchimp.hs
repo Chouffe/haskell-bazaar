@@ -40,8 +40,8 @@ data Config
 -- TODO: read from Env and not hardcoded!
 config :: Config
 config = Config
-  { cAPIKey = "e754bfd555ef7e1256f9e9d5ad009120-us18"
-  , cListId = "e9a2d39f6d"
+  { cAPIKey  = "e754bfd555ef7e1256f9e9d5ad009120-us18"
+  , cListId  = "e9a2d39f6d"
   , cBaseUrl = "https://us18.api.mailchimp.com/3.0"
   }
 

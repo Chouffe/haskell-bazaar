@@ -1,14 +1,18 @@
-version: '3.2'
+version: '3.4'
 
 services:
   web:
     image: haskell-bazaar-server
     ports:
-    - "8001:8001"
+      - "8001:8001"
     links:
       - postgres
     environment:
       - ENVIRONMENT=Prod
+    secrets:
+      - mailchimp-api-key
+      - mailchimp-base-url
+      - mailchimp-list-id
 
   loadbalancer:
     image: nginx:stable-alpine
@@ -22,13 +26,23 @@ services:
       - web
 
     ports:
-      - "80:80"
-      - "443:443"
+      - "80:80"   # HTTP
+      - "443:443" # HTTPS
 
 secrets:
+
+  # Postgresql
   psql-user:
     external: true
   psql-password:
     external: true
   psql-db:
+    external: true
+
+  # Mailchimp
+  mailchimp-api-key:
+    external: true
+  mailchimp-base-url:
+    external: true
+  mailchimp-list-id:
     external: true

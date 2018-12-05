@@ -11,31 +11,38 @@ build:
 		.
 
 psql:
-	docker container exec -it haskell-bazaar-postgres psql -U haskellbazaar
+	docker container exec -it \
+		haskell-bazaar-postgres psql -U haskellbazaar
 
 
 test:
 	docker container run -it --rm \
+		-v /opt/build/.stack-work \
 		-v $(shell pwd):/opt/build/. \
-		--link haskell-bazaar-postgres \
 		--network backend_default \
+		--link haskell-bazaar-postgres \
 	        build-env stack --allow-different-user test
 
 repl:
 	docker container run -it --rm \
-		--link haskell-bazaar-postgres \
+		-v /opt/build/.stack-work \
+		-v $(shell pwd):/opt/build/. \
 		-p 8002:8002 \
 		--network backend_default \
-		-v $(shell pwd):/opt/build/. \
+		--link haskell-bazaar-postgres \
 	        build-env stack --allow-different-user repl
 
 ghcid:
 	docker container run -it --rm \
+		-v /opt/build/.stack-work \
+		-v $(shell pwd):/opt/build/. \
 		build-env ghcid --command "stack ghci"
 
 
 lint:
 	docker container run -it --rm \
+		-v /opt/build/.stack-work \
+		-v $(shell pwd):/opt/build/. \
 		build-env stack exec -- hlint .
 
 docker-build-save:

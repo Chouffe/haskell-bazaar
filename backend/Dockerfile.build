@@ -17,6 +17,7 @@ RUN stack build --only-dependencies && \
 # Build dev tools
 RUN stack build ghcid hlint
 
+# Copy over all source code
 COPY . .
 
 # Run repl as default command

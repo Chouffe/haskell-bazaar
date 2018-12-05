@@ -1,14 +1,42 @@
-version: '3.2'
+version: '3.4'
 
 services:
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.build
+    ports:
+      - "8002:8002"
+    links:
+      - postgres
+    volumes:
+      - /opt/build/.stack-work
+      - .:/opt/build
+    command: >
+      sh -c "stack build &&
+             stack exec haskell-bazaar-exe"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
+      start_period: 45s
+
+    environment:
+      - ENVIRONMENT=Dev
+    secrets:
+      - mailchimp-api-key
+      - mailchimp-base-url
+      - mailchimp-list-id
 
   postgres:
     image: postgres:10.5
     container_name: haskell-bazaar-postgres
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "haskellbazaar"]
+
     volumes:
       - psql-data:/var/lib/postgresql/data
 
-      # Run init.sql and see.sql on startup
+      # Run init.sql and seed.sql on creation
       - ./scripts/db/init.sql:/docker-entrypoint-initdb.d/1-init.sql
       - ./scripts/db/seed.sql:/docker-entrypoint-initdb.d/2-seed.sql
 
@@ -32,9 +60,19 @@ volumes:
   psql-data:
 
 secrets:
+
+  # Postgresql
   psql-user:
     file: ./secrets/psql-user
   psql-password:
     file: ./secrets/psql-password
   psql-db:
     file: ./secrets/psql-db
+
+  # Mailchimp
+  mailchimp-api-key:
+    file: ./secrets/mailchimp-api-key
+  mailchimp-base-url:
+    file: ./secrets/mailchimp-base-url
+  mailchimp-list-id:
+    file: ./secrets/mailchimp-list-id

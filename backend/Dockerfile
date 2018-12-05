@@ -11,6 +11,7 @@ COPY . .
 RUN stack build
 
 # From a small base image
+# TODO try with an alpine image instead
 FROM ubuntu:18.10
 
 # Installing postgresql-client and cleaning up after the install
