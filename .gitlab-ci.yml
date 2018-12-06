@@ -22,7 +22,7 @@ services:
 cache:
   key: build-cache
   paths:
-    - backend/.stack-work
+    - ./backend/.stack-work
 
 stages:
   - build
@@ -30,20 +30,25 @@ stages:
   - deploy
 
 before_script:
+  - pwd
+  - ls -larth
+  - ls -larth ./backend/
   - docker info
+  - docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD
 
 build:
   stage: build
   script:
     - cd backend
-    - docker build -t chouffe/haskell-bazaar:latest .
-    # TODO: push?
+    - docker build -t chouffe/haskell-bazaar:dev -f Dockerfile.dev .
+    - docker push chouffe/haskell-bazaar:dev
 
 job-test:
   image: tmaier/docker-compose:latest
   stage: test
   script:
     - cd backend
+    - docker pull chouffe/haskell-bazaar:dev
     - docker-compose up -d
     - docker container exec haskell-bazaar-api stack test
 
@@ -51,4 +56,6 @@ job-deploy:
   stage: deploy
   script:
     - cd backend
+    - docker build -t chouffe/haskell-bazaar:latest -f Dockerfile .
+    - docker push chouffe/haskell-bazaar:latest
     - echo "Deploying..."
