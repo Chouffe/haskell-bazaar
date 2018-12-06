@@ -35,13 +35,14 @@ before_script:
   - ls -larth ./backend/
   - docker info
   - docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD
+  - docker image pull chouffe/haskell-bazaar:dev
 
 build:
   stage: build
   script:
     - cd backend
-    - docker build -t chouffe/haskell-bazaar:dev -f Dockerfile.dev .
-    - docker push chouffe/haskell-bazaar:dev
+    - docker image build -t chouffe/haskell-bazaar:dev -f Dockerfile.dev .
+    - docker image push chouffe/haskell-bazaar:dev
   after_script:
     - cd backend
     - docker container run --name dev-container chouffe/haskell-bazaar:dev -d
@@ -53,7 +54,6 @@ test:
   stage: test
   script:
     - cd backend
-    - docker pull chouffe/haskell-bazaar:dev
     - docker-compose up -d
     - docker container exec haskell-bazaar-api stack test
 
