@@ -1,4 +1,4 @@
-image: docker
+image: ubuntu:18.10
 
 stages:
   - build
@@ -10,6 +10,10 @@ job-build:
   script:
     - cd backend
     - make build
+  before_script:
+    - curl -fsSL https://get.docker.com -o get-docker.sh
+    - sh get-docker.sh
+
 
 job-test:
   stage: test
