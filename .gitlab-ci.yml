@@ -4,7 +4,6 @@ stages:
   - deploy
 
 job-build:
-  image: docker:latest
   stage: build
   script:
     - cd backend
