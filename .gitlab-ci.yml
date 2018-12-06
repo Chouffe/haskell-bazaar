@@ -1,26 +1,23 @@
-# image: ubuntu:18.10
-
 stages:
   - build
   - test
   - deploy
 
 job-build:
+  image: docker:latest
   stage: build
   script:
     - cd backend
-    - make build
+    - docker build -t chouffe/haskell-bazaar:latest .
+    # TODO: push?
 
 job-test:
+  image: tmaier/docker-compose:latest
   stage: test
   script:
     - cd backend
     - docker-compose up -d
-    - make test
-  before_script:
-    - curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-    - chmod +x /usr/local/bin/docker-compose
-    - docker-compose --version
+    - docker container exec haskell-bazaar-api stack test
 
 job-deploy:
   stage: deploy
