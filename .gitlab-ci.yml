@@ -16,7 +16,7 @@ job-build:
     - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
     - curl -fsSL https://get.docker.com -o get-docker.sh
     - add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic test"
-    - apt update
+    - apt-get update -y
     - apt install docker-ce
 
 
