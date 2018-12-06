@@ -72,11 +72,10 @@ data Credentials
 
 getCredentials :: IO Credentials
 getCredentials = do
-  -- user     <- T.pack . cleanString <$> readFile "/run/secrets/psql-user"
-  -- db       <- T.pack . cleanString <$> readFile "/run/secrets/psql-db"
-  -- password <- T.pack . cleanString <$> readFile "/run/secrets/psql-password"
-  return $ Credentials "haskellbazaar" "haskellbazaar" "password"
-  -- return $ Credentials user db password
+  user     <- T.pack . cleanString <$> readFile "/run/secrets/psql-user"
+  db       <- T.pack . cleanString <$> readFile "/run/secrets/psql-db"
+  password <- T.pack . cleanString <$> readFile "/run/secrets/psql-password"
+  return $ Credentials user db password
 
   where
     cleanString :: String -> String
