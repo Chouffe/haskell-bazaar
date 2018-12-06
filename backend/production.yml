@@ -5,6 +5,7 @@ services:
     image: haskell-bazaar-server
     ports:
       - "8001:8001"
+    command: "./haskell-bazaar-exe"
     links:
       - postgres
     environment:
