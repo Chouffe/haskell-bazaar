@@ -19,6 +19,11 @@ variables:
 services:
    - docker:dind
 
+cache:
+  key: build-cache
+  paths:
+    - backend/.stack-work
+
 stages:
   - build
   - test
