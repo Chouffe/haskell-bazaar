@@ -42,8 +42,13 @@ build:
     - cd backend
     - docker build -t chouffe/haskell-bazaar:dev -f Dockerfile.dev .
     - docker push chouffe/haskell-bazaar:dev
+  after_script:
+    - cd backend
+    - docker container run --name dev-container chouffe/haskell-bazaar:dev -d
+    - docker container cp dev-container:/opt/build/.stack-work .stack-work
+    - docker container rm -f dev-container
 
-job-test:
+test:
   image: tmaier/docker-compose:latest
   stage: test
   script:
@@ -52,7 +57,7 @@ job-test:
     - docker-compose up -d
     - docker container exec haskell-bazaar-api stack test
 
-job-deploy:
+deploy:
   stage: deploy
   script:
     - cd backend
