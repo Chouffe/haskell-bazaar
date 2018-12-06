@@ -1,0 +1,32 @@
+image: fpco/stack-build:lts-9.21
+
+stages:
+  - build
+  - test
+  - deploy
+
+job-build:
+  stage: build
+  script:
+    - cd backend
+    - make build
+  before_script:
+    - curl -fsSL https://get.docker.com -o get-docker.sh
+    - sh get-docker.sh
+
+job-test:
+  stage: test
+  script:
+    - cd backend
+    - docker-compose up -d
+    - make test
+  before_script:
+    - sudo curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    - sudo chmod +x /usr/local/bin/docker-compose
+    - docker-compose --version
+
+job-deploy:
+  stage: deploy
+  script:
+    - cd backend
+    - echo "Deploying..."

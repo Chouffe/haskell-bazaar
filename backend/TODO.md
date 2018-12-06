@@ -20,4 +20,4 @@
   * Concurrency and Parallelism Simon Marlow
   * https://github.com/bitemyapp/learnhaskell/blob/master/specific_topics.md
 * Setup automated psql database backup to S3
-* Post to r/haskell to get some initial datapoints and feedback
+* Rotate Mailchimp Credentials
