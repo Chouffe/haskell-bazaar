@@ -82,4 +82,4 @@ secrets:
     file: ./secrets/mailchimp-list-id
 
 networks:
-  - frontend:
+  frontend:
