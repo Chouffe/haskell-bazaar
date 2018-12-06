@@ -1,4 +1,4 @@
-image: ubuntu:18.10
+# image: ubuntu:18.10
 
 stages:
   - build
@@ -10,14 +10,6 @@ job-build:
   script:
     - cd backend
     - make build
-  before_script:
-    - apt update
-    - apt-get install -y apt-transport-https ca-certificates curl software-properties-common
-    - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-    - curl -fsSL https://get.docker.com -o get-docker.sh
-    - add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic test"
-    - apt update -y
-    - apt install -y docker-ce
 
 job-test:
   stage: test
