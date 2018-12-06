@@ -1,3 +1,6 @@
 build/
 scripts/set-env.sh
 backups/
+
+secrets/
+!secrets/*.default

@@ -20,5 +20,7 @@ RUN stack build ghcid hlint
 # Copy over all source code
 COPY . .
 
+EXPOSE 8002
+
 # Run repl as default command
 CMD ["stack", "repl"]

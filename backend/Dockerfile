@@ -43,7 +43,7 @@ COPY --from=builder \
 COPY static static
 COPY config config
 
-EXPOSE 8002
+EXPOSE 8001
 
 # Running the command by default
 CMD ["/opt/app/haskell-bazaar-exe"]

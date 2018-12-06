@@ -4,7 +4,7 @@
 
 module Database
   ( Config
-  , config
+  , getConfig
 
   , Handle
   , withHandle
@@ -30,17 +30,18 @@ import           Control.Exception           (bracket)
 import           Control.Monad.IO.Class      (MonadIO, liftIO)
 import           Control.Monad.Logger        (LoggingT, runStdoutLoggingT)
 import qualified Data.Map                    as M
-import           Data.Maybe                  (maybe, listToMaybe)
+import           Data.Maybe                  (listToMaybe, maybe)
 import           Data.Pool                   (Pool, destroyAllResources,
                                               withResource)
 import           Data.Semigroup              ((<>))
 import qualified Data.Text                   as T
-import           Data.UUID                   (UUID)
+import qualified Data.Text.Encoding          as T
 import           Data.Time.Clock             (getCurrentTime)
+import           Data.UUID                   (UUID)
 import           Database.Esqueleto          (InnerJoin (..), distinct, from,
                                               ilike, in_, limit, on, select,
-                                              val, unValue, valList, where_, (%), (++.),
-                                              (==.), (^.))
+                                              unValue, val, valList, where_,
+                                              (%), (++.), (==.), (^.))
 
 import           Database.Persist            (Entity (..), insert_)
 import           Database.Persist.Postgresql (ConnectionString,
@@ -55,11 +56,39 @@ import           Server.API.Types
 
 data Config
   = Config
-    { cConnectionString :: ConnectionString
-    , cPoolConnections  :: Int
-    , cEnvironnment     :: Environment
+    { cCredentials      :: !Credentials
+    , cConnectionString :: !ConnectionString
+    , cPoolConnections  :: !Int
+    , cEnvironnment     :: !Environment
     }
   deriving (Eq, Show)
+
+data Credentials
+  = Credentials
+    { cUser     :: !T.Text
+    , cDatabase :: !T.Text
+    , cPassword :: !T.Text
+    } deriving (Eq, Show)
+
+getCredentials :: IO Credentials
+getCredentials = do
+  -- user     <- T.pack . cleanString <$> readFile "/run/secrets/psql-user"
+  -- db       <- T.pack . cleanString <$> readFile "/run/secrets/psql-db"
+  -- password <- T.pack . cleanString <$> readFile "/run/secrets/psql-password"
+  return $ Credentials "haskellbazaar" "haskellbazaar" "password"
+  -- return $ Credentials user db password
+
+  where
+    cleanString :: String -> String
+    cleanString = filter (\c -> c /= '\n')
+
+mkConnectionString :: Credentials -> ConnectionString
+mkConnectionString Credentials {..} =
+  "host=postgres"
+  <> " port=5432"
+  <> " user="     <> T.encodeUtf8 cUser
+  <> " dbname="   <> T.encodeUtf8 cDatabase
+  <> " password=" <> T.encodeUtf8 cPassword
 
 data Handle
   = Handle
@@ -67,11 +96,16 @@ data Handle
     , hConfig :: Config
     }
 
-config :: Environment -> Config
-config Test = Config "host=postgres port=5432 user=haskellbazaar dbname=haskellbazaar password=password" 1 Test
-config Dev  = Config "host=postgres port=5432 user=haskellbazaar dbname=haskellbazaar password=password" 1 Dev
--- TODO: get from ENV variable
-config Prod = Config "host=postgres port=5432 user=haskellbazaar dbname=haskellbazaar password=password" 10 Prod
+getConfig :: Environment -> IO Config
+getConfig env = do
+  creds <- getCredentials
+  return $ Config creds (mkConnectionString creds) (nPort env) env
+
+  where
+    nPort :: Environment -> Int
+    nPort Test = 1
+    nPort Dev  = 1
+    nPort Prod = 10
 
 withHandle :: Config -> (Handle -> IO a) -> IO a
 withHandle cfg = bracket

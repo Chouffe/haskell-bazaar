@@ -13,6 +13,9 @@ services:
       - mailchimp-api-key
       - mailchimp-base-url
       - mailchimp-list-id
+      - psql-user
+      - psql-password
+      - psql-db
 
   loadbalancer:
     image: nginx:stable-alpine

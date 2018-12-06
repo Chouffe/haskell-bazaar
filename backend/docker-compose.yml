@@ -6,7 +6,7 @@ services:
     container_name: haskell-bazaar-api
     build:
       context: .
-      dockerfile: Dockerfile.build
+      dockerfile: Dockerfile.dev
     ports:
       - "8002:8002"
     links:
@@ -20,13 +20,15 @@ services:
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
       start_period: 45s
-
     environment:
       - ENVIRONMENT=Dev
     secrets:
       - mailchimp-api-key
       - mailchimp-base-url
       - mailchimp-list-id
+      - psql-user
+      - psql-password
+      - psql-db
 
   postgres:
     image: postgres:10.5

@@ -4,7 +4,7 @@
 
 module Mailchimp
   ( Config
-  , config
+  , getConfig
 
   , Handle
   , withHandle
@@ -37,13 +37,15 @@ data Config
     }
   deriving Show
 
--- TODO: read from Env and not hardcoded!
-config :: Config
-config = Config
-  { cAPIKey  = "e754bfd555ef7e1256f9e9d5ad009120-us18"
-  , cListId  = "e9a2d39f6d"
-  , cBaseUrl = "https://us18.api.mailchimp.com/3.0"
-  }
+getConfig :: IO Config
+getConfig = do
+  apiKey  <- (T.pack . cleanString) <$> readFile "/run/secrets/mailchimp-api-key"
+  listId  <- cleanString <$> readFile "/run/secrets/mailchimp-list-id"
+  baseUrl <- cleanString <$> readFile "/run/secrets/mailchimp-base-url"
+  return $ Config apiKey listId baseUrl
+  where
+    cleanString :: String -> String
+    cleanString = filter (\c -> c /= '\n')
 
 data Handle
   = Handle

@@ -28,18 +28,21 @@ main = do
   let loggerConfig :: Logger.Config
       loggerConfig = Logger.config env
 
-  let databaseConfig :: Database.Config
-      databaseConfig = Database.config env
-
   let serverConfig :: Server.Config.Config
       serverConfig = Server.Config.config env
-
-  let mailchimpConfig :: Mailchimp.Config
-      mailchimpConfig = Mailchimp.config
 
   -- print env
 
   Logger.withHandle loggerConfig $ \loggerHandle -> do
+
+
+    Logger.info loggerHandle ("Fetching Configs: " :: T.Text)
+
+    databaseConfig  <- Database.getConfig env
+    mailchimpConfig <- Mailchimp.getConfig
+
+    Logger.info loggerHandle (show mailchimpConfig)
+
     Logger.info loggerHandle ("Starting Database" :: T.Text)
     Logger.info loggerHandle (show databaseConfig)
 
