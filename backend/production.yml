@@ -23,6 +23,8 @@ services:
 
   loadbalancer:
     image: nginx:stable-alpine
+    networks:
+      - frontend
     volumes:
       - ./config/nginx.conf:/etc/nginx/nginx.conf
       - /docker-volumes/etc/letsencrypt/live/haskellbazaar.com/fullchain.pem:/etc/letsencrypt/live/haskellbazaar.com/fullchain.pem
@@ -53,3 +55,6 @@ secrets:
     external: true
   mailchimp-list-id:
     external: true
+
+networks:
+  frontend:
