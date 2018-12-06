@@ -2,12 +2,15 @@ version: '3.4'
 
 services:
   web:
-    image: haskell-bazaar-server
+    image: chouffe/haskell-bazaar
     ports:
       - "8001:8001"
     command: "./haskell-bazaar-exe"
     links:
       - postgres
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      start_period: 45s
     environment:
       - ENVIRONMENT=Prod
     secrets:

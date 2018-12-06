@@ -7,6 +7,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
+    networks:
+      - frontend
     ports:
       - "8002:8002"
     links:
@@ -17,9 +19,6 @@ services:
     command: >
       sh -c "stack build &&
              stack exec haskell-bazaar-exe"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
-      start_period: 45s
     environment:
       - ENVIRONMENT=Dev
     secrets:
@@ -33,6 +32,8 @@ services:
   postgres:
     image: postgres:10.5
     container_name: haskell-bazaar-postgres
+    networks:
+      - frontend
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "haskellbazaar"]
 
@@ -79,3 +80,6 @@ secrets:
     file: ./secrets/mailchimp-base-url
   mailchimp-list-id:
     file: ./secrets/mailchimp-list-id
+
+networks:
+  - frontend:
