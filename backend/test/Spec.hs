@@ -41,9 +41,14 @@ withApp :: (Server.Config.Config -> IO a) -> IO a
 withApp f =
   Logger.withHandle loggerConfig $ \loggerHandle -> do
 
-    Logger.info loggerHandle ("Starting Database" :: T.Text)
-    Logger.info loggerHandle (show databaseConfig)
+    Logger.info loggerHandle ("Fetching Configs: " :: T.Text)
+    databaseConfig  <- Database.getConfig env
+    mailchimpConfig <- Mailchimp.getConfig
 
+    Logger.info loggerHandle (show databaseConfig)
+    Logger.info loggerHandle (show mailchimpConfig)
+
+    Logger.info loggerHandle ("Starting Database" :: T.Text)
     Database.withHandle databaseConfig $ \databaseHandle -> do
 
       Logger.info loggerHandle ("Running Database Migration" :: T.Text)
@@ -63,11 +68,5 @@ withApp f =
     loggerConfig :: Logger.Config
     loggerConfig = Logger.config env
 
-    databaseConfig :: Database.Config
-    databaseConfig = Database.config env
-
     serverConfig :: Server.Config.Config
     serverConfig = Server.Config.config env
-
-    mailchimpConfig :: Mailchimp.Config
-    mailchimpConfig = Mailchimp.config
