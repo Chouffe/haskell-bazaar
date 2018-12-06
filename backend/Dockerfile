@@ -1,11 +1,20 @@
 # Multi Stage Docker file that reuses the build-env image used for building haskell code
+FROM fpco/stack-build:lts-9.21 as builder
 
-# From the build-env docker image (Dockerfile.build)
-FROM build-env as builder
-
-# Copying source code from host to the docker image
+RUN mkdir -p /opt/build
 WORKDIR /opt/build
 
+COPY stack.yaml stack.yaml
+COPY package.yaml package.yaml
+
+# Install GHC
+RUN stack setup
+
+# Build dependencies
+RUN stack build --only-dependencies && \
+    stack build --test --only-dependencies
+
+# Copy over all source code
 COPY . .
 
 RUN stack build
@@ -34,8 +43,7 @@ COPY --from=builder \
 COPY static static
 COPY config config
 
-# HEALTHCHECK --interval=30s --timeout=3s \
-#   CMD curl -f http://localhost:8001/health || exit 1
+EXPOSE 8002
 
 # Running the command by default
 CMD ["/opt/app/haskell-bazaar-exe"]

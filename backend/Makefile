@@ -1,7 +1,7 @@
-build-common:
+build-dev:
 	docker build \
-		-t build-env:latest \
-		-f Dockerfile.build \
+		-t haskell-bazaar-dev:latest \
+		-f Dockerfile.dev \
 		.
 
 build:
@@ -21,29 +21,29 @@ test:
 		-v $(shell pwd):/opt/build/. \
 		--network backend_default \
 		--link haskell-bazaar-postgres \
-	        build-env stack --allow-different-user test
+	        backend_web stack test
 
 repl:
 	docker container run -it --rm \
 		-v /opt/build/.stack-work \
 		-v $(shell pwd):/opt/build/. \
-		-p 8002:8002 \
+		-p 8012:8002 \
 		--network backend_default \
 		--link haskell-bazaar-postgres \
-	        build-env stack --allow-different-user repl
+	        backend_web stack repl
 
 ghcid:
 	docker container run -it --rm \
 		-v /opt/build/.stack-work \
 		-v $(shell pwd):/opt/build/. \
-		build-env ghcid --command "stack ghci"
+		backend_web stack exec -- ghcid --command "stack ghci"
 
 
 lint:
 	docker container run -it --rm \
 		-v /opt/build/.stack-work \
 		-v $(shell pwd):/opt/build/. \
-		build-env stack exec -- hlint .
+		backend_web stack exec -- hlint .
 
 docker-build-save:
 	scripts/build.sh
