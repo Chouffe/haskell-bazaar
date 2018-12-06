@@ -6,7 +6,7 @@ build-dev:
 
 build:
 	docker build \
-		-t haskell-bazaar-server:latest \
+		-t chouffe/haskell-bazaar:latest \
 		-f Dockerfile \
 		.
 

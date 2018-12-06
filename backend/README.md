@@ -37,21 +37,11 @@ cd frontend
 
 ### Backend
 
-* Build the environment builder image first
+* Build the production docker image
 ```
-make docker-build-env
+make build
 ```
-* Build the `haskell-bazaar-server` image
-```
-make docker-build
-```
-
-### Docker compose
-
-* Run the services
-```
-docker-compose up
-```
+* Run the deploy script: TODO
 
 ## Testing
 
