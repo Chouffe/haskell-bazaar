@@ -16,34 +16,20 @@ psql:
 
 
 test:
-	docker container run -it --rm \
-		-v /opt/build/.stack-work \
-		-v $(shell pwd):/opt/build/. \
-		--network backend_default \
-		--link haskell-bazaar-postgres \
-	        backend_web stack test
+	docker container exec haskell-bazaar-api stack test
 
 repl:
-	docker container run -it --rm \
-		-v /opt/build/.stack-work \
-		-v $(shell pwd):/opt/build/. \
-		-p 8012:8002 \
-		--network backend_default \
-		--link haskell-bazaar-postgres \
-	        backend_web stack repl
+	docker container exec -it \
+		haskell-bazaar-api stack repl
 
 ghcid:
-	docker container run -it --rm \
-		-v /opt/build/.stack-work \
-		-v $(shell pwd):/opt/build/. \
-		backend_web stack exec -- ghcid --command "stack ghci"
+	docker container exec \
+		haskell-bazaar-api stack exec -- ghcid --command "stack ghci"
 
 
 lint:
-	docker container run -it --rm \
-		-v /opt/build/.stack-work \
-		-v $(shell pwd):/opt/build/. \
-		backend_web stack exec -- hlint .
+	docker container exec \
+		haskell-bazaar-api stack exec -- hlint .
 
 docker-build-save:
 	scripts/build.sh
