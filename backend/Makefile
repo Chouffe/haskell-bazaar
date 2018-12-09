@@ -1,58 +1,61 @@
+GIT_SHA := $$(git rev-parse HEAD)
+
+# Docker Tagging
+NAME    := chouffe/haskell-bazaar
+TAG     := $$(git rev-parse --short HEAD)
+IMG     := ${NAME}:${TAG}
+LATEST  := ${NAME}:latest
+
+
+login:
+	@docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}
+
 build-dev:
-	docker build \
+	@docker image build \
 		-t haskell-bazaar-dev:latest \
 		-f Dockerfile.dev \
 		.
 
 build:
-	docker build \
-		-t chouffe/haskell-bazaar:latest \
-		-f Dockerfile \
-		.
+	@docker image build -t ${IMG} .
+	@docker image tag ${IMG} ${LATEST}
 
-psql:
-	docker container exec -it \
-		haskell-bazaar-postgres psql -U haskellbazaar
-
+dev:
+	@docker-compose up -d
 
 test:
-	docker container exec haskell-bazaar-api stack test
+	@docker container exec haskell-bazaar-api stack test
 
-repl:
-	docker container exec -it \
-		haskell-bazaar-api stack repl
+push:
+	@docker push ${NAME}
 
-ghcid:
-	docker container exec \
-		haskell-bazaar-api stack exec -- ghcid --command "stack ghci"
-
-
-lint:
-	docker container exec \
-		haskell-bazaar-api stack exec -- hlint .
-
-docker-build-save:
-	scripts/build.sh
-
-docker-deploy:
+deploy:
 	ssh \
 		-i ${SSH_PEM_FILE} \
 		${SSH_USER}@${SSH_HOST} \
 		GITLAB_ACCESS_TOKEN=${GITLAB_ACCESS_TOKEN} \
-		DEPLOY_GIT_SHA="$(shell git rev-parse HEAD)" \
+		DEPLOY_GIT_SHA=${GIT_SHA} \
+		DOCKER_NAME=${NAME} \
+		DOCKER_IMG=${IMG} \
+		DOCKER_LATEST=${LATEST} \
 		'bash -s' < scripts/deploy.sh
 
-db-backup:
-	docker exec \
-		-it haskell-bazaar-postgres \
-		pg_dump -U haskellbazaar > ./backups/$(shell date +%Y_%m_%d).backup.sql
+# Local develpment commands
+psql:
+	@docker container exec -it \
+		haskell-bazaar-postgres psql -U haskellbazaar
 
-# TODO add date as an argument
-db-restore:
-	docker exec \
-		-i haskell-bazaar-postgres psql \
-		-U haskellbazaar \
-		< ./backups/$(shell date +%Y_%m_%d).backup.sql
+repl:
+	@docker container exec -it \
+		haskell-bazaar-api stack repl
+
+ghcid:
+	@docker container exec \
+		haskell-bazaar-api stack exec -- ghcid --command "stack ghci"
+
+lint:
+	@docker container exec \
+		haskell-bazaar-api stack exec -- hlint .
 
 db-seed:
 	docker exec \
@@ -62,10 +65,10 @@ db-seed:
 
 
 .PHONY: build \
+	build-dev \
 	test \
+	deploy \
 	lint \
 	ghcid \
-	db-backup \
-	docker-build \
-	docker-build-save \
-	docker-deploy
+        psql \
+	db-seed

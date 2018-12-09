@@ -29,6 +29,25 @@ services:
       - psql-password
       - psql-db
 
+  postgres-backup:
+    image: chouffe/haskell-bazaar-postgres-backup
+    build:
+      context: ./db/
+      dockerfile: Dockerfile
+    links:
+      - postgres
+    container_name: haskell-bazaar-postgres-backup
+    networks:
+      - frontend
+    volumes:
+      - psql-data:/var/lib/postgresql/data
+      - psql-backups:/backups
+      - ./db:/db
+    secrets:
+      - psql-user
+      - psql-password
+      - psql-db
+
   postgres:
     image: postgres:10.5
     container_name: haskell-bazaar-postgres
@@ -62,6 +81,7 @@ services:
 
 volumes:
   psql-data:
+  psql-backups:
 
 secrets:
 
