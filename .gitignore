@@ -11,3 +11,10 @@ backend/secrets/psql-password
 backend/secrets/mailchimp-api-key
 backend/secrets/mailchimp-base-url
 backend/secrets/mailchimp-list-id
+
+secrets/psql-user
+secrets/psql-db
+secrets/psql-password
+secrets/mailchimp-api-key
+secrets/mailchimp-base-url
+secrets/mailchimp-list-id

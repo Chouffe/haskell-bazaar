@@ -1,0 +1,65 @@
+version: '3.4'
+
+services:
+
+  api:
+    image: chouffe/haskell-bazaar
+    ports:
+      - "8001:8001"
+    command: "./haskell-bazaar-exe"
+    links:
+      - postgres
+    depends_on:
+      - postgres
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      start_period: 45s
+    environment:
+      - ENVIRONMENT=Prod
+    secrets:
+      - mailchimp-api-key
+      - mailchimp-base-url
+      - mailchimp-list-id
+      - psql-user
+      - psql-password
+      - psql-db
+
+  loadbalancer:
+    image: nginx:stable-alpine
+    networks:
+      - frontend
+      - backend
+    volumes:
+      - ./config/nginx.conf:/etc/nginx/nginx.conf
+      - /docker-volumes/etc/letsencrypt/live/haskellbazaar.com/fullchain.pem:/etc/letsencrypt/live/haskellbazaar.com/fullchain.pem
+      - /docker-volumes/etc/letsencrypt/live/haskellbazaar.com/privkey.pem:/etc/letsencrypt/live/haskellbazaar.com/privkey.pem
+      # for certbot challenges
+      - /docker-volumes/data/letsencrypt:/data/letsencrypt
+    links:
+      - api
+
+    ports:
+      - "80:80"   # HTTP
+      - "443:443" # HTTPS
+
+secrets:
+
+  # Postgresql
+  psql-user:
+    external: true
+  psql-password:
+    external: true
+  psql-db:
+    external: true
+
+  # Mailchimp
+  mailchimp-api-key:
+    external: true
+  mailchimp-base-url:
+    external: true
+  mailchimp-list-id:
+    external: true
+
+networks:
+  frontend:
+  backend:
