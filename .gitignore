@@ -4,3 +4,10 @@ haskell-bazaar.cabal
 *.sqlite*
 data/
 set-env.sh
+
+backend/secrets/psql-user
+backend/secrets/psql-db
+backend/secrets/psql-password
+backend/secrets/mailchimp-api-key
+backend/secrets/mailchimp-base-url
+backend/secrets/mailchimp-list-id

@@ -31,8 +31,7 @@ push:
 
 deploy:
 	ssh \
-		-i ${SSH_PEM_FILE} \
-		${SSH_USER}@${SSH_HOST} \
+		-i ${SSH_PEM_FILE} ${SSH_USER}@${SSH_HOST} \
 		GITLAB_ACCESS_TOKEN=${GITLAB_ACCESS_TOKEN} \
 		DEPLOY_GIT_SHA=${GIT_SHA} \
 		DOCKER_NAME=${NAME} \

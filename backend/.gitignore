@@ -2,5 +2,4 @@ build/
 scripts/set-env.sh
 backups/
 
-secrets/
-!secrets/*.default
+secrets/mailchimp-api-key

@@ -13,6 +13,8 @@ services:
       - "8002:8002"
     links:
       - postgres
+    depends_on:
+      - postgres
     volumes:
       - /opt/build/.stack-work
       - .:/opt/build
@@ -36,6 +38,8 @@ services:
       dockerfile: Dockerfile
     links:
       - postgres
+    depends_on:
+      - postgres
     container_name: haskell-bazaar-postgres-backup
     networks:
       - frontend
@@ -49,7 +53,7 @@ services:
       - psql-db
 
   postgres:
-    image: postgres:10.5
+    image: postgres:11.1
     container_name: haskell-bazaar-postgres
     networks:
       - frontend
