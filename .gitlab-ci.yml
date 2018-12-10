@@ -41,13 +41,8 @@ build:
   stage: build
   script:
     - cd backend
-    - docker image build -t chouffe/haskell-bazaar:dev -f Dockerfile.dev .
+    - docker image build --cache-from=fpco/stack-build:lts-9.21,chouffe/haskell-bazaar:dev -t chouffe/haskell-bazaar:dev -f Dockerfile.dev .
     - docker image push chouffe/haskell-bazaar:dev
-  after_script:
-    - cd backend
-    - docker container run --name dev-container chouffe/haskell-bazaar:dev -d
-    - docker container cp dev-container:/opt/build/.stack-work .stack-work
-    - docker container rm -f dev-container
 
 test:
   image: tmaier/docker-compose:latest
