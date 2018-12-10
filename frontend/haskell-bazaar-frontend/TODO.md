@@ -17,3 +17,5 @@
 * SEO: improve
   * OG (Open Graph) tags
 * Fix search input and autocomplete
+* Create Dockerfile.dev
+* add to general make file the build/test/lint/deploy script
