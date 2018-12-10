@@ -43,12 +43,14 @@ build:
     - cd backend
     - docker image build --cache-from=fpco/stack-build:lts-9.21,chouffe/haskell-bazaar:dev -t chouffe/haskell-bazaar:dev -f Dockerfile.dev .
     - docker image push chouffe/haskell-bazaar:dev
+    # TODO use cache layer here to pass on artifacts to next stages
 
 test:
   image: tmaier/docker-compose:latest
   stage: test
   script:
     - cd backend
+    - docker image build --cache-from=fpco/stack-build:lts-9.21,chouffe/haskell-bazaar:dev -t chouffe/haskell-bazaar:dev -f Dockerfile.dev .
     - docker-compose up -d
     - docker container exec haskell-bazaar-api stack test
 
