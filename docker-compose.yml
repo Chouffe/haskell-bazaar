@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
 
-  loadbalancer:
+  nginx:
     image: nginx:stable-alpine
     networks:
       - frontend
@@ -22,9 +22,6 @@ services:
       dockerfile: Dockerfile.dev
     networks:
       - backend
-    # TODO: remove port and expose nginx only
-    ports:
-      - "8002:8002"
     links:
       - postgres
     depends_on:
@@ -59,9 +56,6 @@ services:
       # Run init.sql and seed.sql on creation
       - ./db/scripts/init.sql:/docker-entrypoint-initdb.d/1-init.sql
       - ./db/scripts/seed.sql:/docker-entrypoint-initdb.d/2-seed.sql
-
-    ports:
-      - "5432:5432"
 
     secrets:
       - psql-user

@@ -4,8 +4,6 @@ services:
 
   api:
     image: chouffe/haskell-bazaar
-    ports:
-      - "8001:8001"
     command: "./haskell-bazaar-exe"
     links:
       - postgres
@@ -24,7 +22,7 @@ services:
       - psql-password
       - psql-db
 
-  loadbalancer:
+  nginx:
     image: nginx:stable-alpine
     networks:
       - frontend
@@ -35,9 +33,10 @@ services:
       - /docker-volumes/etc/letsencrypt/live/haskellbazaar.com/privkey.pem:/etc/letsencrypt/live/haskellbazaar.com/privkey.pem
       # for certbot challenges
       - /docker-volumes/data/letsencrypt:/data/letsencrypt
+  # TODO: add a cerbot as a cron job in docker compose file
+  # TODO: use named volume instead of host volumes to store certificate pem files
     links:
       - api
-
     ports:
       - "80:80"   # HTTP
       - "443:443" # HTTPS
