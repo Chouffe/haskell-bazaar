@@ -16,3 +16,4 @@ nashorn_code_cache/
 build/
 node_modules/
 .tern-port
+.rebel_readline_history
