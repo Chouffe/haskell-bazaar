@@ -85,7 +85,6 @@ services:
     volumes:
       - psql-data:/var/lib/postgresql/data
       - psql-backups:/backups
-      - ./db:/db
     secrets:
       - psql-user
       - psql-password
