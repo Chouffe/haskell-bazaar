@@ -8,32 +8,35 @@ services:
     networks:
       - frontend
       - backend
+    links:
+      - api
+      - frontend
+    ports:
+      - "80:80"   # HTTP
+      - "443:443" # HTTPS
     volumes:
-      - ./config/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - /docker-volumes/etc/letsencrypt/live/haskellbazaar.com/fullchain.pem:/etc/letsencrypt/live/haskellbazaar.com/fullchain.pem
       - /docker-volumes/etc/letsencrypt/live/haskellbazaar.com/privkey.pem:/etc/letsencrypt/live/haskellbazaar.com/privkey.pem
       # for certbot challenges
       - /docker-volumes/data/letsencrypt:/data/letsencrypt
+    restart: always
   # TODO: add a cerbot as a cron job in docker compose file
   # TODO: use named volume instead of host volumes to store certificate pem files
-    links:
-      - api
-    ports:
-      - "80:80"   # HTTP
-      - "443:443" # HTTPS
 
   frontend:
-    stdin_open: false
-    tty: false
     image: nginx:stable-alpine
     volumes:
       - ./frontend/nginx/default.conf:/etc/nginx/conf.d/default.conf
     networks:
       - backend
+    # TODO: add a healthcheck
+    restart: always
 
   api:
     image: chouffe/haskell-bazaar
-    command: "./haskell-bazaar-exe"
+    networks:
+      - backend
     links:
       - postgres
     depends_on:
@@ -41,6 +44,7 @@ services:
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
       start_period: 45s
+    command: "./haskell-bazaar-exe"
     environment:
       - ENVIRONMENT=Prod
     secrets:
@@ -50,6 +54,21 @@ services:
       - psql-user
       - psql-password
       - psql-db
+
+  postgres:
+    image: postgres:11.1
+    container_name: haskell-bazaar-postgres
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "haskellbazaar"]
+
+    volumes:
+      - psql-data:/var/lib/postgresql/data
+
+      # Run init.sql and seed.sql on creation
+      - ./db/scripts/init.sql:/docker-entrypoint-initdb.d/1-init.sql
+      - ./db/scripts/seed.sql:/docker-entrypoint-initdb.d/2-seed.sql
 
   postgres-backup:
     image: chouffe/haskell-bazaar-postgres-backup

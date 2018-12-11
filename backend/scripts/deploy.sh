@@ -16,7 +16,6 @@ git clone https://oauth2:$GITLAB_ACCESS_TOKEN@gitlab.com/chouffe/$GIT_REPO_NAME.
 
 cd $GIT_REPO_NAME
 git checkout $DEPLOY_GIT_SHA
-cd backend
 
 # Pulling docker image
 echo "\n\n"
@@ -24,9 +23,9 @@ echo "Pulling docker image"
 docker image pull $DOCKER_IMG
 
 # Building docker stack config
-echo "\n\n"
-echo "Generating docker stack config file"
-docker-compose -f docker-compose.yml -f production.yml config > $DOCKER_STACK_CONFIG_FILENAME
+# echo "\n\n"
+# echo "Generating docker stack config file"
+# docker-compose -f docker-compose.yml -f production.yml config > $DOCKER_STACK_CONFIG_FILENAME
 
 echo "\n\n"
 echo "Taging docker image to latest"
@@ -34,4 +33,4 @@ docker image tag $DOCKER_IMG $DOCKER_NAME:latest
 
 echo "\n\n"
 echo "Deploying stack"
-docker stack deploy -c $DOCKER_STACK_CONFIG_FILENAME $DOCKER_STACK_NAME
+docker stack deploy -c production.yml $DOCKER_STACK_NAME
