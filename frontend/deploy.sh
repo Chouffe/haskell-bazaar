@@ -1,18 +1,12 @@
 #!/bin/bash
 
 # Config
-BRANCH=`git rev-parse --abbrev-ref HEAD`
-GIT_SHA=`git rev-parse HEAD`
+TAG=`git rev-parse --short HEAD`
 BUILD_DIR=build/
-ARTIFACT_NAME=frontend.$BRANCH.$GIT_SHA.tar.gz
+ARTIFACT_NAME=$TAG.tar.gz
 S3_BUCKET=haskell-bazaar-builds/frontend/
 
 mkdir -p $BUILD_DIR
-
-# Compiling Clojurescript -> JS
-echo "Building artifacts"
-lein clean
-lein cljsbuild once prod
 
 echo "Compressing artifacts"
 tar \

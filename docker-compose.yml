@@ -2,6 +2,30 @@ version: '3.4'
 
 services:
 
+  frontend:
+    image: nginx:stable-alpine
+    volumes:
+      - ./frontend/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - backend
+
+  frontend:
+    container_name: haskell-bazaar-repl
+    stdin_open: true
+    tty: true
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./frontend
+    volumes:
+      - /clj/target
+      - /clj/node_modules
+      - /clj/resources/public/js/compiled
+      - ./frontend:/clj
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "nc", "-vz", "127.0.0.1 3449"]
+
   nginx:
     image: nginx:stable-alpine
     networks:
@@ -9,6 +33,7 @@ services:
       - backend
     links:
       - api
+      - frontend
     ports:
       - "8080:80"
     volumes:
@@ -68,30 +93,8 @@ services:
       - POSTGRES_DB_FILE=/run/secrets/psql-db
       - POSTGRES_PORT=5432
 
-  postgres-backup:
-    image: chouffe/haskell-bazaar-postgres-backup
-    build:
-      context: ./db/backup
-      dockerfile: Dockerfile
-    links:
-      - postgres
-    depends_on:
-      - postgres
-    container_name: haskell-bazaar-postgres-backup
-    networks:
-      - backend
-    volumes:
-      - psql-data:/var/lib/postgresql/data
-      - psql-backups:/backups
-      - ./db:/db
-    secrets:
-      - psql-user
-      - psql-password
-      - psql-db
-
 volumes:
   psql-data:
-  psql-backups:
 
 secrets:
 

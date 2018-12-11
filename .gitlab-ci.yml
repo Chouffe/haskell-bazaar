@@ -58,6 +58,8 @@ deploy:
   stage: deploy
   script:
     - cd backend
+    - docker image build --cache-from=fpco/stack-build:lts-9.21,chouffe/haskell-bazaar:dev -t chouffe/haskell-bazaar:dev -f Dockerfile.dev .
     - docker build -t chouffe/haskell-bazaar:latest -f Dockerfile .
+    # TODO: use the sha short version here instead of latest
     - docker push chouffe/haskell-bazaar:latest
     - echo "Deploying..."

@@ -1,6 +1,35 @@
+# TODO: have one file for prod and one for dev
 version: '3.4'
 
 services:
+
+  nginx:
+    image: nginx:stable-alpine
+    networks:
+      - frontend
+      - backend
+    volumes:
+      - ./config/nginx.conf:/etc/nginx/nginx.conf
+      - /docker-volumes/etc/letsencrypt/live/haskellbazaar.com/fullchain.pem:/etc/letsencrypt/live/haskellbazaar.com/fullchain.pem
+      - /docker-volumes/etc/letsencrypt/live/haskellbazaar.com/privkey.pem:/etc/letsencrypt/live/haskellbazaar.com/privkey.pem
+      # for certbot challenges
+      - /docker-volumes/data/letsencrypt:/data/letsencrypt
+  # TODO: add a cerbot as a cron job in docker compose file
+  # TODO: use named volume instead of host volumes to store certificate pem files
+    links:
+      - api
+    ports:
+      - "80:80"   # HTTP
+      - "443:443" # HTTPS
+
+  frontend:
+    stdin_open: false
+    tty: false
+    image: nginx:stable-alpine
+    volumes:
+      - ./frontend/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - backend
 
   api:
     image: chouffe/haskell-bazaar
@@ -22,24 +51,30 @@ services:
       - psql-password
       - psql-db
 
-  nginx:
-    image: nginx:stable-alpine
+  postgres-backup:
+    image: chouffe/haskell-bazaar-postgres-backup
+    build:
+      context: ./db/backup
+      dockerfile: Dockerfile
+    links:
+      - postgres
+    depends_on:
+      - postgres
+    container_name: haskell-bazaar-postgres-backup
     networks:
-      - frontend
       - backend
     volumes:
-      - ./config/nginx.conf:/etc/nginx/nginx.conf
-      - /docker-volumes/etc/letsencrypt/live/haskellbazaar.com/fullchain.pem:/etc/letsencrypt/live/haskellbazaar.com/fullchain.pem
-      - /docker-volumes/etc/letsencrypt/live/haskellbazaar.com/privkey.pem:/etc/letsencrypt/live/haskellbazaar.com/privkey.pem
-      # for certbot challenges
-      - /docker-volumes/data/letsencrypt:/data/letsencrypt
-  # TODO: add a cerbot as a cron job in docker compose file
-  # TODO: use named volume instead of host volumes to store certificate pem files
-    links:
-      - api
-    ports:
-      - "80:80"   # HTTP
-      - "443:443" # HTTPS
+      - psql-data:/var/lib/postgresql/data
+      - psql-backups:/backups
+      - ./db:/db
+    secrets:
+      - psql-user
+      - psql-password
+      - psql-db
+
+volumes:
+  psql-data:
+  psql-backups:
 
 secrets:
 

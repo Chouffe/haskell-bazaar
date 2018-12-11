@@ -13,8 +13,8 @@
 (defn- port [environment]
   (case environment
     :prod 80
-    :dev  8002
-    :test 8002))
+    :dev  8080
+    :test 8080))
 
 (defn base-url [environment]
   (case environment
