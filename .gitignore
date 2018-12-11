@@ -5,6 +5,8 @@ haskell-bazaar.cabal
 data/
 set-env.sh
 
+frontend/.rebel_readline_history
+
 backend/secrets/psql-user
 backend/secrets/psql-db
 backend/secrets/psql-password
