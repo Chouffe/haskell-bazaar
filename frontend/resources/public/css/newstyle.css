@@ -38,10 +38,6 @@ html {
   min-height: 0;
 }
 
-#landing-page #page-1 {
-  height: 100vh;
-}
-
 .topnav {
   width: 100%;
   background-color: #F7F7F7;
@@ -193,7 +189,8 @@ html {
 
 #landing-page #track-level {
   min-height: 400px;
-  height: 50vh;
+  padding-top: 3em;
+  padding-bottom: 3em;
 }
 
 #landing-page .step {

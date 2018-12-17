@@ -22,6 +22,7 @@
         {:class "active"}))
     [:div.content
      [:div.title "Beginner"]
+
      #_[:div.description "You are just starting with Haskell and Funtional Programming"]]]
    [:div.step
     (merge
@@ -52,12 +53,32 @@
 
 ;; TODO: finish
 (defmethod level-body-impl :beginner [_]
-  [:div.ui.list
-   [:a.item
-    [:i.right.triange.icon]
-    [:div.content
-     [:div.header "Type Basics"]
-     [:div.description "Lorem Ipsum"]]]])
+  [:div.content.ui
+
+   [:h3 "Concepts to explore"]
+   [:ul
+    [:li [:a {:href "#/search?q=function"} "Functions"]]
+    [:li [:a {:href "#/search?q=list"} "Lists"]]
+    [:li [:a {:href "#/search?q=tuple"} "Tuples"]]
+    [:li [:a {:href "#/search?q=io"} "Simple Input/Output"]]]
+
+   [:h3 "Blog posts to read"]
+
+   [:h3 "Book chapters to read"]
+   [:img.bordered.ui.small.image.left.floated
+    {:src "https://images-eu.ssl-images-amazon.com/images/I/412gjoBtAxL.jpg"
+     :alt "Learn you a Haskell for great good"
+     :title "Learn you a Haskell for great good"}]
+   [:p "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."]
+   [:div.ui.hidden.divider]
+   [:img.bodered.ui.small.image.right.floated
+    {:src "http://haskellbook.com/assets/img/book-cover-front.png"
+     :alt "Haskell Programming from first principles"
+     :title "Haskell Programming from first principles"}]
+   [:p "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."]
+   [:div {:style {:clear "both"}}]
+
+   ])
 
 (defmethod level-body-impl :elementary [_]
   [:div "Hello Elementary"])

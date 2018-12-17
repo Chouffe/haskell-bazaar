@@ -183,8 +183,9 @@
     (utils/transform-extended-hiccup body)]])
 
 (defn footer []
-  [:div.ui.vertical.footer.segment.centerd
-   [:p {:style {:text-align "center"}} "Built with "
+  [:div.ui.vertical.footer.segment.centered
+   [:div {:style {:text-align "center"
+                :padding-top "3em"}} "Built with "
     [:> ui/icon {:name "heart"}]
     " for the Haskell community"]
    [:> ui/divider]
