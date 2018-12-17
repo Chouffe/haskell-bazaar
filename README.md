@@ -1,10 +1,14 @@
 # Haskell Bazaar
 
-*Explore Haskell and Functional Programming concepts* [https://haskellbazaar.com](https://haskellbazaar.com)
+_Explore Haskell and Functional Programming concepts_
+[https://haskellbazaar.com](https://haskellbazaar.com)
+
 
 [Backend README](./backend/README.md) | [Frontend README](./frontend/README.md) | [Contributing](./CONTRIBUTING.md)
 
+
 The Haskell community has produced so many high quality tutorials, articles, talks, courses, papers. But it is difficult for newcomers to navigate them and appreciate how they fit together. `Haskell Bazaar` is an attempt to make it simpler for learners to navigate FP/Haskell resources.
+
 
 ![Landing Page](./doc/images/frontend-landing-page-1.png)
 ![Search](./doc/images/frontend-search-1.png)
