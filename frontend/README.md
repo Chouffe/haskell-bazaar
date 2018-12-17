@@ -1,39 +1,51 @@
-# haskell-bazaar-frontend
-
-FIXME: Write a one-line description of your library/project.
+# Haskell Bazaar Frontend
 
 ## Overview
 
-FIXME: Write a paragraph about the library/project and highlight its goals.
+![Landing Page](./doc/images/frontend-landing-page-1.png)
+![Search](./doc/images/frontend-search-1.png)
 
 ## Setup
 
-To get an interactive development environment run:
-
-    lein figwheel
-
-and open your browser at [localhost:3449](http://localhost:3449/).
+To get an interactive development environment run from the root folder of the repo:
+```
+docker-compose up
+```
+and open your browser at [localhost:8080](http://localhost:3449/)
 This will auto compile and send all changes to the browser without the
 need to reload. After the compilation process is complete, you will
 get a Browser Connected REPL. An easy way to try it is:
 
-    (js/alert "Am I connected?")
+```
+cd frontend; make repl
+dev:cljs.user=> (js/alert "Am I connected?")
+```
 
 and you should see an alert in the browser window.
 
-To clean all compiled files:
+## Development
 
-    lein clean
+The development commands are defined in the `./backend/Makefile` file. Below is a list of the most useful commands for development:
 
-To create a production build run:
-
-    lein do clean, cljsbuild once min
-
-And open your browser in `resources/public/index.html`. You will not
-get live reloading, nor a REPL. 
+* Attach to the figwheel REPL
+```
+make repl
+```
+* Build the code for production
+```
+make build
+```
+* Clean builds
+```
+make clean
+```
+* Deploy
+```
+make deploy
+```
 
 ## License
 
-Copyright © 2014 FIXME
+Copyright © 2018 Arthur Caillau
 
 Distributed under the Eclipse Public License either version 1.0 or (at your option) any later version.

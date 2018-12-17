@@ -19,8 +19,6 @@
   * Gabriel Gonzales posts
   * Concurrency and Parallelism Simon Marlow
   * https://github.com/bitemyapp/learnhaskell/blob/master/specific_topics.md
-* Cleanup build bucket for backend in S3
-* Setup automated psql database backup to S3
-* Rotate Mailchimp Credentials
 * Forward address IP and proxy header with nginx
+  * Unable to do so with Docker Swarm: https://github.com/moby/moby/issues/25526
 * Run Cerbot as a Cron Job in production

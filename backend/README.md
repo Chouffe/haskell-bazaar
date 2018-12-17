@@ -1,13 +1,10 @@
-# haskell-bazaar
+# Haskell Bazaar Backend
 
 ## Development
 
-Building the development Dockerfile `Dockerfile.dev` will take a long time because it needs to compile all haskell packages. Run the `docker-compose up` command and go get a coffee or two while it compiles...
+The development commands are defined in the `./backend/Makefile` file. Below is a list of the most useful commands for development:
 
-* To get a working dev environment run the following command to start the database and the API:
-```
-docker-compose up
-```
+
 * Start a ghci repl
 ```
 make repl
@@ -25,26 +22,8 @@ make psql
 make test
 ```
 
-## Deployment
+## License
 
-### Frontend
+Copyright © 2018 Arthur Caillau
 
-The frontend assets are compiled and then uploaded to a S3 bucket
-```
-cd frontend
-./deploy.sh
-```
-
-### Backend
-
-* Build the production docker image
-```
-make build
-```
-* Run the deploy script: TODO
-
-## Testing
-
-```
-make test
-```
+Distributed under the Eclipse Public License either version 1.0 or (at your option) any later version.
