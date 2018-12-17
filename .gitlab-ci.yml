@@ -19,47 +19,33 @@ variables:
 services:
    - docker:dind
 
-cache:
-  key: build-cache
-  paths:
-    - ./backend/.stack-work
-
 stages:
   - build
   - test
   - deploy
 
 before_script:
-  - pwd
-  - ls -larth
-  - ls -larth ./backend/
   - docker info
-  - docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD
-  - docker image pull chouffe/haskell-bazaar:dev
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_LOGIN" --password-stdin
 
 build:
   stage: build
   script:
-    - cd backend
-    - docker image build --cache-from=fpco/stack-build:lts-9.21,chouffe/haskell-bazaar:dev -t chouffe/haskell-bazaar:dev -f Dockerfile.dev .
-    - docker image push chouffe/haskell-bazaar:dev
-    # TODO use cache layer here to pass on artifacts to next stages
+    - docker image pull chouffe/haskell-bazaar:dev
+    - docker image build --cache-from=fpco/stack-build:lts-9.21,chouffe/haskell-bazaar:dev -t chouffe/haskell-bazaar:dev -f ./backend/Dockerfile.dev ./backend
 
 test:
-  image: tmaier/docker-compose:latest
   stage: test
   script:
-    - cd backend
-    - docker image build --cache-from=fpco/stack-build:lts-9.21,chouffe/haskell-bazaar:dev -t chouffe/haskell-bazaar:dev -f Dockerfile.dev .
     - docker-compose up -d
+    # Backend tests
     - docker container exec haskell-bazaar-api stack test
+    # TODO: add frontend tests
 
 deploy:
   stage: deploy
   script:
-    - cd backend
-    - docker image build --cache-from=fpco/stack-build:lts-9.21,chouffe/haskell-bazaar:dev -t chouffe/haskell-bazaar:dev -f Dockerfile.dev .
-    - docker build -t chouffe/haskell-bazaar:latest -f Dockerfile .
-    # TODO: use the sha short version here instead of latest
-    - docker push chouffe/haskell-bazaar:latest
-    - echo "Deploying..."
+    - docker image build --cache-from=fpco/stack-build:lts-9.21,chouffe/haskell-bazaar:dev -t "chouffe/haskell-bazaar:$CI_COMMIT_SHA" -f ./backend/Dockerfile ./backend
+    - echo "PUSHING TO REPOSITORY $CI_COMMIT_SHA"
+    # - docker push "chouffe/haskell-bazaar:$CI_COMMIT_SHA"
