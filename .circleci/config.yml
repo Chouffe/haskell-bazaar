@@ -1,0 +1,64 @@
+version: 2
+jobs:
+  build:
+    machine:
+      docker_layer_caching: true
+    steps:
+      - checkout
+      - run:
+          name: Update Docker Compose Version
+          command: |
+            sudo curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+            sudo chmod +x /usr/local/bin/docker-compose
+      - run:
+          name: Docker Login
+          command: echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_LOGIN" --password-stdin
+      - run:
+          name: Docker Info
+          command: docker info
+      - run:
+          name: Docker Compose Version
+          command: docker-compose version
+      - run:
+          name: Load Docker image layer caches
+          command: docker image pull chouffe/haskell-bazaar:dev || true
+      - run:
+          name: Pull base images
+          command: docker image pull fpco/stack-build:lts-9.21 || true
+      - run:
+          name: Build application Docker images
+          command: |
+            docker image build \
+                --cache-from=fpco/stack-build:lts-9.21 \
+                --cache-from=chouffe/haskell-bazaar:dev \
+                --tag docker-cache-base \
+                -f ./backend/Dockerfile.dev \
+                ./backend
+      - run:
+          name: Save Docker image layer cache
+          command: |
+            docker image tag docker-cache-base chouffe/haskell-bazaar:dev
+            docker image push chouffe/haskell-bazaar:dev
+      - run:
+          name: Docker Compose
+          command: docker-compose up -d
+      - run:
+          name: Test Backend
+          command: docker container exec haskell-bazaar-api stack test
+      - run:
+          name: Build Prod Backend
+          command: |
+            docker image build \
+                --cache-from=fpco/stack-build:lts-9.21
+                --cache-from=chouffe/haskell-bazaar:dev \
+                --tag "chouffe/haskell-bazaar:$CIRCLE_SHA1" \
+                -f ./backend/Dockerfile \
+                ./backend
+            docker image push "chouffe/haskell-bazaar:$CIRCLE_SHA1"
+      - run:
+          name: Push Prod Backend
+          command: docker image push "chouffe/haskell-bazaar:$CIRCLE_SHA1"
+      # TODO
+      - run:
+          name: Deploy Prod Backend
+          command: echo Deploying
