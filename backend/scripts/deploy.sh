@@ -11,6 +11,7 @@ echo "Removing former code source"
 rm -rf $GIT_REPO_NAME
 
 echo "\n\n"
+# TODO: clone from github instead
 echo "Cloning git repository"
 git clone https://oauth2:$GITLAB_ACCESS_TOKEN@gitlab.com/chouffe/$GIT_REPO_NAME.git $GIT_REPO_NAME
 

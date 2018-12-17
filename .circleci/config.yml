@@ -20,45 +20,72 @@ jobs:
           name: Docker Compose Version
           command: docker-compose version
       - run:
+          name: Set default secrets
+          command: |
+            cd secrets
+            ls -larth
+            for f in *default; do mv $f "${f//.default/}"; done;
+            ls -larth
+      # - restore_cache:
+      #     keys:
+      #       - v1-{{ .Branch }}
+      - run:
           name: Load Docker image layer caches
-          command: docker image pull chouffe/haskell-bazaar:dev || true
+          command: |
+            docker image pull chouffe/haskell-bazaar:dev || true
+            docker image pull chouffe/haskell-bazaar:build || true
       - run:
           name: Pull base images
           command: docker image pull fpco/stack-build:lts-9.21 || true
       - run:
+          name: List Docker images
+          command: docker image ls
+                # --cache-from fpco/stack-build:lts-9.21 \
+                # --cache-from chouffe/haskell-bazaar:dev \
+                # --tag chouffe/haskell-bazaar:dev \
+      - run:
           name: Build application Docker images
           command: |
             docker image build \
-                --cache-from=fpco/stack-build:lts-9.21 \
-                --cache-from=chouffe/haskell-bazaar:dev \
-                --tag docker-cache-base \
                 -f ./backend/Dockerfile.dev \
                 ./backend
       - run:
-          name: Save Docker image layer cache
-          command: |
-            docker image tag docker-cache-base chouffe/haskell-bazaar:dev
-            docker image push chouffe/haskell-bazaar:dev
-      - run:
           name: Docker Compose
-          command: docker-compose up -d
+          command: |
+            docker image tag chouffe/haskell-bazaar:dev haskell-bazaar_api
+            docker-compose up -d
       - run:
           name: Test Backend
           command: docker container exec haskell-bazaar-api stack test
+      #- run:
+      #    name: Save Docker image layer cache
+      #    command: |
+      #      pwd
+      #      mkdir -p caches
+      #      # See here: https://github.com/mozmeao/snippets-service/pull/208/files
+      #      # and here: https://stackoverflow.com/q/49965396
+      #      # The build commands here will be completely cached, and so very quick
+      #      #
+      #      docker build --tag ${CIRCLE_PROJECT_REPONAME} . | grep '\-\-\->' | grep -v 'Using cache' | sed -e 's/[ >-]//g' > /tmp/layers.txt
+      #      docker save $(cat /tmp/layers.txt) | gzip < /caches/${CIRCLE_PROJECT_REPONAME}.tar.gz
+      #- save_cache:
+      #    key: v1-{{ .Branch }}
+      #    paths:
+      #      - /caches/
       - run:
           name: Build Prod Backend
           command: |
             docker image build \
-                --cache-from=fpco/stack-build:lts-9.21
-                --cache-from=chouffe/haskell-bazaar:dev \
+                --cache-from fpco/stack-build:lts-9.21
+                --cache-from chouffe/haskell-bazaar:build \
                 --tag "chouffe/haskell-bazaar:$CIRCLE_SHA1" \
                 -f ./backend/Dockerfile \
                 ./backend
             docker image push "chouffe/haskell-bazaar:$CIRCLE_SHA1"
-      - run:
-          name: Push Prod Backend
-          command: docker image push "chouffe/haskell-bazaar:$CIRCLE_SHA1"
-      # TODO
+      # - run:
+      #     name: Push Prod Backend
+      #     command: docker image push "chouffe/haskell-bazaar:$CIRCLE_SHA1"
+      # # TODO
       - run:
           name: Deploy Prod Backend
-          command: echo Deploying
+          command: echo "$CIRCLE_SHA1"

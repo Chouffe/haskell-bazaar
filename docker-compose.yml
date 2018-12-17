@@ -9,7 +9,7 @@ services:
       - frontend
       - backend
     links:
-      - api
+      # - api
       - frontend
     ports:
       - "8080:80"
@@ -39,6 +39,7 @@ services:
 
   api:
     container_name: haskell-bazaar-api
+    image: chouffe/haskell-bazaar:dev
     build:
       context: ./backend
       dockerfile: Dockerfile.dev
