@@ -26,6 +26,12 @@ Go to the `./secrets` folder and define the following files based on the provide
 * `mailchimp-base-url`: Mailchimp Base url
 * `mailchimp-list-id`: Mailchimp List id
 
+One can also run the following bash command to use the provided defaults
+
+```
+cd secrets; for f in *default; do cp $f "${f//.default/}"; done;
+```
+
 ### Docker Compose
 
 Run the following command to setup the dev environment and then point your browser to `localhost:8080`
